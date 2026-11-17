@@ -22,6 +22,9 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2
 .crit button:hover{background:#e9eef2}
 .crit button[aria-pressed=true]{background:var(--ink);color:#fff}
 .crit .g{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);margin:8px 8px 2px}
+.org{margin-left:auto;padding-left:8px;font-size:10px;opacity:.5;white-space:nowrap;text-align:right;flex:none;max-width:42%;white-space:normal;line-height:1.2}
+#xmsg{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:8px 14px;border-radius:5px;z-index:9;box-shadow:0 2px 12px rgba(0,0,0,.4)}#xmsg a{color:#fff}
+#zx.on{background:var(--ink);color:#fff}
 .dot{width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;flex:none}
 button[aria-pressed=true] .dot{background:#fff;border-color:#fff}
 #legend{display:flex;flex-direction:column;gap:1px}
@@ -126,7 +129,8 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
 @media(max-width:760px){
  #panel{top:auto;left:0;right:0;bottom:0;width:auto;height:auto;max-height:80vh;border-radius:16px 16px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,.35)}
  #panel header{position:relative;padding:22px 16px 12px;border-bottom:0}
- #panel header::before{content:'';position:absolute;left:50%;top:8px;width:40px;height:4px;margin-left:-20px;border-radius:2px;background:var(--line)}
+ #panel header{touch-action:none}
+ #panel header::before{content:'';position:absolute;left:50%;top:8px;width:44px;height:5px;margin-left:-20px;border-radius:2px;background:var(--line)}
  #panel h1{font-size:17px;margin:0 0 10px}
  #panel .sub{display:none}
  #panel.min #scroll,#panel.min footer{display:none}
@@ -185,7 +189,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
   <label class="ck"><input type="checkbox" id="fSur">Surélevés seulement</label>
   <label class="ck"><input type="checkbox" id="fIgh">IGH seulement</label>
   <label class="ck"><input type="checkbox" id="fLbl" checked>Noms de rues et numéros</label>
-  <label class="ck"><input type="checkbox" id="fArr" checked>Limites et numéros d'arrondissement</label>
+  <label class="ck"><input type="checkbox" id="fArr" checked>Arrondissements et quartiers</label>
   <label class="ck"><input type="checkbox" id="fCvp">Passés en Commission du Vieux Paris</label>
   <label class="ck"><input type="checkbox" id="fRec">Avec un dossier récent (6 mois)</label>
   <div id="count"></div>
@@ -194,7 +198,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
 </aside>
 <div id="tip" hidden></div>
 <div id="card" hidden><button id="cx" type="button" aria-label="Fermer">×</button><div id="cb"></div></div>
-<div id="zoom"><button id="zi" type="button" aria-label="Zoom avant">+</button><button id="zo" type="button" aria-label="Zoom arrière">−</button><button id="zr" type="button" aria-label="Recadrer">⌂</button></div>
+<div id="zoom"><button id="zi" type="button" aria-label="Zoom avant">+</button><button id="zo" type="button" aria-label="Zoom arrière">−</button><button id="zr" type="button" aria-label="Recadrer">⌂</button><button id="zx" type="button" aria-label="Exporter une zone en PDF géoréférencé" title="Exporter une zone en PDF géoréférencé : tracer un rectangle sur la carte">▭</button></div><div id="xmsg" hidden></div>
 <div id="scale"><span id="scT"></span><i id="scB"></i></div>
 
 <script>!function(e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define([],e):("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).earcut=e()}(function(){return function r(x,i,u){function f(n,e){if(!i[n]){if(!x[n]){var t="function"==typeof require&&require;if(!e&&t)return t(n,!0);if(o)return o(n,!0);throw(e=new Error("Cannot find module '"+n+"'")).code="MODULE_NOT_FOUND",e}t=i[n]={exports:{}},x[n][0].call(t.exports,function(e){return f(x[n][1][e]||e)},t,t.exports,r,x,i,u)}return i[n].exports}for(var o="function"==typeof require&&require,e=0;e<u.length;e++)f(u[e]);return f}({1:[function(e,n,t){"use strict";function r(e,n,t){t=t||2;var r,x,i,u,f,o=n&&n.length,v=o?n[0]*t:e.length,p=s(e,0,v,t,!0),y=[];if(p&&p.next!==p.prev){if(o&&(p=function(e,n,t,r){var x,i,u,f,o=[];for(x=0,i=n.length;x<i;x++)f=n[x]*r,u=x<i-1?n[x+1]*r:e.length,(f=s(e,f,u,r,!1))===f.next&&(f.steiner=!0),o.push(function(e){var n=e,t=e;for(;(n.x<t.x||n.x===t.x&&n.y<t.y)&&(t=n),n=n.next,n!==e;);return t}(f));for(o.sort(c),x=0;x<o.length;x++)t=function(e,n){var t=function(e,n){var t,r=n,x=e.x,i=e.y,u=-1/0;do{if(i<=r.y&&i>=r.next.y&&r.next.y!==r.y){var f=r.x+(i-r.y)*(r.next.x-r.x)/(r.next.y-r.y);if(f<=x&&u<f&&(u=f,t=r.x<r.next.x?r:r.next,f===x))return t}}while(r=r.next,r!==n);if(!t)return null;var o,v=t,p=t.x,y=t.y,a=1/0;r=t;for(;x>=r.x&&r.x>=p&&x!==r.x&&D(i<y?x:u,i,p,y,i<y?u:x,i,r.x,r.y)&&(o=Math.abs(i-r.y)/(x-r.x),_(r,e)&&(o<a||o===a&&(r.x>t.x||r.x===t.x&&function(e,n){return E(e.prev,e,n.prev)<0&&E(n.next,e,e.next)<0}(t,r)))&&(t=r,a=o)),r=r.next,r!==v;);return t}(e,n);if(!t)return n;n=j(t,e);return q(n,n.next),q(t,t.next)}(o[x],t);return t}(e,n,p,t)),e.length>80*t){for(var a=r=e[0],l=x=e[1],h=t;h<v;h+=t)(i=e[h])<a&&(a=i),(u=e[h+1])<l&&(l=u),r<i&&(r=i),x<u&&(x=u);f=0!==(f=Math.max(r-a,x-l))?32767/f:0}O(p,y,t,a,l,f,0)}return y}function s(e,n,t,r,x){var i,u;if(x===0<d(e,n,t,r))for(i=n;i<t;i+=r)u=f(i,e[i],e[i+1],u);else for(i=t-r;n<=i;i-=r)u=f(i,e[i],e[i+1],u);return u&&N(u,u.next)&&(C(u),u=u.next),u}function q(e,n){if(!e)return e;n=n||e;var t,r=e;do{if(t=!1,r.steiner||!N(r,r.next)&&0!==E(r.prev,r,r.next))r=r.next;else{if(C(r),(r=n=r.prev)===r.next)break;t=!0}}while(t||r!==n);return n}function O(e,n,t,r,x,i,u){if(e){if(!u&&i){for(var f=e,o=r,v=x,p=i,y=f;0===y.z&&(y.z=k(y.x,y.y,o,v,p)),y.prevZ=y.prev,y.nextZ=y.next,(y=y.next)!==f;);y.prevZ.nextZ=null,y.prevZ=null;var a,l,h,s,c,d,Z,g,w=y,M=1;do{for(l=w,c=w=null,d=0;l;){for(d++,h=l,a=Z=0;a<M&&(Z++,h=h.nextZ);a++);for(g=M;0<Z||0<g&&h;)0!==Z&&(0===g||!h||l.z<=h.z)?(l=(s=l).nextZ,Z--):(h=(s=h).nextZ,g--),c?c.nextZ=s:w=s,s.prevZ=c,c=s;l=h}}while(c.nextZ=null,M*=2,1<d)}for(var b,m,z=e;e.prev!==e.next;)if(b=e.prev,m=e.next,i?function(e,n,t,r){var x=e.prev,i=e,u=e.next;if(0<=E(x,i,u))return;var f=x.x,o=i.x,v=u.x,p=x.y,y=i.y,a=u.y,l=f<o?f<v?f:v:o<v?o:v,h=p<y?p<a?p:a:y<a?y:a,s=o<f?v<f?f:v:v<o?o:v,c=y<p?a<p?p:a:a<y?y:a,d=k(l,h,n,t,r),Z=k(s,c,n,t,r),g=e.prevZ,w=e.nextZ;for(;g&&g.z>=d&&w&&w.z<=Z;){if(g.x>=l&&g.x<=s&&g.y>=h&&g.y<=c&&g!==x&&g!==u&&D(f,p,o,y,v,a,g.x,g.y)&&0<=E(g.prev,g,g.next))return;if(g=g.prevZ,w.x>=l&&w.x<=s&&w.y>=h&&w.y<=c&&w!==x&&w!==u&&D(f,p,o,y,v,a,w.x,w.y)&&0<=E(w.prev,w,w.next))return;w=w.nextZ}for(;g&&g.z>=d;){if(g.x>=l&&g.x<=s&&g.y>=h&&g.y<=c&&g!==x&&g!==u&&D(f,p,o,y,v,a,g.x,g.y)&&0<=E(g.prev,g,g.next))return;g=g.prevZ}for(;w&&w.z<=Z;){if(w.x>=l&&w.x<=s&&w.y>=h&&w.y<=c&&w!==x&&w!==u&&D(f,p,o,y,v,a,w.x,w.y)&&0<=E(w.prev,w,w.next))return;w=w.nextZ}return 1}(e,r,x,i):function(e){var n=e.prev,t=e,e=e.next;if(0<=E(n,t,e))return;var r=n.x,x=t.x,i=e.x,u=n.y,f=t.y,o=e.y,v=r<x?r<i?r:i:x<i?x:i,p=u<f?u<o?u:o:f<o?f:o,y=x<r?i<r?r:i:i<x?x:i,a=f<u?o<u?u:o:o<f?f:o,l=e.next;for(;l!==n;){if(l.x>=v&&l.x<=y&&l.y>=p&&l.y<=a&&D(r,u,x,f,i,o,l.x,l.y)&&0<=E(l.prev,l,l.next))return;l=l.next}return 1}(e))n.push(b.i/t|0),n.push(e.i/t|0),n.push(m.i/t|0),C(e),e=m.next,z=m.next;else if((e=m)===z){u?1===u?O(e=function(e,n,t){var r=e;do{var x=r.prev,i=r.next.next}while(!N(x,i)&&U(x,r,r.next,i)&&_(x,i)&&_(i,x)&&(n.push(x.i/t|0),n.push(r.i/t|0),n.push(i.i/t|0),C(r),C(r.next),r=e=i),r=r.next,r!==e);return q(r)}(q(e),n,t),n,t,r,x,i,2):2===u&&function(e,n,t,r,x,i){var u=e;do{for(var f,o=u.next.next;o!==u.prev;){if(u.i!==o.i&&function(e,n){return e.next.i!==n.i&&e.prev.i!==n.i&&!function(e,n){var t=e;do{if(t.i!==e.i&&t.next.i!==e.i&&t.i!==n.i&&t.next.i!==n.i&&U(t,t.next,e,n))return 1}while(t=t.next,t!==e);return}(e,n)&&(_(e,n)&&_(n,e)&&function(e,n){var t=e,r=!1,x=(e.x+n.x)/2,i=(e.y+n.y)/2;for(;t.y>i!=t.next.y>i&&t.next.y!==t.y&&x<(t.next.x-t.x)*(i-t.y)/(t.next.y-t.y)+t.x&&(r=!r),t=t.next,t!==e;);return r}(e,n)&&(E(e.prev,e,n.prev)||E(e,n.prev,n))||N(e,n)&&0<E(e.prev,e,e.next)&&0<E(n.prev,n,n.next))}(u,o))return f=j(u,o),u=q(u,u.next),f=q(f,f.next),O(u,n,t,r,x,i,0),O(f,n,t,r,x,i,0);o=o.next}}while(u=u.next,u!==e)}(e,n,t,r,x,i):O(q(e),n,t,r,x,i,1);break}}}function c(e,n){return e.x-n.x}function k(e,n,t,r,x){return(e=1431655765&((e=858993459&((e=252645135&((e=16711935&((e=(e-t)*x|0)|e<<8))|e<<4))|e<<2))|e<<1))|(n=1431655765&((n=858993459&((n=252645135&((n=16711935&((n=(n-r)*x|0)|n<<8))|n<<4))|n<<2))|n<<1))<<1}function D(e,n,t,r,x,i,u,f){return(e-u)*(i-f)<=(x-u)*(n-f)&&(t-u)*(n-f)<=(e-u)*(r-f)&&(x-u)*(r-f)<=(t-u)*(i-f)}function E(e,n,t){return(n.y-e.y)*(t.x-n.x)-(n.x-e.x)*(t.y-n.y)}function N(e,n){return e.x===n.x&&e.y===n.y}function U(e,n,t,r){var x=v(E(e,n,t)),i=v(E(e,n,r)),u=v(E(t,r,e)),f=v(E(t,r,n));return x!==i&&u!==f||(0===x&&o(e,t,n)||(0===i&&o(e,r,n)||(0===u&&o(t,e,r)||!(0!==f||!o(t,n,r)))))}function o(e,n,t){return n.x<=Math.max(e.x,t.x)&&n.x>=Math.min(e.x,t.x)&&n.y<=Math.max(e.y,t.y)&&n.y>=Math.min(e.y,t.y)}function v(e){return 0<e?1:e<0?-1:0}function _(e,n){return E(e.prev,e,e.next)<0?0<=E(e,n,e.next)&&0<=E(e,e.prev,n):E(e,n,e.prev)<0||E(e,e.next,n)<0}function j(e,n){var t=new u(e.i,e.x,e.y),r=new u(n.i,n.x,n.y),x=e.next,i=n.prev;return(e.next=n).prev=e,(t.next=x).prev=t,(r.next=t).prev=r,(i.next=r).prev=i,r}function f(e,n,t,r){e=new u(e,n,t);return r?(e.next=r.next,(e.prev=r).next.prev=e,r.next=e):(e.prev=e).next=e,e}function C(e){e.next.prev=e.prev,e.prev.next=e.next,e.prevZ&&(e.prevZ.nextZ=e.nextZ),e.nextZ&&(e.nextZ.prevZ=e.prevZ)}function u(e,n,t){this.i=e,this.x=n,this.y=t,this.prev=null,this.next=null,this.z=0,this.prevZ=null,this.nextZ=null,this.steiner=!1}function d(e,n,t,r){for(var x=0,i=n,u=t-r;i<t;i+=r)x+=(e[u]-e[i])*(e[i+1]+e[u+1]),u=i;return x}n.exports=r,(n.exports.default=r).deviation=function(e,n,t,r){var x=n&&n.length,i=x?n[0]*t:e.length,u=Math.abs(d(e,0,i,t));if(x)for(var f=0,o=n.length;f<o;f++){var v=n[f]*t,p=f<o-1?n[f+1]*t:e.length;u-=Math.abs(d(e,v,p,t))}for(var y=0,f=0;f<r.length;f+=3){var a=r[f]*t,l=r[f+1]*t,h=r[f+2]*t;y+=Math.abs((e[a]-e[h])*(e[1+l]-e[1+a])-(e[a]-e[l])*(e[1+h]-e[1+a]))}return 0===u&&0===y?0:Math.abs((y-u)/u)},r.flatten=function(e){for(var n=e[0][0].length,t={vertices:[],holes:[],dimensions:n},r=0,x=0;x<e.length;x++){for(var i=0;i<e[x].length;i++)for(var u=0;u<n;u++)t.vertices.push(e[x][i][u]);0<x&&(r+=e[x-1].length,t.holes.push(r))}return t}},{}]},{},[1])(1)});
@@ -330,6 +334,9 @@ const ARR_COL=Array.from({length:20},(_,i)=>{const h=i*18,l=(i%2?72:56);return h
 function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return '#'+[f(0),f(8),f(4)].map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('');}
 const PC_LAB=["Avant 1990","1990–1999","2000–2009","2010–2014","2015–2019","2020 et après","Aucun connu"];
 const lastCls=A=>s=>{const y=A[s];if(!y)return 6;return y<1990?0:y<2000?1:y<2010?2:y<2015?3:y<2020?4:5;};
+const ORG={per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
+mh:'Apur',pp:'Apur',courbe:'IGN',com:'Apur',cad:'DGFiP, IGN'};
+const orgOf=id=>ORG[id]||(/^at[m0-9]/.test(id)?'Michel Huard, Atlas historique de Paris':'Ville de Paris'),orgHtml=id=>'<small class="org">'+orgOf(id)+'</small>';
 const CRIT=[
  {id:'neu',g:'Plan',name:'Plan neutre (aucun calque)',lab:['Bâtiment'],col:['#8b98a4'],cls:s=>0},
  {id:'per',g:'Âge',name:'Période de construction',lab:PER_LAB,col:SPEC.concat([GRAY]),cls:s=>PMAP[PE[s]]??11},
@@ -427,7 +434,7 @@ function buildLegend(){
 function syncRows(){document.querySelectorAll('#legend .row').forEach(r=>r.classList.toggle('off',!st.en[+r.dataset.i]));}
 $('#reset').onclick=()=>{st.en=st.en.map(()=>true);syncRows();recolor();};
 {const box=$('#crit');let g='';const slot=x=>{if(!x)return;const s=document.createElement('div');s.className='ovslot';s.dataset.g=x;box.appendChild(s);};for(const c of CRIT){if(c.id==='neu')continue;if(c.g!==g){slot(g);g=c.g;const d=document.createElement('div');d.className='g';d.textContent=g;box.appendChild(d);}
- const b=document.createElement('button');b.type='button';b.dataset.id=c.id;b.innerHTML='<span class="dot"></span>'+c.name;b.onclick=()=>setCrit(st.crit===c?CRIT[0]:c);box.appendChild(b);}slot(g);}
+ const b=document.createElement('button');b.type='button';b.dataset.id=c.id;b.innerHTML='<span class="dot"></span><span class="cn">'+c.name+'</span>'+orgHtml(c.id);b.onclick=()=>setCrit(st.crit===c?CRIT[0]:c);box.appendChild(b);}slot(g);}
 
 let ready=false;
 /* filtres */
@@ -448,6 +455,22 @@ function syncTog(){const p=$('#panel');$('#tog').textContent=p.classList.contain
 $('#tog').onclick=()=>{$('#panel').classList.toggle('min');syncTog();};
 $('#panel header').addEventListener('click',e=>{if(isMob()&&e.target.tagName!=='INPUT'&&e.target.id!=='tog'&&!e.target.closest('#sg')){$('#panel').classList.toggle('min');syncTog();}});
 if(isMob()){$('#panel').classList.add('min');syncTog();}
+/* glisser les volets sur mobile */
+function sheetDrag(el,zoneOk,onEnd,live){let y0=null,dy=0,act=false,t0=0;
+ el.addEventListener('touchstart',e=>{if(!isMob()||e.touches.length!==1||!zoneOk(e))return;y0=e.touches[0].clientY;dy=0;act=false;t0=Date.now();},{passive:true});
+ el.addEventListener('touchmove',e=>{if(y0===null)return;dy=e.touches[0].clientY-y0;if(!act&&Math.abs(dy)>8)act=true;if(act){if(live){live(dy);e.preventDefault();}}},{passive:false});
+ const end=()=>{if(y0===null)return;const v=dy/Math.max(1,Date.now()-t0);if(act)onEnd(dy,v);el.style.transition='transform .2s';el.style.transform='';setTimeout(()=>{el.style.transition='';},220);y0=null;act=false;};
+ el.addEventListener('touchend',end);el.addEventListener('touchcancel',end);}
+{const p=$('#panel');
+ sheetDrag(p,e=>{const h=p.querySelector('header');return h.contains(e.target)&&e.target.tagName!=='INPUT'||(!p.classList.contains('min')&&p.querySelector('#scroll').scrollTop<=0&&e.touches[0].clientY-p.getBoundingClientRect().top<60);},
+  (dy,v)=>{const mn=p.classList.contains('min');if(mn&&(dy<-30||v<-.4)){p.classList.remove('min');syncTog();}else if(!mn&&(dy>60||v>.5)){p.classList.add('min');syncTog();}},
+  dy=>{if(!p.classList.contains('min'))p.style.transform='translateY('+Math.max(0,dy)+'px)';else p.style.transform='translateY('+Math.min(0,Math.max(-40,dy*.3))+'px)';});
+ const c=$('#card');
+ sheetDrag(c,e=>c.classList.contains('pin')&&(c.scrollTop<=0||e.touches[0].clientY-c.getBoundingClientRect().top<40),
+  (dy,v)=>{if(dy>70||v>.5){sel=-1;hov=-1;showCard(-1);draw();}},
+  dy=>{c.style.transform='translateY('+Math.max(0,dy)+'px) translateZ(0)';});
+}
+
 {const upd=()=>document.documentElement.style.setProperty('--sheet',sheetH()+'px');try{const ro=new ResizeObserver(upd);ro.observe($('#panel'));ro.observe($('#card'));}catch(e){}addEventListener('resize',upd);setTimeout(upd,50);}
 
 /* ---------- WebGL ---------- */
@@ -468,9 +491,9 @@ let BASE=null,showArr=true;const wBuf=gl.createBuffer(),wIdx=gl.createBuffer();l
   for(const poly of j.w){const flat=[],holes=[];let n=0;poly.forEach((r,i)=>{if(i)holes.push(n);for(const c of r){const p=P(c);flat.push(p[0],p[1]);n++;}});const b=vs.length/2;for(const k of earcut(flat,holes))ix.push(b+k);for(const v of flat)vs.push(v);}
   gl.bindBuffer(gl.ARRAY_BUFFER,wBuf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vs),gl.STATIC_DRAW);
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,wIdx);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(ix),gl.STATIC_DRAW);wN=ix.length;
-  BASE={a:j.a.map(([n,polys,c])=>({n,rings:polys.map(p=>p[0].map(P)),c:P(c)}))};draw();
+  BASE={w:j.w.map(poly=>poly.map(r=>r.map(P))),a:j.a.map(([n,polys,c])=>({n,rings:polys.map(p=>p[0].map(P)),c:P(c)})),q:(j.q||[]).map(([n,polys,c])=>({n,rings:polys.map(p=>p[0].map(P)),c:P(c)}))};draw();
  }).catch(()=>{});}
-const view={cx:(EXT[0]+EXT[2])/2,cy:(EXT[1]+EXT[3])/2,k:.05};
+const view={cx:(EXT[0]+EXT[2])/2,cy:(EXT[1]+EXT[3])/2,k:.05};window.__pg={view};
 let W=1,Hh=1,dpr=1,hov=-1,sel=-1,fitK=.05;
 const lb=$('#lb'),lx=lb.getContext('2d');
 function resize(){dpr=Math.min(window.devicePixelRatio||1,2);W=cv.clientWidth;Hh=cv.clientHeight;cv.width=Math.round(W*dpr);cv.height=Math.round(Hh*dpr);lb.width=cv.width;lb.height=cv.height;}
@@ -509,7 +532,12 @@ function drawArr(){
  lx.save();lx.strokeStyle='rgba(235,242,248,'+(k<1?.55:.4)+')';lx.lineWidth=k<1?1.3:1.8;lx.setLineDash([7,5]);lx.beginPath();
  for(const a of BASE.a)for(const r of a.rings){r.forEach((p,i)=>i?lx.lineTo(X(p[0]),Y(p[1])):lx.moveTo(X(p[0]),Y(p[1])));lx.closePath();}
  lx.stroke();lx.setLineDash([]);
- if(k<1.1){const fs=Math.max(13,Math.min(30,k*55));lx.font='600 '+fs+'px Inter, system-ui, sans-serif';lx.textAlign='center';lx.textBaseline='middle';lx.lineJoin='round';
+ if(k>=0.16&&BASE.q.length){lx.strokeStyle='rgba(235,242,248,'+Math.min(.32,(k-.16)*1.5)+')';lx.lineWidth=1;lx.setLineDash([2,4]);lx.beginPath();
+  for(const a of BASE.q)for(const r of a.rings){r.forEach((p,i)=>i?lx.lineTo(X(p[0]),Y(p[1])):lx.moveTo(X(p[0]),Y(p[1])));lx.closePath();}
+  lx.stroke();lx.setLineDash([]);
+  if(k>=0.2&&k<6){const fs=Math.max(11,Math.min(16,k*16));lx.font='italic 500 '+fs+'px Inter, system-ui, sans-serif';lx.textAlign='center';lx.textBaseline='middle';lx.lineJoin='round';const al=k<2?.8:Math.max(0,.8-(k-2)*.25);
+   for(const a of BASE.q){const x=X(a.c[0]),y=Y(a.c[1]);if(x<-200||x>W+200||y<-50||y>Hh+50)continue;const t=a.n.toUpperCase();lx.lineWidth=4;lx.strokeStyle='rgba(15,26,36,'+(al*.85)+')';lx.strokeText(t,x,y);lx.fillStyle='rgba(255,236,190,'+al+')';lx.fillText(t,x,y);}}}
+ if(k<0.2){const fs=Math.max(13,Math.min(30,k*55));lx.font='600 '+fs+'px Inter, system-ui, sans-serif';lx.textAlign='center';lx.textBaseline='middle';lx.lineJoin='round';
   for(const a of BASE.a){const x=X(a.c[0]),y=Y(a.c[1]),t=a.n+(a.n===1?'er':'e');lx.lineWidth=4;lx.strokeStyle='rgba(15,26,36,.75)';lx.strokeText(t,x,y);lx.fillStyle='rgba(255,255,255,.82)';lx.fillText(t,x,y);}}
  lx.restore();
 }
@@ -650,7 +678,7 @@ function drawLabels(){
  lx.setTransform(1,0,0,1,0,0);lx.clearRect(0,0,lb.width,lb.height);
  drawSun();
  drawOv();
- drawArr();drawSelOutline();markLegend();
+ drawArr();drawSelOutline();drawXRect();markLegend();
  if(!LBL||!showLbl)return;
  const k=view.k;
  lx.setTransform(dpr,0,0,dpr,0,0);lx.textAlign='center';lx.textBaseline='middle';lx.lineJoin='round';
@@ -808,6 +836,20 @@ function urbHtml(s,U,pin){
  if(U.ar){o+='<h3>Fouilles archéologiques proches</h3>';for(const a of U.ar)o+='<div class="dsr"><div class="hd"><span class="ty">'+esc(a[2]||'Opération')+'</span><span class="dtt">'+esc(a[1])+'</span><span class="k">à '+a[5]+' m</span></div><div class="ds">'+esc(a[0])+(a[4].length?' <span class="k">('+a[4].join(', ')+')</span>':'')+'</div>'+(a[3]?'<div class="dm">'+esc(a[3])+'</div>':'')+'</div>';}
  return o;
 }
+
+let ATL=null;function loadAtl(){if(!ATL)ATL=getJson('atlas.json').catch(()=>[]);return ATL;}
+function inQuad(q,x,y){let c=false;for(let i=0,j=3;i<4;j=i++){const xi=q[2*i],yi=q[2*i+1],xj=q[2*j],yj=q[2*j+1];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c;}return c;}
+function atlasOf(s,L){if(!L)return [];const x=(bbox[4*s]+bbox[4*s+2])/2,y=(bbox[4*s+1]+bbox[4*s+3])/2;return L.filter(m=>inQuad(m.q,x,y));}
+const cadUrl=id=>'https://cadastre.data.gouv.fr/map?style=ortho&parcelleId='+id;
+const cadTxt=c=>c[0].slice(2,5)+' '+c[0].slice(8,10).replace(/^0/,'')+' '+c[0].slice(10).replace(/^0+/,'')+' ('+nf.format(c[1])+' m²)';
+function cadHtml(C){if(!C||!C.length)return '';return '<h3>Cadastre</h3><div class="dm">'+(C.length>1?'Parcelles : ':'Parcelle : ')+C.map(c=>'<a href="'+cadUrl(c[0])+'" target="_blank" rel="noopener">'+esc(cadTxt(c))+'</a>').join(' · ')+'</div><div class="k" style="margin-top:2px">Plan cadastral DGFiP (IGN, Parcellaire Express). Arrondissement, section, numéro, contenance.</div>';}
+const atlName=m=>{let n=m.n.replace(/[_]/g,'-').replace(/\s+(\d|[a-z])$/,'').replace(/(\d{4})[a-z]$/,'$1').replace(/\s+\d{4}(-\d{4})?$/,'').replace(/^Fg /,'Faubourg ').replace(/^St /,'Saint ').replace(/ St /,' Saint ').replace(/^paris\s?/i,'Paris ').trim();return n.charAt(0).toUpperCase()+n.slice(1);};
+function atlHtml(M,pin){if(!M.length)return '';const yl=m=>m.y?(m.y<1000?'vers '+m.y:String(m.y)):'',D=M.filter(m=>!m.g),G=M.filter(m=>m.g),n=pin?D.length:4;
+ let h='<h3>Atlas historique de Paris</h3><div class="k" style="margin:-2px 0 6px">Cartes de Michel Huard couvrant cet immeuble, calées automatiquement sur le plan actuel (précision indicative)</div>';
+ if(D.length)h+='<div class="dm" style="margin:2px 0"><b>Cartes du quartier ('+D.length+')</b></div>'+D.slice(0,n).map(m=>'<div class="dm" style="margin:2px 0 2px 8px">'+(m.y?yl(m)+' · ':'')+'<a href="'+m.p[0][1]+'" target="_blank" rel="noopener">'+esc(atlName(m))+'</a> <span class="k">(page « '+esc(m.p[0][0])+' »)</span>'+(m.p.length>1?' (aussi : '+m.p.slice(1).map(p=>'<a href="'+p[1]+'" target="_blank" rel="noopener">'+esc(p[0])+'</a>').join(', ')+')':'')+' · <a href="'+m.pdf+'" target="_blank" rel="noopener">carte PDF</a></div>').join('')+(D.length>n?'<div class="k" style="margin-left:8px">… et '+(D.length-n)+' autres (cliquer l\'immeuble pour tout voir)</div>':'');
+ if(G.length){const seen=new Set(),U=[];for(const m of G){const k=m.p[0][1]+'|'+m.y;if(seen.has(k))continue;seen.add(k);U.push(m);}
+  h+='<div class="dm" style="margin:6px 0 2px"><b>Plans d\'ensemble et cartes thématiques ('+U.length+')</b></div><div class="dm" style="margin-left:8px;line-height:1.5">'+U.map(m=>'<a href="'+m.p[0][1]+'" target="_blank" rel="noopener">'+esc(m.p[0][0])+(m.y&&!m.p[0][0].includes(String(m.y))?' ('+yl(m)+')':'')+'</a>').join(' · ')+'</div>';}
+ return h;}
 async function showCard(s,pin){
  if(s<0){card.hidden=true;cardFor=-1;document.body.classList.remove('cardon');return;}
  card.hidden=false;card.classList.toggle('pin',!!pin);cardFor=s;
@@ -815,11 +857,12 @@ async function showCard(s,pin){
  const lim=pin?60:3;
  const body=h=>{if(cardFor!==s)return;cb.innerHTML=h;};
  body(baseInfo(s,undefined,null)+'<div class="k" style="margin-top:8px">Chargement…</div>');
- const [D,C,SR]=await Promise.all([loadArr(ARR[s]),CN[s]?loadCvp():null,(SNE[s]||SCL[s])?loadSir(ARR[s]):null,(PF[s]&3)?loadMhd():null]);
+ const [D,C,SR,,AT]=await Promise.all([loadArr(ARR[s]),CN[s]?loadCvp():null,(SNE[s]||SCL[s])?loadSir(ARR[s]):null,(PF[s]&3)?loadMhd():null,loadAtl()]);
  if(cardFor!==s)return;
  const A=D?D.a:{},P=D?D.p:{};
  let out=baseInfo(s,A,P)+urbHtml(s,D&&D.u&&D.u[s],pin);
  {const B=D&&D.n&&D.n[s];out+=bdnbHtml(s,B,pin);}
+ out+=cadHtml(D&&D.c&&D.c[s]);out+=atlHtml(atlasOf(s,AT),pin);
  const K=D&&D.k&&D.k[s];
  if(K&&K.length){out+='<h3>Commerces en rez-de-chaussée ('+K.length+')</h3><div class="k" style="margin:-2px 0 6px">Base des commerces de l\'Apur (BDCOM), relevé de 2017</div>'+K.slice(0,pin?40:3).map(e=>'<div class="dm" style="margin:3px 0"><i class="sw2" style="display:inline-block;vertical-align:-1px;margin-right:6px;background:'+COM_COL[Math.max(0,(e[0]||7)-1)]+'"></i><b>'+esc(e[1])+'</b><span class="k">'+(e[5]?' · '+esc(e[5]):'')+(e[2]?' · '+esc(e[2]):'')+(e[4]?' · '+esc(e[4]):'')+'</span></div>').join('')+(K.length>(pin?40:3)?'<div class="k">… et '+(K.length-(pin?40:3))+' autres</div>':'');}
  const V=D&&D.v&&D.v[s];
@@ -854,7 +897,7 @@ async function showCard(s,pin){
   out+='<h3>Commission du Vieux Paris ('+CN[s]+')</h3>'+(L?L.slice(0,pin?20:2).map(e=>'<div class="dsr"><div class="hd"><span class="ty">'+esc(e[1]||'Sans résolution')+'</span><span class="dtt">'+fdate(e[0])+'</span>'+(e[2]?'<span class="k">'+esc(e[2])+'</span>':'')+'</div>'
    +(e[3]&&e[3]!=='Aucune'?'<div class="dm">'+esc(e[3])+'</div>':'')+(e[4]?'<div class="ds">'+esc(e[4])+'</div>':'')+(pin&&e[5]?'<div class="dm"><a href="'+esc(e[5])+'" target="_blank" rel="noopener">Compte rendu de séance (PDF)</a></div>':'')+'</div>').join(''):'<div class="k">Détail indisponible.</div>');
  }
- if(pin){PCTX={s,A,P,D,C,SR,V:V};out+=extHtml(s,A,D&&D.u&&D.u[s]);}
+ if(pin){PCTX={s,A,P,D,C,SR,V:V,atl:AT};out+=extHtml(s,A,D&&D.u&&D.u[s]);}
  body(out);
 }
 /* ---------- calques superposés ---------- */
@@ -911,6 +954,24 @@ const OVL=[
 {g:'Relief',items:[
  {id:'courbe',n:'Courbes de niveau (IGN, tous les 5 m)',k:'line',cols:['#b9a37a','#f1dfb4'],lw:[.7,1.5],lab:['Courbe de niveau','Courbe maîtresse (multiple de 25 m)']},
  {id:'cote',n:'Points de nivellement, cotes NVP (Ville de Paris)',k:'pt',cols:['#f1dfb4'],lab:['Cote NVP (Nivellement de la Ville de Paris), convertie depuis le NGF IGN69 : NVP ≈ NGF − 0,33 m (visibles à l\'échelle du quartier)'],r:2.2,lbl:2.2,minK:1.1}]},
+{g:'Atlas historique de Paris',items:[
+ {id:'atm300',src:'paris bas empire var 3c',n:'Paris gallo-romain (Bas-Empire)',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/2.html'],url:'https://paris-atlas-historique.fr/2.html'},
+ {id:'atm500',src:'paris mérovingien',n:'Paris mérovingien (VIe-VIIIe s.)',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/2.html'],url:'https://paris-atlas-historique.fr/2.html'},
+ {id:'at1000',src:'paris 1000',n:'Paris en 1000',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/3.html'],url:'https://paris-atlas-historique.fr/3.html'},
+ {id:'at1150',src:'paris 1150',n:'Paris en 1150',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/3.html'],url:'https://paris-atlas-historique.fr/3.html'},
+ {id:'at1300',src:'paris 1300a',n:'Paris en 1300',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/11.html'],url:'https://paris-atlas-historique.fr/11.html'},
+ {id:'at1450',src:'paris 1450 a',n:'Paris en 1450',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/9.html'],url:'https://paris-atlas-historique.fr/9.html'},
+ {id:'at1600',src:'paris 1600 a',n:'Paris en 1600',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/4.html'],url:'https://paris-atlas-historique.fr/4.html'},
+ {id:'at1700',src:'paris 1700 a',n:'Paris en 1700',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/12.html'],url:'https://paris-atlas-historique.fr/12.html'},
+ {id:'at1790',src:'paris 1790 a',n:'Paris en 1790',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/10.html'],url:'https://paris-atlas-historique.fr/10.html'},
+ {id:'at1850',src:'paris 1850 a',n:'Paris en 1850',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/5.html'],url:'https://paris-atlas-historique.fr/5.html'},
+ {id:'at1900',src:'paris 1900',n:'Paris en 1900',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/63.html'],url:'https://paris-atlas-historique.fr/63.html'}]},
+{g:'Voirie',items:[
+ {id:'trot',n:'Trottoirs',k:'poly',a:.5,cols:['#c3c9cf'],lab:['Emprise des trottoirs (plan de voirie)'],minK:.45},
+ {id:'tpl',n:'Terre-pleins',k:'poly',a:.55,cols:['#9fb59a'],lab:['Terre-plein'],minK:.45},
+ {id:'ppi',n:'Passages piétons',k:'poly',a:.75,cols:['#f2f2f2'],lab:['Passage piéton'],minK:.8}]},
+{g:'Cadastre',items:[
+ {id:'cad',n:'Parcelles cadastrales',k:'poly',a:0,cols:['#f3e2a9'],lab:['Limite de parcelle (survol : numéro et contenance, à l\'échelle du quartier)'],minK:.6}]},
 {g:'Commerces',items:[
  {id:'com',n:'Commerces en rez-de-chaussée (BDCOM 2017)',k:'pt',cols:COM_COL,lab:COM_LAB}]},
 {g:'Mobilité',items:[
@@ -918,15 +979,22 @@ const OVL=[
 ];
 const OVO=[];for(const g of OVL)for(const o of g.items){o.on=false;o.d=null;OVO.push(o);}
 function decPath(p){const n=p.length>>1,a=new Float64Array(n*2);let x=p[0],y=p[1];a[0]=x/10;a[1]=y/10;for(let i=1;i<n;i++){x+=p[2*i];y+=p[2*i+1];a[2*i]=x/10;a[2*i+1]=y/10;}return a;}
+const OCELL=700;
+function cellPath(d,rings,c){const a=rings[0];let x0=1e18,y0=1e18,x1=-1e18,y1=-1e18;for(const r of rings)for(let i=0;i<r.length;i+=2){const x=r[i],y=r[i+1];if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+ const key=Math.floor((x0+x1)/2/OCELL)+','+Math.floor((y0+y1)/2/OCELL);let C=d.cells.get(key);if(!C){C={b:[x0,y0,x1,y1],P:new Array(d.nc)};d.cells.set(key,C);}
+ const b=C.b;if(x0<b[0])b[0]=x0;if(y0<b[1])b[1]=y0;if(x1>b[2])b[2]=x1;if(y1>b[3])b[3]=y1;return C.P[c]||(C.P[c]=new Path2D());}
+function eachP(d,fn){const k=view.k,hw=W/2/k,hh=Hh/2/k,X0=view.cx-hw,X1=view.cx+hw,Y0=view.cy-hh,Y1=view.cy+hh,vis=[];
+ for(const C of d.cells.values())if(C.b[2]>=X0&&C.b[0]<=X1&&C.b[3]>=Y0&&C.b[1]<=Y1)vis.push(C);
+ for(let i=0;i<d.nc;i++)for(const C of vis)if(C.P[i])fn(C.P[i],i);}
 async function loadOv(o){
  if(o.d)return o.d;
- const j=await getJson('ov_'+o.id+'.json'),nc=o.cols.length;
- const d={k:j.k,P:Array.from({length:nc},()=>new Path2D()),pts:[],hit:[]};
+ const j=await getJson('ov_'+o.id+'.json');if(j.cols)o.cols=j.cols;const nc=o.cols.length;o.raw=j;
+ const d={k:j.k,nc,cells:new Map(),pts:[],hit:[]};
  for(const f of j.f){
   const c=Math.min(f[0],nc-1);
   if(j.k==='pt'){d.pts.push([f[2]/10,f[3]/10,c,f[1]]);continue;}
   if(j.L&&!d.L)d.L=j.L.map(l=>[l[0]/10,l[1]/10,l[2],l[3]]);
-  const rings=f[2].map(decPath),P=d.P[c];
+  const rings=f[2].map(decPath),P=cellPath(d,rings,c);
   for(const a of rings){P.moveTo(a[0],a[1]);for(let i=2;i<a.length;i+=2)P.lineTo(a[i],a[i+1]);if(j.k==='poly')P.closePath();}
   if(f[1]&&j.k==='poly'){let x0=1e18,y0=1e18,x1=-1e18,y1=-1e18;const a=rings[0];for(let i=0;i<a.length;i+=2){if(a[i]<x0)x0=a[i];if(a[i]>x1)x1=a[i];if(a[i+1]<y0)y0=a[i+1];if(a[i+1]>y1)y1=a[i+1];}d.hit.push({p:f[1],r:rings,b:[x0,y0,x1,y1]});}
  }
@@ -951,15 +1019,17 @@ function drawOv(){
  lx.lineJoin='round';
  let pts=false;
  for(const o of OVO){
-  if(!o.on||!o.d)continue;const d=o.d;
-  if(d.k==='poly'){d.P.forEach((P,i)=>{if(o.hatch){lx.globalAlpha=o.hal?.06:.13;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');lx.globalAlpha=1;lx.fillStyle=hatchPat(o.cols[i],o.hatch[i],k,o.hsp,o.hal);lx.fill(P,'evenodd');}else{lx.globalAlpha=o.a;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');}lx.globalAlpha=Math.min(1,o.a+.4);lx.lineWidth=.9/k;lx.strokeStyle=o.cols[i];lx.stroke(P);});}
-  else if(d.k==='line'){lx.globalAlpha=.95;d.P.forEach((P,i)=>{lx.lineWidth=(o.lw?o.lw[i]:1.7)/k;lx.strokeStyle=o.cols[i];lx.stroke(P);});}
+  if(!o.on||!o.d||(o.minK&&k<o.minK&&o.d.k!=='pt'))continue;const d=o.d;
+  if(o.atlas){lx.globalAlpha=o.a;eachP(d,(P,i)=>{lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');});lx.globalAlpha=1;continue;}
+  if(d.k==='poly'&&o.a===0){lx.globalAlpha=Math.min(.55,.25+(k-.7)*.2);lx.lineWidth=.8/k;lx.strokeStyle=o.cols[0];eachP(d,P=>lx.stroke(P));lx.globalAlpha=1;continue;}
+  if(d.k==='poly'){eachP(d,(P,i)=>{if(o.hatch){lx.globalAlpha=o.hal?.06:.13;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');lx.globalAlpha=1;lx.fillStyle=hatchPat(o.cols[i],o.hatch[i],k,o.hsp,o.hal);lx.fill(P,'evenodd');}else{lx.globalAlpha=o.a;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');}lx.globalAlpha=Math.min(1,o.a+.4);lx.lineWidth=.9/k;lx.strokeStyle=o.cols[i];lx.stroke(P);});}
+  else if(d.k==='line'){lx.globalAlpha=.95;eachP(d,(P,i)=>{lx.lineWidth=(o.lw?o.lw[i]:1.7)/k;lx.strokeStyle=o.cols[i];lx.stroke(P);});}
   else pts=true;
  }
  lx.globalAlpha=1;lx.setTransform(dpr,0,0,dpr,0,0);
- for(const o of OVO){if(!o.on||!o.d||!o.d.L||k<.25)continue;const X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;
+ for(const o of OVO){if(!o.on||!o.d||!o.d.L||k<.25||(o.atlas&&k<.9))continue;const suf=o.lsuf??' m',lc=o.lcol||o.cols[1]||o.cols[0];const X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;
   lx.font='600 10.5px Inter, system-ui, sans-serif';lx.textAlign='center';lx.textBaseline='middle';lx.lineJoin='round';
-  for(const l of o.d.L){if(k<.8&&!l[3])continue;const sx=X(l[0]),sy=Y(l[1]);if(sx<-20||sy<-20||sx>W+20||sy>Hh+20)continue;lx.lineWidth=3.5;lx.strokeStyle='rgba(15,26,36,.9)';lx.strokeText(l[2]+' m',sx,sy);lx.fillStyle=o.cols[1]||o.cols[0];lx.fillText(l[2]+' m',sx,sy);}}
+  for(const l of o.d.L){if((k<.8||(o.atlas&&k<2))&&!l[3])continue;const sx=X(l[0]),sy=Y(l[1]);if(sx<-20||sy<-20||sx>W+20||sy>Hh+20)continue;lx.lineWidth=3.5;lx.strokeStyle='rgba(15,26,36,.9)';lx.strokeText(l[2]+suf,sx,sy);lx.fillStyle=lc;lx.fillText(l[2]+suf,sx,sy);}}
  if(pts){
   const X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;
   for(const o of OVO){
@@ -985,7 +1055,7 @@ function ovTip(x,y){
  const w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.min(innerWidth-w-8,x+14)+'px';tip.style.top=Math.min(innerHeight-h-8,y+14)+'px';
 }
 {
- const DEST={'PLU : gabarit':['Volume','Gabarit du PLU'],'Protections patrimoniales':['Patrimoine','Protections patrimoniales'],'PLU : végétal et paysage':['Urbanisme (PLU)','Végétal et paysage'],'PLU : secteurs et réserves':['Urbanisme (PLU)','Secteurs et réserves'],'Sous-sol et risques':['Urbanisme (PLU)','Sous-sol et risques'],'Archéologie':['Urbanisme (PLU)','Archéologie'],'Mobilité':['Urbanisme (PLU)','Mobilité'],'Commerces':['Usages','Commerces (BDCOM 2017)'],'Relief':['Sous-sol et fouilles','Relief et nivellement']};
+ const DEST={'PLU : gabarit':['Volume','Gabarit du PLU'],'Protections patrimoniales':['Patrimoine','Protections patrimoniales'],'PLU : végétal et paysage':['Urbanisme (PLU)','Végétal et paysage'],'PLU : secteurs et réserves':['Urbanisme (PLU)','Secteurs et réserves'],'Sous-sol et risques':['Urbanisme (PLU)','Sous-sol et risques'],'Archéologie':['Urbanisme (PLU)','Archéologie'],'Mobilité':['Urbanisme (PLU)','Mobilité'],'Commerces':['Usages','Commerces (BDCOM 2017)'],'Atlas historique de Paris':['Patrimoine','Atlas historique de Paris (de l\'Antiquité à 1900)'],'Cadastre':['Urbanisme (PLU)','Cadastre'],'Voirie':['Urbanisme (PLU)','Voirie (plan de voirie de la Ville)'],'Relief':['Sous-sol et fouilles','Relief et nivellement']};
  for(const g of OVL){
   const [sec,lab]=DEST[g.g]||['Urbanisme (PLU)',g.g];
   const box=document.querySelector('.ovslot[data-g="'+sec+'"]')||$('#ovl');
@@ -997,7 +1067,7 @@ function ovTip(x,y){
   for(const o of g.items){
    const w=document.createElement('div');
    const l=document.createElement('label');l.className='ck';
-   l.innerHTML='<input type="checkbox"><i class="sw2" style="background:'+(o.hatch?hatchCss(o.cols[0],o.hatch[0])+';box-shadow:inset 0 0 0 1px '+o.cols[0]:o.cols[0])+'"></i><span>'+o.n+'</span>';
+   l.innerHTML='<input type="checkbox"><i class="sw2" style="background:'+(o.hatch?hatchCss(o.cols[0],o.hatch[0])+';box-shadow:inset 0 0 0 1px '+o.cols[0]:o.cols[0])+'"></i><span>'+o.n+'</span>'+orgHtml(o.id);
    const lg=document.createElement('div');lg.className='ovlg';lg.hidden=true;
    if(o.lab.length>1)lg.innerHTML=o.lab.map((t,i)=>'<div><i class="sw2" style="background:'+(o.hatch?hatchCss(o.cols[i],o.hatch[i]):o.cols[i])+(o.hatch?';box-shadow:inset 0 0 0 1px '+o.cols[i]:'')+'"></i>'+t+'</div>').join('');
    boxes.push(l.firstChild);
@@ -1008,8 +1078,117 @@ function ovTip(x,y){
    };
    w.appendChild(l);w.appendChild(lg);dt.appendChild(w);
   }
+  if(g.items.some(o=>o.atlas)){const r=document.createElement('label');r.className='ck';r.style.cssText='display:flex;gap:8px;align-items:center;font-size:12px;margin:6px 0 2px 4px';
+   r.innerHTML='Opacité <input type="range" min="15" max="95" value="50" style="flex:1">';const ip=r.querySelector('input');
+   ip.oninput=()=>{for(const o of g.items)if(o.atlas)o.a=ip.value/100;draw();};dt.appendChild(r);}
   box.appendChild(dt);
  }
+}
+
+/* ---------- export d'une zone en PDF géoréférencé ---------- */
+let XP=null;const xmsg=$('#xmsg');
+function xMsg(h){xmsg.innerHTML=h;xmsg.hidden=!h;}
+$('#zx').onclick=()=>{if(XP){XP=null;$('#zx').classList.remove('on');xMsg('');cv.style.cursor='';draw();return;}XP={a:null,b:null};$('#zx').classList.add('on');cv.style.cursor='crosshair';xMsg('Tracez un rectangle sur la carte (Échap pour annuler)');};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&XP){XP=null;$('#zx').classList.remove('on');xMsg('');cv.style.cursor='';draw();}});
+cv.addEventListener('pointerdown',e=>{if(!XP)return;e.stopImmediatePropagation();e.preventDefault();XP.a=s2w(e.clientX,e.clientY);XP.b=XP.a;cv.setPointerCapture(e.pointerId);},true);
+cv.addEventListener('pointermove',e=>{if(!XP)return;e.stopImmediatePropagation();if(!XP.a)return;XP.b=s2w(e.clientX,e.clientY);draw();},true);
+cv.addEventListener('pointerup',async e=>{if(!XP||!XP.a)return;e.stopImmediatePropagation();const a=XP.a,b=XP.b;const R=[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[0],b[0]),Math.max(a[1],b[1])];
+ if(R[2]-R[0]<20||R[3]-R[1]<20){XP.a=null;draw();return;}
+ XP=null;$('#zx').classList.remove('on');cv.style.cursor='';xMsg('Préparation du PDF…');
+ try{const blob=await geoPdf(R),u=URL.createObjectURL(blob),nm='paris-graphie-zone.pdf';
+  const A=document.createElement('a');A.href=u;A.download=nm;document.body.appendChild(A);A.click();A.remove();
+  xMsg('PDF géoréférencé prêt. <a href="'+u+'" download="'+nm+'" target="_blank" rel="noopener">Ouvrir ou enregistrer</a> · <a href="#" id="xclose">fermer</a>');$('#xclose').onclick=ev=>{ev.preventDefault();xMsg('');};
+ }catch(err){xMsg('Échec de l\'export : '+esc(String(err&&err.message||err)));}
+ draw();},true);
+function drawXRect(){if(!XP||!XP.a)return;const k=view.k,X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;lx.setTransform(dpr,0,0,dpr,0,0);
+ const x0=X(Math.min(XP.a[0],XP.b[0])),x1=X(Math.max(XP.a[0],XP.b[0])),y0=Y(Math.max(XP.a[1],XP.b[1])),y1=Y(Math.min(XP.a[1],XP.b[1]));
+ lx.fillStyle='rgba(255,255,255,.12)';lx.fillRect(x0,y0,x1-x0,y1-y0);lx.setLineDash([6,4]);lx.strokeStyle='#fff';lx.lineWidth=1.5;lx.strokeRect(x0,y0,x1-x0,y1-y0);lx.setLineDash([]);
+ const wm=Math.abs(XP.b[0]-XP.a[0]),hm=Math.abs(XP.b[1]-XP.a[1]);lx.font='600 12px Inter, system-ui, sans-serif';lx.fillStyle='#fff';lx.textAlign='left';lx.fillText(Math.round(wm)+' × '+Math.round(hm)+' m',x0+4,y0-6);}
+const w2ll=(x,y)=>[H.lon0+x/(111320*Math.cos(H.lat0*Math.PI/180)),H.lat0+y/110574];
+async function geoPdf(R){
+ const [X0,Y0,X1,Y1]=R,wm=X1-X0,hm=Y1-Y0,land=wm>=hm;
+ const PW=land?1190.55:841.89,PH=land?841.89:1190.55,MG=28,HEAD=46,FOOT=150;
+ const aw=PW-2*MG,ah=PH-MG-HEAD-FOOT,sc=Math.min(aw/wm,ah/hm),mw=wm*sc,mh=hm*sc,mx=MG+(aw-mw)/2,my=MG+FOOT+(ah-mh)/2;
+ const px=x=>(mx+(x-X0)*sc).toFixed(2),py=y=>(my+(y-Y0)*sc).toFixed(2);
+ const ops=[],gs=new Map(),gsName=a=>{a=Math.round(a*100)/100;if(!gs.has(a))gs.set(a,'/G'+gs.size);return gs.get(a);};
+ const rgb=h=>{const v=parseInt(h.slice(1),16);return [(v>>16&255)/255,(v>>8&255)/255,(v&255)/255].map(x=>x.toFixed(3)).join(' ');};
+ const rgbP=c=>[(c&255)/255,(c>>8&255)/255,(c>>16&255)/255].map(x=>x.toFixed(3)).join(' ');
+ const CP={'€':'\x80','…':'\x85','’':'\x92','“':'\x93','”':'\x94','–':'\x96','—':'\x97','œ':'\x9c','Œ':'\x8c','≈':'~','→':'-','·':'\xb7','×':'\xd7','²':'\xb2'};
+ const enc=s=>String(s).replace(/[\r\n\t]+/g,' ').replace(/[\s\S]/g,c=>{const k=c.charCodeAt(0);if(k<128)return (c==='\\'||c==='('||c===')')?'\\'+c:c;if(k<256)return c;return CP[c]||'?';});
+ const txt=(x,y,s,sz,b,col)=>ops.push('BT /F'+(b?2:1)+' '+sz+' Tf '+(col||'0.1 0.1 0.1')+' rg '+x.toFixed(2)+' '+y.toFixed(2)+' Td ('+enc(s)+') Tj ET');
+ const inR=b=>b[2]>=X0&&b[0]<=X1&&b[3]>=Y0&&b[1]<=Y1;
+ // fond et cadre de la carte (découpé)
+ ops.push('q '+mx.toFixed(2)+' '+my.toFixed(2)+' '+mw.toFixed(2)+' '+mh.toFixed(2)+' re W n');
+ ops.push('0.059 0.102 0.141 rg '+mx.toFixed(2)+' '+my.toFixed(2)+' '+mw.toFixed(2)+' '+mh.toFixed(2)+' re f');
+ if(BASE&&BASE.w){const P=[];for(const poly of BASE.w)for(const r of poly){P.push(px(r[0][0])+' '+py(r[0][1])+' m');for(let i=1;i<r.length;i++)P.push(px(r[i][0])+' '+py(r[i][1])+' l');P.push('h');}ops.push('0.094 0.204 0.306 rg '+P.join(' ')+' f*');}
+ // bâtiments, groupés par couleur
+ const byC=new Map();
+ for(let s=0;s<N;s++){if(bbox[4*s+2]<X0||bbox[4*s]>X1||bbox[4*s+3]<Y0||bbox[4*s+1]>Y1)continue;
+  const c=shapeCol[s];let L=byC.get(c);if(!L)byC.set(c,L=[]);let prev=-1;
+  for(let e=edgS[s];e<edgS[s+1];e+=2){const a=edg[e],b=edg[e+1];if(a!==prev){if(prev>=0)L.push('h');L.push(px(pos[2*a])+' '+py(pos[2*a+1])+' m');}else L.push(px(pos[2*a])+' '+py(pos[2*a+1])+' l');prev=b;}
+  if(prev>=0)L.push('h');}
+ for(const [c,L] of byC)ops.push(rgbP(c)+' rg '+L.join(' ')+' f*');
+ // contours
+ ops.push('0.04 0.07 0.10 RG 0.25 w');for(const [c,L] of byC)ops.push(L.join(' ')+' S');
+ // calques superposés actifs
+ const legOv=[];
+ for(const o of OVO){if(!o.on||!o.raw)continue;const j=o.raw;let n=0;
+  if(j.k==='pt'){for(const f of j.f){const x=f[2]/10,y=f[3]/10;if(x<X0||x>X1||y<Y0||y>Y1)continue;const r=(o.r||3)*.8,cx=+px(x),cy=+py(y),c=o.cols[Math.min(f[0],o.cols.length-1)];
+    ops.push(rgb(c)+' rg 0.06 0.1 0.14 RG 0.5 w '+(cx-r).toFixed(2)+' '+(cy-r).toFixed(2)+' '+(2*r).toFixed(2)+' '+(2*r).toFixed(2)+' re B');n++;}}
+  else{const groups=new Map();
+   for(const f of j.f){const rings=f[2].map(decPath);let b=[1e18,1e18,-1e18,-1e18];for(const a of rings)for(let i=0;i<a.length;i+=2){if(a[i]<b[0])b[0]=a[i];if(a[i]>b[2])b[2]=a[i];if(a[i+1]<b[1])b[1]=a[i+1];if(a[i+1]>b[3])b[3]=a[i+1];}
+    if(!inR(b))continue;const c=Math.min(f[0],o.cols.length-1);let G=groups.get(c);if(!G)groups.set(c,G=[]);
+    for(const a of rings){G.push(px(a[0])+' '+py(a[1])+' m');for(let i=2;i<a.length;i+=2)G.push(px(a[i])+' '+py(a[i+1])+' l');if(j.k==='poly')G.push('h');}n++;}
+   const order=[...groups.keys()].sort((a,b)=>a-b);
+   for(const c of order){const G=groups.get(c).join(' '),col=rgb(o.cols[c]);
+    if(j.k==='line')ops.push('q '+gsName(.95)+' gs '+col+' RG '+((o.lw?o.lw[c]:1.7)*.6).toFixed(2)+' w '+G+' S Q');
+    else if(o.atlas)ops.push('q '+gsName(o.a)+' gs '+col+' rg '+G+' f* Q');
+    else if(o.a===0)ops.push('q '+gsName(.5)+' gs '+col+' RG 0.3 w '+G+' S Q');
+    else ops.push('q '+gsName(o.a)+' gs '+col+' rg '+G+' f* Q q '+gsName(Math.min(1,o.a+.4))+' gs '+col+' RG 0.4 w '+G+' S Q');}}
+  if(n)legOv.push(o);}
+ // limites d'arrondissement et de quartier
+ if(BASE&&showArr){const ln=(rs,dash,wd,al)=>{const P=[];for(const a of rs)for(const r of a.rings){P.push(px(r[0][0])+' '+py(r[0][1])+' m');for(let i=1;i<r.length;i++)P.push(px(r[i][0])+' '+py(r[i][1])+' l');P.push('h');}ops.push('q '+gsName(al)+' gs 0.92 0.95 0.97 RG '+wd+' w ['+dash+'] 0 d '+P.join(' ')+' S Q');};
+  ln(BASE.q,'1.5 3',.5,.45);ln(BASE.a,'5 3',.9,.7);
+  for(const q of BASE.q){const [x,y]=q.c;if(x<X0||x>X1||y<Y0||y>Y1)continue;txt(+px(x)-q.n.length*2.4,+py(y),q.n.toUpperCase(),7,true,'1 0.92 0.75');}}
+ ops.push('Q');
+ // cadre, titre, échelle, nord
+ ops.push('0.10 0.28 0.41 RG 0.8 w '+mx.toFixed(2)+' '+my.toFixed(2)+' '+mw.toFixed(2)+' '+mh.toFixed(2)+' re S');
+ const [lo0,la0]=w2ll(X0,Y0),[lo1,la1]=w2ll(X1,Y1);
+ txt(MG,PH-MG-18,'Paris-graphie, extrait géoréférencé',16,true,'0.10 0.28 0.41');
+ txt(MG,PH-MG-34,'Zone de '+Math.round(wm)+' × '+Math.round(hm)+' m · calque : '+(st.crit.id==='neu'?'plan neutre':st.crit.name)+' · généré le '+new Date().toLocaleDateString('fr-FR'),9,false,'0.35 0.35 0.35');
+ const echM=[10,20,50,100,200,500,1000,2000].find(v=>v*sc>=60)||5000,ex=mx,ey=my-16;
+ ops.push('0.1 0.1 0.1 rg '+ex.toFixed(2)+' '+ey.toFixed(2)+' '+(echM*sc).toFixed(2)+' 3 re f');txt(ex+echM*sc+5,ey-1,echM>=1000?(echM/1000)+' km':echM+' m',8,false);
+ txt(ex,ey-13,'Échelle 1:'+Math.round(1/(sc/72*0.0254)).toLocaleString('fr-FR').replace(/ | /g,' ')+' au format '+(land?'A3 paysage':'A3 portrait'),7.5,false,'0.4 0.4 0.4');
+ const nx=mx+mw-14,ny=my-30;ops.push('0.1 0.1 0.1 rg '+nx+' '+(ny+22)+' m '+(nx-5)+' '+ny+' l '+nx+' '+(ny+5)+' l '+(nx+5)+' '+ny+' l h f');txt(nx-3,ny-10,'N',8,true);
+ txt(mx,my-46,'Coins : SO '+la0.toFixed(5)+', '+lo0.toFixed(5)+' · NE '+la1.toFixed(5)+', '+lo1.toFixed(5)+' (WGS 84). Géoréférencement intégré au PDF (lisible par QGIS, Acrobat, Avenza).',7.5,false,'0.4 0.4 0.4');
+ // légende
+ let ly=my-64;const col2=MG+aw/2;let lx_=MG;
+ const sw=(x,y,c,lab,b)=>{ops.push(rgb(c)+' rg '+x.toFixed(2)+' '+(y-1).toFixed(2)+' 8 8 re f');txt(x+12,y,lab,7.5,b);};
+ if(st.crit.id!=='neu'){txt(MG,ly,'Calque : '+st.crit.name+' ('+orgOf(st.crit.id)+')',8.5,true,'0.10 0.28 0.41');ly-=12;
+  const it=st.crit.lab.map((l,i)=>[st.crit.col[i]||'#999',l]).filter(e=>e[0]);let i=0;for(const e of it){const cx=MG+(i%3)*(aw/6),cy=ly-Math.floor(i/3)*11;sw(cx,cy,e[0],e[1].slice(0,48));i++;}ly-=Math.ceil(it.length/3)*11+6;}
+ else{txt(MG,ly,'Bâtiments : emprise bâtie Apur',8,false);ly-=12;}
+ if(legOv.length){txt(col2,my-64,'Calques superposés',8.5,true,'0.10 0.28 0.41');let y2=my-76;
+  for(const o of legOv.slice(0,8)){sw(col2,y2,o.cols[0],(o.n+' ('+orgOf(o.id)+')').slice(0,90));y2-=11;}
+  if(legOv.length>8)txt(col2,y2,'… et '+(legOv.length-8)+' autres',7.5,false);}
+ txt(MG,MG-6,'Sources : Apur (emprise bâtie) ; Ville de Paris (Seine, limites, PLU, voirie) ; '+(legOv.length?'producteurs indiqués pour chaque calque ; ':'')+'données ouvertes (ODbL ou Licence Ouverte). Atlas historique : Michel Huard, paris-atlas-historique.fr.',6.5,false,'0.45 0.45 0.45');
+ // géoréférencement (ISO 32000-2, mesure GEO)
+ const g=[w2ll(X0,Y0),w2ll(X0,Y1),w2ll(X1,Y1),w2ll(X1,Y0)];
+ const vp='/VP [<< /Type /Viewport /Name (Carte) /BBox ['+[mx,my,mx+mw,my+mh].map(v=>v.toFixed(2)).join(' ')+'] /Measure << /Type /Measure /Subtype /GEO /Bounds [0 0 0 1 1 1 1 0] /GCS << /Type /GEOGCS /EPSG 4326 /WKT (GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]) >> /GPTS ['+g.map(p=>p[1].toFixed(7)+' '+p[0].toFixed(7)).join(' ')+'] /LPTS [0 0 0 1 1 1 1 0] /PDU [/M /SQM /DEG] >> >>]';
+ // assemblage avec compression
+ const cs=ops.join('\n');
+ const raw=new Uint8Array(cs.length);for(let i=0;i<cs.length;i++)raw[i]=cs.charCodeAt(i)&255;
+ let data=raw,filt='';
+ if(typeof CompressionStream!=='undefined'){try{data=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate'))).arrayBuffer());filt=' /Filter /FlateDecode';}catch(e){data=raw;filt='';}}
+ const parts=[],offs=[];let len=0;const push=x=>{const u=typeof x==='string'?(()=>{const a=new Uint8Array(x.length);for(let i=0;i<x.length;i++)a[i]=x.charCodeAt(i)&255;return a;})():x;parts.push(u);len+=u.length;};
+ const gsd='<< '+[...gs].map(([a,n])=>n+' << /ca '+a+' /CA '+a+' >>').join(' ')+' >>';
+ const objs=['<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Count 1 /Kids [3 0 R] >>',
+  '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> /ExtGState '+gsd+' >> /Contents 4 0 R '+vp+' >>',
+  null,'<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>',
+  '<< /Title (Paris-graphie, extrait géoréférencé) /Producer (Paris-graphie) >>'];
+ push('%PDF-1.7\n%\xe2\xe3\xcf\xd3\n');
+ objs.forEach((o,i)=>{offs.push(len);if(i===3){push('4 0 obj\n<< /Length '+data.length+filt+' >>\nstream\n');push(data);push('\nendstream\nendobj\n');}else push((i+1)+' 0 obj\n'+o+'\nendobj\n');});
+ const xr=len;push('xref\n0 '+(objs.length+1)+'\n0000000000 65535 f \n'+offs.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+'trailer\n<< /Size '+(objs.length+1)+' /Root 1 0 R /Info 7 0 R >>\nstartxref\n'+xr+'\n%%EOF');
+ return new Blob(parts,{type:'application/pdf'});
 }
 /* ---------- recherche d'adresse ---------- */
 let ADDR=null;
@@ -1065,6 +1244,8 @@ cv.addEventListener('pointerleave',()=>{tip.hidden=true;});
 
 /* ---------- fiche PDF et ressources externes ---------- */
 const SRC={
+ cad:['DGFiP, plan cadastral, diffusé par l\'IGN (Parcellaire Express, Licence Ouverte)','https://geoservices.ign.fr/parcellaire-express-pci'],
+ atl:['Michel Huard, Atlas historique de Paris (cartes calées automatiquement sur le plan actuel, précision indicative)','https://paris-atlas-historique.fr/'],
  apur:['Apur, « Emprise bâtie Paris », Open Data (licence ODbL)','https://www.apur.org/en/open-data-maps/open-data/built-areas-paris-and-metropolis-reading-urban-fabric'],
  ban:['Base Adresse Nationale (BAN)','https://adresse.data.gouv.fr/'],
  dvf:['DGFiP, « Demandes de valeurs foncières », géolocalisées par Etalab','https://www.data.gouv.fr/fr/datasets/demandes-de-valeurs-foncieres-geolocalisees/'],
@@ -1160,6 +1341,8 @@ function docModel(s,c){
  if(U&&U.ar)add('Fouilles archéologiques à moins de 40 m',U.ar.map(a=>it((a[2]||'Opération')+', '+a[1]+', à '+a[5]+' m : '+a[0]+(a[4].length?' ('+a[4].join(', ')+')':'')+(a[3]?'. '+a[3]:''),'arch')));
  if(D&&D.b&&D.b[s])add('Dossiers d\'urbanisme ('+nf.format(NT[s])+')',D.b[s].slice(0,60).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';return it(TNAME[D.t[e[2]]]+', '+fdate(e[1])+', '+dec+(e[4]?' : '+e[4]:'')+' (dossier '+e[0]+(e[5]?', '+e[5]:'')+')','urb',dossUrl(e[0]));}));
  if(C&&C.b&&C.b[s])add('Commission du Vieux Paris ('+CN[s]+')',C.b[s].slice(0,20).map(e=>it(fdate(e[0])+', '+(e[1]||'sans résolution')+(e[2]?', '+e[2]:'')+(e[3]&&e[3]!=='Aucune'?', '+e[3]:'')+(e[4]?' : '+e[4]:''),'cvp',e[5]||'')));
+ {const Cc=D&&D.c&&D.c[s];if(Cc&&Cc.length)add('Cadastre',Cc.map(c=>it('Parcelle '+cadTxt(c),'cad',cadUrl(c[0]))));}
+ {const M=atlasOf(s,c.atl).filter(m=>!m.g);if(M.length)add('Atlas historique de Paris, cartes du quartier (Michel Huard)',M.map(m=>it((m.y?(m.y<1000?'vers '+m.y:m.y)+' : ':'')+atlName(m)+' (page « '+m.p[0][0]+' »)','atl',m.p[0][1])));}
  {const B=D&&D.n&&D.n[s],R=bdnbRows(s,B);add('Usages, énergie et carbone',[...R.map(r=>it(r[0]+' : '+r[1],r[2])),it('Carbone d\'une reconstruction à neuf (ordre de grandeur) : '+co2Txt(s),'co2')]);}
  {const K=D&&D.k&&D.k[s];if(K&&K.length)add('Commerces en rez-de-chaussée ('+K.length+')',K.slice(0,60).map(e=>it(e[1]+(e[5]?', '+e[5]:'')+(e[2]?', '+e[2]:'')+(e[3]?', '+e[3]:'')+(e[4]?', '+e[4]:''),'com')));}
  if(V)add('Ventes DVF 2021-2025 ('+DN[s]+')'+(PM[s]?', médiane '+eur(PM[s])+'/m²':''),V.slice(0,30).map(e=>{const [mid,dt,nat,v,parts,nr,how]=e;return it(nat+', '+fdate(dt)+' : '+(v>0?eur(v):'valeur non renseignée')+(nr>1?' (transaction de '+nr+' biens, valeur pour l\'ensemble)':'')+' ; '+parts.map(p=>p[0]+(p[1]>0?' '+p[1]+' m² bâtis':'')+(p[3]>0?', Carrez '+nf.format(p[3])+' m²':'')+(p[2]>0?', '+p[2]+' p.':'')).join(' ; ')+(how>1?' ; rattachement approximatif':'')+' (mutation '+mid+')','dvf');}));
@@ -1191,7 +1374,32 @@ function captureParcel(s){
   return {url,w:cwC,h:chC,wm};
  }catch(e){return null;}
 }
-function makePdf(M_,IMG){
+
+async function histCaptures(s,AT){
+ const out=[];if(!AT||!AT.length)return out;const cov=new Set(atlasOf(s,AT).map(m=>m.n));
+ const W_=560,H_=400,wm=380,k=W_/wm,cx=(bbox[4*s]+bbox[4*s+2])/2,cy=(bbox[4*s+1]+bbox[4*s+3])/2,X0=cx-wm/2,X1=cx+wm/2,Y0=cy-H_/k/2,Y1=cy+H_/k/2;
+ for(const g of OVL)for(const o of g.items){
+  if(!o.atlas||!cov.has(o.src))continue;
+  let d;try{d=await loadOv(o);}catch(e){continue;}
+  const cvs=document.createElement('canvas');cvs.width=W_;cvs.height=H_;const c=cvs.getContext('2d');
+  c.fillStyle='#efe9d8';c.fillRect(0,0,W_,H_);
+  c.setTransform(k,0,0,-k,W_/2-cx*k,H_/2+cy*k);
+  let nf_=0;for(let i=0;i<d.nc;i++)for(const C of d.cells.values())if(C.P[i]&&C.b[2]>=X0&&C.b[0]<=X1&&C.b[3]>=Y0&&C.b[1]<=Y1){c.fillStyle=o.cols[i];c.fill(C.P[i],'evenodd');nf_++;}
+  if(!nf_){out.empty=(out.empty||[]).concat(o.n);continue;}
+  c.setTransform(1,0,0,1,0,0);const X=x=>(x-cx)*k+W_/2,Y=y=>H_/2-(y-cy)*k;
+  if(d.L){c.font='600 11px Arial, Helvetica, sans-serif';c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';
+   for(const l of d.L){const x=X(l[0]),y=Y(l[1]);if(x<-40||x>W_+40||y<-10||y>H_+10)continue;c.lineWidth=3;c.strokeStyle='rgba(255,255,255,.85)';c.strokeText(l[2],x,y);c.fillStyle='#2b2b2b';c.fillText(l[2],x,y);}}
+  c.beginPath();for(let e=edgS[s];e<edgS[s+1];e+=2){const a=edg[e],b=edg[e+1];c.moveTo(X(pos[2*a]),Y(pos[2*a+1]));c.lineTo(X(pos[2*b]),Y(pos[2*b+1]));}
+  c.lineCap='round';c.strokeStyle='#fff';c.lineWidth=6;c.stroke();c.strokeStyle='#d0021b';c.lineWidth=3;c.stroke();
+  c.beginPath();c.arc(W_/2,H_/2,Math.max(26,Math.hypot(bbox[4*s+2]-bbox[4*s],bbox[4*s+3]-bbox[4*s+1])*k/2+12),0,6.2832);c.strokeStyle='rgba(208,2,27,.85)';c.lineWidth=2;c.setLineDash([6,4]);c.stroke();c.setLineDash([]);
+  c.fillStyle='rgba(255,255,255,.85)';c.fillRect(10,H_-28,120,20);c.fillStyle='#222';c.fillRect(16,H_-14,100*k,3);c.font='11px Arial';c.textAlign='left';c.fillText('100 m',20+100*k,H_-12);
+  c.strokeStyle='#888';c.lineWidth=1;c.strokeRect(.5,.5,W_-1,H_-1);
+  const m=AT.find(m=>m.n===o.src);
+  out.push({url:cvs.toDataURL('image/jpeg',.85),w:W_,h:H_,cap:o.n,u:o.url||(m&&m.p[0][1])});
+ }
+ return out;
+}
+function makePdf(M_,IMG,HIST){
  const PW=595.28,PH=841.89,MG=56,LW=PW-2*MG,pages=[];let cur,y;
  const g=document.createElement('canvas').getContext('2d');
  const wid=(t,sz,b)=>{g.font=(b?'bold ':'')+sz+'px Arial, Helvetica, sans-serif';return g.measureText(t).width;};
@@ -1218,6 +1426,18 @@ function makePdf(M_,IMG){
    it.forEach((e,i)=>{const cx=MG+Math.floor(i/rows)*cw,cy=y0-(i%rows+1)*rh;cur.ops.push(hx(e[0])+' rg '+cx.toFixed(2)+' '+(cy-1).toFixed(2)+' 9 9 re f'+(e[2]?' 0.10 0.28 0.41 RG 1.4 w '+(cx-1.5).toFixed(2)+' '+(cy-2.5).toFixed(2)+' 12 12 re S':''));cur.ops.push('BT /F'+(e[2]?2:1)+' 8.5 Tf '+(e[2]?'0.10 0.28 0.41':'0.30 0.30 0.30')+' rg '+(cx+15).toFixed(2)+' '+(cy+0.5).toFixed(2)+' Td ('+enc(e[1])+') Tj ET');});
    y=y0-rows*rh-10;}
  }
+ if(HIST&&HIST.length){
+  if(y<MG+260)newPage();
+  y-=24;put('LE SITE DANS L\'ATLAS HISTORIQUE DE PARIS',12,true,'0.10 0.28 0.41',0,null,0,1.2);
+  y-=3;cur.ops.push('0.75 0.81 0.85 RG 0.7 w '+MG+' '+y.toFixed(2)+' m '+(PW-MG)+' '+y.toFixed(2)+' l S');y-=8;
+  put('Extraits des plans de Michel Huard (paris-atlas-historique.fr), calés automatiquement sur le plan actuel : l\'immeuble est cerclé et entouré de rouge. Précision indicative, de l\'ordre de 5 à 15 m. Chaque titre renvoie à la page de la carte.',8,false,'0.45 0.45 0.45',0,null,8)
+  if(HIST.empty)put('Rien de dessiné autour de l\'immeuble sur : '+HIST.empty.join(', ')+' (site encore hors de la ville ou non renseigné).',8,false,'0.45 0.45 0.45',0,null,8);
+  const gw=(LW-12)/2,gh=gw*HIST[0].h/HIST[0].w;
+  HIST.forEach((im,i)=>{const col=i%2;if(col===0){if(y-gh-22<MG+20)newPage();}const x=MG+col*(gw+12),yt=y;
+   cur.ops.push('q '+gw.toFixed(2)+' 0 0 '+gh.toFixed(2)+' '+x.toFixed(2)+' '+(yt-gh).toFixed(2)+' cm /Ih'+i+' Do Q');
+   const ty=yt-gh-11;cur.ops.push('BT /F2 8.5 Tf 0.10 0.28 0.41 rg '+x.toFixed(2)+' '+ty.toFixed(2)+' Td ('+enc(im.cap)+') Tj ET');if(im.u)cur.ln.push([x,ty-2,x+wid(im.cap,8.5,true),ty+9,im.u]);
+   if(col===1||i===HIST.length-1)y=yt-gh-24;});
+ }
  for(const S_ of M_.sec){
   if(y<MG+110)newPage();
   y-=24;put(S_.h.toUpperCase(),12,true,'0.10 0.28 0.41',0,null,0,1.2);
@@ -1231,12 +1451,13 @@ function makePdf(M_,IMG){
  const objs=[];const add=s=>{objs.push(s);return objs.length;};
  add('<< /Type /Catalog /Pages 2 0 R >>');add('');add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
  let imObj=0;
+ const hObj=(HIST||[]).map(im=>{const bin=atob(im.url.split(',')[1]);return add('<< /Type /XObject /Subtype /Image /Width '+im.w+' /Height '+im.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+bin.length+' >>\nstream\n'+bin+'\nendstream');});
  if(IMG){const bin=atob(IMG.url.split(',')[1]);imObj=add('<< /Type /XObject /Subtype /Image /Width '+IMG.w+' /Height '+IMG.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+bin.length+' >>\nstream\n'+bin+'\nendstream');}
  const kids=[];
  for(const p of pages){
   const cs=p.ops.join('\n'),cn=add('<< /Length '+cs.length+' >>\nstream\n'+cs+'\nendstream');
   const an=p.ln.map(l=>add('<< /Type /Annot /Subtype /Link /Rect ['+l.slice(0,4).map(v=>v.toFixed(2)).join(' ')+'] /Border [0 0 0] /A << /S /URI /URI ('+enc(l[4])+') >> >>'));
-  const pn=add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>'+(imObj?' /XObject << /Im1 '+imObj+' 0 R >>':'')+' >> /Contents '+cn+' 0 R'+(an.length?' /Annots ['+an.map(a=>a+' 0 R').join(' ')+']':'')+' >>');
+  const pn=add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>'+((imObj||hObj.length)?' /XObject << '+(imObj?'/Im1 '+imObj+' 0 R ':'')+hObj.map((h,i)=>'/Ih'+i+' '+h+' 0 R ').join('')+'>>':'')+' >> /Contents '+cn+' 0 R'+(an.length?' /Annots ['+an.map(a=>a+' 0 R').join(' ')+']':'')+' >>');
   kids.push(pn);
  }
  objs[1]='<< /Type /Pages /Count '+kids.length+' /Kids ['+kids.map(k=>k+' 0 R').join(' ')+'] >>';
@@ -1252,7 +1473,7 @@ cb.addEventListener('click',async e=>{if(e.target&&e.target.id==='pdfb'&&PCTX&&(
  if(e.target.id!=='pdfb'||!PCTX)return;
  const m=$('#pdfm');
  try{
-  const M_=docModel(PCTX.s,PCTX),IMG=captureParcel(PCTX.s),blob=makePdf(M_,(IMG&&(IMG.layer=st.crit.id==='neu'?'':st.crit.name,IMG.leg=(()=>{const L=legendOf(PCTX.s);if(!L)return null;const c=L.c;return {name:c.name,items:c.grad?[[L.col,'Année de construction : '+L.lab,true]]:c.lab.map((lb,i)=>[c.col[i]||'#999',lb,i===L.i])};})(),IMG))),url=URL.createObjectURL(blob);
+  const HIST=await histCaptures(PCTX.s,PCTX.atl).catch(()=>[]);const M_=docModel(PCTX.s,PCTX),IMG=captureParcel(PCTX.s),blob=makePdf(M_,(IMG&&(IMG.layer=st.crit.id==='neu'?'':st.crit.name,IMG.leg=(()=>{const L=legendOf(PCTX.s);if(!L)return null;const c=L.c;return {name:c.name,items:c.grad?[[L.col,'Année de construction : '+L.lab,true]]:c.lab.map((lb,i)=>[c.col[i]||'#999',lb,i===L.i])};})(),IMG)),HIST),url=URL.createObjectURL(blob);
   const nm='fiche-'+(M_.title.replace(/[^\w]+/g,'-').replace(/^-|-$/g,'').toLowerCase()||'batiment')+'.pdf';
   let dls=null;try{dls=window.claude&&claude.use?await claude.use('downloads'):null;}catch(_){}
   if(dls){try{await dls.save({filename:nm,data:blob});m.textContent='PDF enregistré.';}catch(er){m.textContent=er&&er.code==='declined'?'Enregistrement annulé.':'Enregistrement impossible ('+((er&&er.code)||'erreur')+').';}}
