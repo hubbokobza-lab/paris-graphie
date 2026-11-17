@@ -1085,6 +1085,17 @@ function ovTip(x,y){
  }
 }
 
+
+const INFRAME=(()=>{try{return window.top!==window.self;}catch(e){return true;}})();
+async function savePdf(blob,nm,show){
+ let dls=null;try{dls=window.claude&&claude.use?await claude.use('downloads'):null;}catch(_){}
+ if(dls){try{await dls.save({filename:nm,data:blob});show('PDF enregistré.');}catch(er){show(er&&er.code==='declined'?'Enregistrement annulé.':'Enregistrement impossible ('+((er&&er.code)||'erreur')+').');}return;}
+ const url=URL.createObjectURL(blob);
+ try{const a=document.createElement('a');a.href=url;a.download=nm;document.body.appendChild(a);a.click();a.remove();}catch(e){}
+ const full='https://hubbokobza-lab.github.io/paris-graphie/';
+ show('PDF généré : <a href="'+url+'" download="'+esc(nm)+'">enregistrer</a> · <a href="#" data-open="1">ouvrir</a>'+(INFRAME?'<br><span style="font-size:11.5px;opacity:.85">Si rien ne se passe, votre navigateur bloque le téléchargement dans le cadre de la page : <a href="'+full+'" target="_blank" rel="noopener">ouvrir la carte en plein écran</a>.</span>':''),u=>{
+  const o=u.querySelector('[data-open]');if(o)o.onclick=ev=>{ev.preventDefault();const w=window.open(url,'_blank');if(!w){location.href=url;}};});
+}
 /* ---------- export d'une zone en PDF géoréférencé ---------- */
 let XP=null;const xmsg=$('#xmsg');
 function xMsg(h){xmsg.innerHTML=h;xmsg.hidden=!h;}
@@ -1096,8 +1107,8 @@ cv.addEventListener('pointerup',async e=>{if(!XP||!XP.a)return;e.stopImmediatePr
  if(R[2]-R[0]<20||R[3]-R[1]<20){XP.a=null;draw();return;}
  XP=null;$('#zx').classList.remove('on');cv.style.cursor='';xMsg('Préparation du PDF…');
  try{const blob=await geoPdf(R),u=URL.createObjectURL(blob),nm='paris-graphie-zone.pdf';
-  const A=document.createElement('a');A.href=u;A.download=nm;document.body.appendChild(A);A.click();A.remove();
-  xMsg('PDF géoréférencé prêt. <a href="'+u+'" download="'+nm+'" target="_blank" rel="noopener">Ouvrir ou enregistrer</a> · <a href="#" id="xclose">fermer</a>');$('#xclose').onclick=ev=>{ev.preventDefault();xMsg('');};
+  URL.revokeObjectURL(u);
+  await savePdf(blob,nm,(h,cb)=>{xMsg(h+' · <a href="#" id="xclose">fermer</a>');$('#xclose').onclick=ev=>{ev.preventDefault();xMsg('');};if(cb)cb(xmsg);});
  }catch(err){xMsg('Échec de l\'export : '+esc(String(err&&err.message||err)));}
  draw();},true);
 function drawXRect(){if(!XP||!XP.a)return;const k=view.k,X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;lx.setTransform(dpr,0,0,dpr,0,0);
@@ -1475,9 +1486,7 @@ cb.addEventListener('click',async e=>{if(e.target&&e.target.id==='pdfb'&&PCTX&&(
  try{
   const HIST=await histCaptures(PCTX.s,PCTX.atl).catch(()=>[]);const M_=docModel(PCTX.s,PCTX),IMG=captureParcel(PCTX.s),blob=makePdf(M_,(IMG&&(IMG.layer=st.crit.id==='neu'?'':st.crit.name,IMG.leg=(()=>{const L=legendOf(PCTX.s);if(!L)return null;const c=L.c;return {name:c.name,items:c.grad?[[L.col,'Année de construction : '+L.lab,true]]:c.lab.map((lb,i)=>[c.col[i]||'#999',lb,i===L.i])};})(),IMG)),HIST),url=URL.createObjectURL(blob);
   const nm='fiche-'+(M_.title.replace(/[^\w]+/g,'-').replace(/^-|-$/g,'').toLowerCase()||'batiment')+'.pdf';
-  let dls=null;try{dls=window.claude&&claude.use?await claude.use('downloads'):null;}catch(_){}
-  if(dls){try{await dls.save({filename:nm,data:blob});m.textContent='PDF enregistré.';}catch(er){m.textContent=er&&er.code==='declined'?'Enregistrement annulé.':'Enregistrement impossible ('+((er&&er.code)||'erreur')+').';}}
-  else{const a=document.createElement('a');a.href=url;a.download=nm;document.body.appendChild(a);a.click();a.remove();m.innerHTML='PDF généré. <a href="'+url+'" target="_blank" rel="noopener" download="'+esc(nm)+'">Ouvrir ou enregistrer</a>';}
+  await savePdf(blob,nm,(h,cb)=>{m.innerHTML=h;if(cb)cb(m);});
  }catch(err){m.textContent='Échec de la génération du PDF ('+err.message+').';}
 });
 
