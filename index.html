@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stratigraphy</title>
+<style>
+:root{--bg:#F9FAFB;--bg2:#C1CED7;--ink:#1A486A;--ink2:#52758E;--map:#0f1a24;--line:#dbe3e9}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--map);font-family:"Avenir Next","Avenir","Segoe UI",system-ui,-apple-system,sans-serif;color:var(--ink);overflow:hidden}
+#map{position:fixed;inset:0;touch-action:none;cursor:grab}
+#map:active{cursor:grabbing}
+canvas{display:block;width:100%;height:100%}
+#panel{position:fixed;top:12px;left:12px;bottom:12px;width:318px;background:var(--bg);border-radius:6px;box-shadow:0 2px 18px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden;z-index:5}
+#panel header{padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:17px;font-weight:600;letter-spacing:.1px;color:var(--ink)}
+.sub{margin:3px 0 0;font-size:12px;color:var(--ink2);line-height:1.35}
+#scroll{overflow-y:auto;padding:4px 16px 14px;flex:1}
+h2{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2);margin:16px 0 6px;font-weight:600}
+.crit{display:flex;flex-direction:column;gap:2px}
+.crit button{all:unset;cursor:pointer;display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:4px;font-size:13.5px;color:var(--ink)}
+.crit button:hover{background:#e9eef2}
+.crit button[aria-pressed=true]{background:var(--ink);color:#fff}
+.crit .g{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);margin:8px 8px 2px}
+.dot{width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;flex:none}
+button[aria-pressed=true] .dot{background:#fff;border-color:#fff}
+#legend{display:flex;flex-direction:column;gap:1px}
+.row{display:flex;align-items:center;gap:8px;padding:3px 4px;border-radius:3px;cursor:pointer;font-size:12.5px;user-select:none}
+.row:hover{background:#e9eef2}
+.row .sw{width:14px;height:14px;border-radius:2px;flex:none;border:1px solid rgba(0,0,0,.15)}
+.row.off{opacity:.38}
+.row .lb{flex:1}
+.row .n{font-size:11px;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.grad{height:12px;border-radius:2px;margin:4px 4px 2px;border:1px solid rgba(0,0,0,.15)}
+.ticks{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink2);margin:0 4px 6px}
+.hint{font-size:11px;color:var(--ink2);margin:6px 4px 0;line-height:1.35}
+a.lk{color:var(--ink2);cursor:pointer;text-decoration:underline;font-size:11px;margin-left:4px}
+.flt{font-size:12.5px;margin:2px 0 8px}
+.flt .top{display:flex;justify-content:space-between;gap:10px;color:var(--ink)}
+.flt .top b{font-weight:600;font-variant-numeric:tabular-nums}
+.rng{position:relative;height:22px}
+.rng input{position:absolute;left:0;width:100%;margin:0;pointer-events:none;-webkit-appearance:none;appearance:none;background:transparent;height:22px}
+.rng input::-webkit-slider-thumb{-webkit-appearance:none;pointer-events:auto;width:14px;height:14px;border-radius:50%;background:var(--ink);border:2px solid #fff;box-shadow:0 0 0 1px var(--ink)}
+.rng input::-moz-range-thumb{pointer-events:auto;width:12px;height:12px;border-radius:50%;background:var(--ink);border:2px solid #fff}
+.rng .tr{position:absolute;left:0;right:0;top:10px;height:3px;background:var(--bg2);border-radius:2px}
+.rng .fl{position:absolute;top:10px;height:3px;background:var(--ink);border-radius:2px}
+label.ck{display:flex;align-items:center;gap:8px;font-size:12.5px;margin:4px 0;cursor:pointer}
+label.ck input{accent-color:var(--ink)}
+#fiche{font-size:12.5px;line-height:1.5;min-height:112px;background:#fff;border:1px solid var(--line);border-radius:4px;padding:8px 10px}
+#fiche .k{color:var(--ink2)}
+#fiche .t{font-weight:600;margin-bottom:2px}
+#count{font-size:12px;color:var(--ink2);margin:10px 0 0}
+footer{padding:9px 16px;border-top:1px solid var(--line);font-size:10.5px;color:var(--ink2);line-height:1.4}
+#zoom{position:fixed;right:12px;bottom:34px;display:flex;flex-direction:column;gap:1px;z-index:4}
+#zoom button{width:34px;height:34px;border:0;background:var(--bg);color:var(--ink);font-size:18px;cursor:pointer}
+#zoom button:first-child{border-radius:4px 4px 0 0}#zoom button:last-child{border-radius:0 0 4px 4px;font-size:13px}
+#scale{position:fixed;right:56px;bottom:14px;color:#9fb3c2;font-size:11px;z-index:4;text-align:right}
+#scale i{display:block;height:5px;border:1.5px solid #9fb3c2;border-top:0;margin-top:2px}
+#load{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--map);color:#cfdbe4;z-index:10;gap:12px;font-size:14px;text-align:center;padding:20px}
+#load .bar{width:220px;height:3px;background:#243645;border-radius:2px;overflow:hidden}
+#load .bar i{display:block;height:100%;width:0;background:#7fb2d6;transition:width .15s}
+#tog{display:none}
+#srch{position:relative;margin-top:9px}#q{width:100%;font:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--bg2);border-radius:4px;background:#fff;color:var(--ink);outline:0}#q:focus{border-color:var(--ink)}
+#sg{position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid var(--bg2);border-top:0;border-radius:0 0 4px 4px;z-index:9;max-height:270px;overflow:auto;box-shadow:0 6px 14px rgba(0,0,0,.18)}
+#sg>div{padding:6px 9px;font-size:12.5px;cursor:pointer}#sg>div:hover,#sg>div.on{background:#e9eef2}#sg .k{color:var(--ink2);font-size:11.5px}#sg[hidden]{display:none}
+#ovl details{margin:0 0 2px}#ovl summary{cursor:pointer;font-size:12.5px;font-weight:600;padding:5px 0;color:var(--ink)}
+#ovl label.ck{margin:3px 0 3px 4px}#ovl label.ld{opacity:.55}#ovl label.ld span:after{content:" …"}
+.sw2{display:inline-block;width:11px;height:11px;border-radius:2px;flex:none;border:1px solid rgba(0,0,0,.2)}
+.ovlg{margin:0 0 4px 26px;font-size:11.5px;color:var(--ink2)}.ovlg>div{display:flex;align-items:center;gap:7px;padding:1px 0}
+#card .pdfb{all:unset;cursor:pointer;background:var(--ink);color:#fff;font-size:12.5px;padding:7px 12px;border-radius:4px}#card .pdfb:hover{background:#245d86}
+#tip{position:fixed;z-index:8;max-width:300px;background:var(--bg);border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.4);padding:6px 9px;font-size:12px;line-height:1.35;pointer-events:none;color:var(--ink)}#tip[hidden]{display:none}#tip hr{border:0;border-top:1px solid var(--line);margin:5px 0}
+#card .up{margin:2px 0 4px}#card .bdg{display:inline-block;font-size:11px;border:1px solid;border-radius:3px;padding:0 5px;margin:0 4px 3px 0}
+
+#lb{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+#card{position:fixed;top:12px;right:12px;width:380px;max-height:calc(100vh - 24px);overflow-y:auto;background:var(--bg);border-radius:6px;box-shadow:0 2px 18px rgba(0,0,0,.4);z-index:6;padding:12px 14px 12px;font-size:12.5px;line-height:1.45}
+#card[hidden]{display:none}
+#card:not(.pin){pointer-events:none;max-height:60vh;overflow:hidden}
+#cx{all:unset;position:absolute;right:10px;top:6px;font-size:20px;color:var(--ink2);cursor:pointer;line-height:1}
+#card:not(.pin) #cx{display:none}
+#card .k{color:var(--ink2)}#card .sb{color:var(--ink2);margin:0 0 6px;font-size:12px}#card .adl{font-size:11.5px;margin-bottom:2px}#card a{color:var(--navy,#1A486A)}.dsr .val{font-weight:600;color:var(--ink)}.dsr .pm{color:#237a5e;font-size:11.5px}#card .t{font-weight:600;font-size:14px;color:var(--ink);margin:0 18px 2px 0}
+#card h3{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);margin:12px 0 4px;font-weight:600}
+.dsr{border-top:1px solid var(--line);padding:5px 0}
+.dsr .hd{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+.dsr .ty{font-weight:600;color:var(--ink)}.dsr .dtt{color:var(--ink2);font-variant-numeric:tabular-nums}
+.dec{font-size:11px;border-radius:3px;padding:0 5px;border:1px solid}
+.dec.ok{color:#237a5e;border-color:#237a5e}.dec.no{color:#b3303f;border-color:#b3303f}.dec.nt{color:var(--ink2);border-color:var(--bg2)}
+.dsr .ds{color:var(--ink);margin-top:1px}.dsr .dm{color:var(--ink2);font-size:11.5px}
+.dsr a{color:var(--ink2)}
+
+/* respiration et titres */
+#panel{width:340px}
+#panel header{padding:22px 22px 16px}
+h1{font-size:19px}
+.sub{font-size:12.5px;line-height:1.5;margin-top:6px}
+#scroll{padding:8px 22px 24px}
+h2{font-size:12.5px;letter-spacing:.08em;margin:30px 0 12px;padding-top:2px}
+.crit{gap:3px}
+.crit button{padding:8px 10px;font-size:14px;line-height:1.3}
+.crit .g{font-size:11.5px;letter-spacing:.07em;margin:16px 10px 5px}
+.row{padding:5px 6px;gap:10px;font-size:13px}
+.hint{font-size:11.5px;line-height:1.5;margin:10px 4px 0}
+label.ck{margin:8px 0;gap:10px;font-size:13px}
+.flt{margin:6px 0 16px}
+#ovl summary{font-size:13.5px;padding:9px 0}
+#ovl label.ck{margin:6px 0 6px 6px}
+.ovlg{margin:2px 0 10px 30px;line-height:1.5}
+#srch{margin-top:14px}#q{padding:9px 11px;font-size:13.5px}
+footer{padding:0;line-height:1.55}
+footer #srcb{all:unset;display:block;box-sizing:border-box;width:100%;cursor:pointer;padding:13px 22px;font-size:12.5px;color:var(--ink);font-weight:600}
+footer #srcb:hover{background:#e9eef2}footer #srcb:after{content:' ▸';color:var(--ink2)}footer #srcb[aria-expanded=true]:after{content:' ▾'}
+footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[hidden]{display:none}
+#card{width:410px;padding:20px 22px 22px;line-height:1.6;font-size:13px}
+#card .t{font-size:15.5px;margin-bottom:4px}
+#card h3{font-size:12.5px;letter-spacing:.07em;margin:26px 0 10px;padding-top:14px;border-top:1px solid var(--line);color:var(--ink)}
+#card .sb{margin:2px 0 14px}
+#card .dm,#card .ds{margin-top:3px}
+.dsr{padding:10px 0}
+#card .bdg{margin:2px 6px 6px 0;padding:1px 7px}
+#card .up{margin:6px 0 10px}
+#card .pdfb{padding:10px 16px;font-size:13px}
+#tip{padding:9px 12px;line-height:1.5}
+@media(max-width:760px){#card{top:8px;left:8px;right:8px;width:auto;max-height:44vh}}
+@media(max-width:760px){
+ #panel{top:auto;left:8px;right:8px;bottom:8px;width:auto;height:48vh;transition:height .2s}
+ #panel.min{height:92px}
+ #panel.min #scroll,#panel.min footer{display:none}
+ #tog{display:block;all:unset;position:absolute;right:12px;top:12px;font-size:12px;color:var(--ink2);cursor:pointer;padding:4px 6px}
+ #zoom{bottom:calc(48vh + 20px)}#scale{display:none}
+}
+</style>
+</head>
+<body>
+<div id="map"><canvas id="cv"></canvas><canvas id="lb"></canvas></div>
+<div id="load"><div id="loadmsg">Chargement de l'emprise bâtie…</div><div class="bar"><i id="loadbar"></i></div></div>
+
+<aside id="panel">
+ <header>
+  <button id="tog" type="button">Calques ▾</button>
+  <h1>Stratigraphy</h1>
+  <p class="sub">128 000 emprises bâties, 370 000 dossiers d'urbanisme, le PLU, les protections patrimoniales, le sous-sol et les fouilles. Choisir un calque, cliquer sur un bâtiment pour sa fiche.</p>
+  <div id="srch"><input id="q" type="search" placeholder="Rechercher une adresse (ex. 12 rue de Rivoli)" autocomplete="off" spellcheck="false"><div id="sg" hidden></div></div>
+ </header>
+ <div id="scroll">
+  <h2>Calque</h2>
+  <div class="crit" id="crit"></div>
+  <div id="legWrap" style="margin:4px 0 6px 8px;padding-left:8px;border-left:3px solid var(--bg2)"><div id="legend"></div><div class="hint" id="legHint">Clic : masquer ou afficher une classe. Double-clic : isoler la classe.<a class="lk" id="reset">tout réafficher</a></div></div>
+  <h2>Calques superposés</h2>
+  <div class="hint" style="margin:-2px 4px 6px">Couches vectorielles posées sur la carte, cumulables. Survol : détail. Intitulés abrégés = codes du jeu de données PLU.</div>
+  <div id="ovl"></div>
+  <h2>Filtres</h2>
+  <div class="flt"><div class="top"><span>Année de constr.</span><b id="yT"></b></div>
+   <div class="rng"><div class="tr"></div><div class="fl" id="yF"></div><input type="range" id="y0" min="1700" max="2026" value="1700"><input type="range" id="y1" min="1700" max="2026" value="2026"></div></div>
+  <div class="flt"><div class="top"><span>Hauteur médiane</span><b id="hT"></b></div>
+   <div class="rng"><div class="tr"></div><div class="fl" id="hF"></div><input type="range" id="h0" min="0" max="60" value="0"><input type="range" id="h1" min="0" max="60" value="60"></div></div>
+  <label class="ck"><input type="checkbox" id="fUnd" checked>Inclure les bâtiments non datés</label>
+  <label class="ck"><input type="checkbox" id="fReh">Réhabilités seulement</label>
+  <label class="ck"><input type="checkbox" id="fSur">Surélevés seulement</label>
+  <label class="ck"><input type="checkbox" id="fIgh">IGH seulement</label>
+  <label class="ck"><input type="checkbox" id="fLbl" checked>Noms de rues et numéros</label>
+  <label class="ck"><input type="checkbox" id="fCvp">Passés en Commission du Vieux Paris</label>
+  <label class="ck"><input type="checkbox" id="fRec">Avec un dossier récent (6 mois)</label>
+  <div id="count"></div>
+ </div>
+ <footer><button id="srcb" type="button" aria-expanded="false">Sources et licences</button><div id="srct" hidden>Sources, licence ODbL, extraction du 15/11/2026 : Apur, « Emprise bâtie Paris » ; Ville de Paris, « Autorisations d'Urbanisme - Historique » et « Dossiers récents d'urbanisme », « Commission du Vieux Paris - Adresses instruites » ; Base Adresse Nationale (adresses, noms de rues) ; Ville de Paris, PLU bioclimatique (zonage, hauteurs, protections, secteurs), Référentiel archéologique de Paris, comptages multimodaux et compteurs vélo ; Apur, protections patrimoniales (monuments historiques, périmètres). Dossiers rattachés au bâtiment par leur adresse : rattachement approximatif (96 % des dossiers). Dates APUR parfois approximatives.</div></footer>
+</aside>
+<div id="tip" hidden></div>
+<div id="card" hidden><button id="cx" type="button" aria-label="Fermer">×</button><div id="cb"></div></div>
+<div id="zoom"><button id="zi" type="button" aria-label="Zoom avant">+</button><button id="zo" type="button" aria-label="Zoom arrière">−</button><button id="zr" type="button" aria-label="Recadrer">⌂</button></div>
+<div id="scale"><span id="scT"></span><i id="scB"></i></div>
+
+<script>!function(e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define([],e):("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).earcut=e()}(function(){return function r(x,i,u){function f(n,e){if(!i[n]){if(!x[n]){var t="function"==typeof require&&require;if(!e&&t)return t(n,!0);if(o)return o(n,!0);throw(e=new Error("Cannot find module '"+n+"'")).code="MODULE_NOT_FOUND",e}t=i[n]={exports:{}},x[n][0].call(t.exports,function(e){return f(x[n][1][e]||e)},t,t.exports,r,x,i,u)}return i[n].exports}for(var o="function"==typeof require&&require,e=0;e<u.length;e++)f(u[e]);return f}({1:[function(e,n,t){"use strict";function r(e,n,t){t=t||2;var r,x,i,u,f,o=n&&n.length,v=o?n[0]*t:e.length,p=s(e,0,v,t,!0),y=[];if(p&&p.next!==p.prev){if(o&&(p=function(e,n,t,r){var x,i,u,f,o=[];for(x=0,i=n.length;x<i;x++)f=n[x]*r,u=x<i-1?n[x+1]*r:e.length,(f=s(e,f,u,r,!1))===f.next&&(f.steiner=!0),o.push(function(e){var n=e,t=e;for(;(n.x<t.x||n.x===t.x&&n.y<t.y)&&(t=n),n=n.next,n!==e;);return t}(f));for(o.sort(c),x=0;x<o.length;x++)t=function(e,n){var t=function(e,n){var t,r=n,x=e.x,i=e.y,u=-1/0;do{if(i<=r.y&&i>=r.next.y&&r.next.y!==r.y){var f=r.x+(i-r.y)*(r.next.x-r.x)/(r.next.y-r.y);if(f<=x&&u<f&&(u=f,t=r.x<r.next.x?r:r.next,f===x))return t}}while(r=r.next,r!==n);if(!t)return null;var o,v=t,p=t.x,y=t.y,a=1/0;r=t;for(;x>=r.x&&r.x>=p&&x!==r.x&&D(i<y?x:u,i,p,y,i<y?u:x,i,r.x,r.y)&&(o=Math.abs(i-r.y)/(x-r.x),_(r,e)&&(o<a||o===a&&(r.x>t.x||r.x===t.x&&function(e,n){return E(e.prev,e,n.prev)<0&&E(n.next,e,e.next)<0}(t,r)))&&(t=r,a=o)),r=r.next,r!==v;);return t}(e,n);if(!t)return n;n=j(t,e);return q(n,n.next),q(t,t.next)}(o[x],t);return t}(e,n,p,t)),e.length>80*t){for(var a=r=e[0],l=x=e[1],h=t;h<v;h+=t)(i=e[h])<a&&(a=i),(u=e[h+1])<l&&(l=u),r<i&&(r=i),x<u&&(x=u);f=0!==(f=Math.max(r-a,x-l))?32767/f:0}O(p,y,t,a,l,f,0)}return y}function s(e,n,t,r,x){var i,u;if(x===0<d(e,n,t,r))for(i=n;i<t;i+=r)u=f(i,e[i],e[i+1],u);else for(i=t-r;n<=i;i-=r)u=f(i,e[i],e[i+1],u);return u&&N(u,u.next)&&(C(u),u=u.next),u}function q(e,n){if(!e)return e;n=n||e;var t,r=e;do{if(t=!1,r.steiner||!N(r,r.next)&&0!==E(r.prev,r,r.next))r=r.next;else{if(C(r),(r=n=r.prev)===r.next)break;t=!0}}while(t||r!==n);return n}function O(e,n,t,r,x,i,u){if(e){if(!u&&i){for(var f=e,o=r,v=x,p=i,y=f;0===y.z&&(y.z=k(y.x,y.y,o,v,p)),y.prevZ=y.prev,y.nextZ=y.next,(y=y.next)!==f;);y.prevZ.nextZ=null,y.prevZ=null;var a,l,h,s,c,d,Z,g,w=y,M=1;do{for(l=w,c=w=null,d=0;l;){for(d++,h=l,a=Z=0;a<M&&(Z++,h=h.nextZ);a++);for(g=M;0<Z||0<g&&h;)0!==Z&&(0===g||!h||l.z<=h.z)?(l=(s=l).nextZ,Z--):(h=(s=h).nextZ,g--),c?c.nextZ=s:w=s,s.prevZ=c,c=s;l=h}}while(c.nextZ=null,M*=2,1<d)}for(var b,m,z=e;e.prev!==e.next;)if(b=e.prev,m=e.next,i?function(e,n,t,r){var x=e.prev,i=e,u=e.next;if(0<=E(x,i,u))return;var f=x.x,o=i.x,v=u.x,p=x.y,y=i.y,a=u.y,l=f<o?f<v?f:v:o<v?o:v,h=p<y?p<a?p:a:y<a?y:a,s=o<f?v<f?f:v:v<o?o:v,c=y<p?a<p?p:a:a<y?y:a,d=k(l,h,n,t,r),Z=k(s,c,n,t,r),g=e.prevZ,w=e.nextZ;for(;g&&g.z>=d&&w&&w.z<=Z;){if(g.x>=l&&g.x<=s&&g.y>=h&&g.y<=c&&g!==x&&g!==u&&D(f,p,o,y,v,a,g.x,g.y)&&0<=E(g.prev,g,g.next))return;if(g=g.prevZ,w.x>=l&&w.x<=s&&w.y>=h&&w.y<=c&&w!==x&&w!==u&&D(f,p,o,y,v,a,w.x,w.y)&&0<=E(w.prev,w,w.next))return;w=w.nextZ}for(;g&&g.z>=d;){if(g.x>=l&&g.x<=s&&g.y>=h&&g.y<=c&&g!==x&&g!==u&&D(f,p,o,y,v,a,g.x,g.y)&&0<=E(g.prev,g,g.next))return;g=g.prevZ}for(;w&&w.z<=Z;){if(w.x>=l&&w.x<=s&&w.y>=h&&w.y<=c&&w!==x&&w!==u&&D(f,p,o,y,v,a,w.x,w.y)&&0<=E(w.prev,w,w.next))return;w=w.nextZ}return 1}(e,r,x,i):function(e){var n=e.prev,t=e,e=e.next;if(0<=E(n,t,e))return;var r=n.x,x=t.x,i=e.x,u=n.y,f=t.y,o=e.y,v=r<x?r<i?r:i:x<i?x:i,p=u<f?u<o?u:o:f<o?f:o,y=x<r?i<r?r:i:i<x?x:i,a=f<u?o<u?u:o:o<f?f:o,l=e.next;for(;l!==n;){if(l.x>=v&&l.x<=y&&l.y>=p&&l.y<=a&&D(r,u,x,f,i,o,l.x,l.y)&&0<=E(l.prev,l,l.next))return;l=l.next}return 1}(e))n.push(b.i/t|0),n.push(e.i/t|0),n.push(m.i/t|0),C(e),e=m.next,z=m.next;else if((e=m)===z){u?1===u?O(e=function(e,n,t){var r=e;do{var x=r.prev,i=r.next.next}while(!N(x,i)&&U(x,r,r.next,i)&&_(x,i)&&_(i,x)&&(n.push(x.i/t|0),n.push(r.i/t|0),n.push(i.i/t|0),C(r),C(r.next),r=e=i),r=r.next,r!==e);return q(r)}(q(e),n,t),n,t,r,x,i,2):2===u&&function(e,n,t,r,x,i){var u=e;do{for(var f,o=u.next.next;o!==u.prev;){if(u.i!==o.i&&function(e,n){return e.next.i!==n.i&&e.prev.i!==n.i&&!function(e,n){var t=e;do{if(t.i!==e.i&&t.next.i!==e.i&&t.i!==n.i&&t.next.i!==n.i&&U(t,t.next,e,n))return 1}while(t=t.next,t!==e);return}(e,n)&&(_(e,n)&&_(n,e)&&function(e,n){var t=e,r=!1,x=(e.x+n.x)/2,i=(e.y+n.y)/2;for(;t.y>i!=t.next.y>i&&t.next.y!==t.y&&x<(t.next.x-t.x)*(i-t.y)/(t.next.y-t.y)+t.x&&(r=!r),t=t.next,t!==e;);return r}(e,n)&&(E(e.prev,e,n.prev)||E(e,n.prev,n))||N(e,n)&&0<E(e.prev,e,e.next)&&0<E(n.prev,n,n.next))}(u,o))return f=j(u,o),u=q(u,u.next),f=q(f,f.next),O(u,n,t,r,x,i,0),O(f,n,t,r,x,i,0);o=o.next}}while(u=u.next,u!==e)}(e,n,t,r,x,i):O(q(e),n,t,r,x,i,1);break}}}function c(e,n){return e.x-n.x}function k(e,n,t,r,x){return(e=1431655765&((e=858993459&((e=252645135&((e=16711935&((e=(e-t)*x|0)|e<<8))|e<<4))|e<<2))|e<<1))|(n=1431655765&((n=858993459&((n=252645135&((n=16711935&((n=(n-r)*x|0)|n<<8))|n<<4))|n<<2))|n<<1))<<1}function D(e,n,t,r,x,i,u,f){return(e-u)*(i-f)<=(x-u)*(n-f)&&(t-u)*(n-f)<=(e-u)*(r-f)&&(x-u)*(r-f)<=(t-u)*(i-f)}function E(e,n,t){return(n.y-e.y)*(t.x-n.x)-(n.x-e.x)*(t.y-n.y)}function N(e,n){return e.x===n.x&&e.y===n.y}function U(e,n,t,r){var x=v(E(e,n,t)),i=v(E(e,n,r)),u=v(E(t,r,e)),f=v(E(t,r,n));return x!==i&&u!==f||(0===x&&o(e,t,n)||(0===i&&o(e,r,n)||(0===u&&o(t,e,r)||!(0!==f||!o(t,n,r)))))}function o(e,n,t){return n.x<=Math.max(e.x,t.x)&&n.x>=Math.min(e.x,t.x)&&n.y<=Math.max(e.y,t.y)&&n.y>=Math.min(e.y,t.y)}function v(e){return 0<e?1:e<0?-1:0}function _(e,n){return E(e.prev,e,e.next)<0?0<=E(e,n,e.next)&&0<=E(e,e.prev,n):E(e,n,e.prev)<0||E(e,e.next,n)<0}function j(e,n){var t=new u(e.i,e.x,e.y),r=new u(n.i,n.x,n.y),x=e.next,i=n.prev;return(e.next=n).prev=e,(t.next=x).prev=t,(r.next=t).prev=r,(i.next=r).prev=i,r}function f(e,n,t,r){e=new u(e,n,t);return r?(e.next=r.next,(e.prev=r).next.prev=e,r.next=e):(e.prev=e).next=e,e}function C(e){e.next.prev=e.prev,e.prev.next=e.next,e.prevZ&&(e.prevZ.nextZ=e.nextZ),e.nextZ&&(e.nextZ.prevZ=e.prevZ)}function u(e,n,t){this.i=e,this.x=n,this.y=t,this.prev=null,this.next=null,this.z=0,this.prevZ=null,this.nextZ=null,this.steiner=!1}function d(e,n,t,r){for(var x=0,i=n,u=t-r;i<t;i+=r)x+=(e[u]-e[i])*(e[i+1]+e[u+1]),u=i;return x}n.exports=r,(n.exports.default=r).deviation=function(e,n,t,r){var x=n&&n.length,i=x?n[0]*t:e.length,u=Math.abs(d(e,0,i,t));if(x)for(var f=0,o=n.length;f<o;f++){var v=n[f]*t,p=f<o-1?n[f+1]*t:e.length;u-=Math.abs(d(e,v,p,t))}for(var y=0,f=0;f<r.length;f+=3){var a=r[f]*t,l=r[f+1]*t,h=r[f+2]*t;y+=Math.abs((e[a]-e[h])*(e[1+l]-e[1+a])-(e[a]-e[l])*(e[1+h]-e[1+a]))}return 0===u&&0===y?0:Math.abs((y-u)/u)},r.flatten=function(e){for(var n=e[0][0].length,t={vertices:[],holes:[],dimensions:n},r=0,x=0;x<e.length;x++){for(var i=0;i<e[x].length;i++)for(var u=0;u<n;u++)t.vertices.push(e[x][i][u]);0<x&&(r+=e[x-1].length,t.holes.push(r))}return t}},{}]},{},[1])(1)});
+</script>
+<script>
+(async function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const nf=new Intl.NumberFormat('fr-FR');
+const tick=()=>new Promise(r=>setTimeout(r,0));
+function prog(msg,p){$('#loadmsg').textContent=msg;$('#loadbar').style.width=(p*100)+'%';}
+function fail(msg){$('#loadmsg').textContent=msg;$('#load .bar').style.display='none';}
+if(typeof earcut==='undefined'){fail("La bibliothèque de triangulation n'a pas pu se charger.");return;}
+if(typeof DecompressionStream==='undefined'){fail("Ce navigateur ne sait pas décompresser les données (DecompressionStream). Essayer une version récente de Chrome, Safari ou Firefox.");return;}
+
+/* ---------- données ---------- */
+async function getBin(u){const r=await fetch(u);if(!r.ok)throw new Error(u+' : '+r.status);let b=await r.arrayBuffer();const v=new Uint8Array(b);if(v[0]===0x1f&&v[1]===0x8b)b=await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();return b;}
+async function getJson(u){return JSON.parse(new TextDecoder().decode(await getBin(u)));}
+prog("Chargement des données…",.05); await tick();
+let buf;try{buf=await getBin('data.json');}catch(e){fail("Impossible de charger les données ("+e.message+").");return;}
+const hl=new DataView(buf).getUint32(0,true);
+const H=JSON.parse(new TextDecoder().decode(new Uint8Array(buf,4,hl)));
+const TY={B:[Uint8Array,1],H:[Uint16Array,2],h:[Int16Array,2],I:[Uint32Array,4]};
+const S={};let off=4+hl;
+for(const [k,t,n] of H.streams){const [C,sz]=TY[t];S[k]=new C(buf.slice(off,off+n*sz));off+=n*sz;}
+const N=H.n;
+
+/* ---------- géométrie ---------- */
+const kx=H.q*111320*Math.cos(H.lat0*Math.PI/180), ky=H.q*110574;
+let totalV=0;for(let i=0;i<S.rl.length;i++)totalV+=S.rl[i];
+const pos=new Float32Array(totalV*2), vShape=new Uint32Array(totalV);
+let idx=new Uint32Array(totalV*3), edg=new Uint32Array(totalV*2);
+const triS=new Uint32Array(N+1), edgS=new Uint32Array(N+1), vS=new Uint32Array(N+1);
+const bbox=new Float32Array(N*4), area=new Float32Array(N);
+{
+ let ri=0,dp=0,vp=0,ip=0,ep=0;
+ let gx0=1e9,gy0=1e9,gx1=-1e9,gy1=-1e9;
+ for(let s=0;s<N;s++){
+  if(s%7000===0){prog("Construction de la géométrie…",.1+.8*s/N);await tick();}
+  triS[s]=ip;edgS[s]=ep;vS[s]=vp;
+  const R=S.nr[s],co=[],holes=[],rings=[];
+  let a=0;
+  for(let r=0;r<R;r++,ri++){
+   const L=S.rl[ri],st=co.length/2;
+   if(r>0)holes.push(st);
+   let qx=S.ab[2*ri],qy=S.ab[2*ri+1];
+   co.push(qx*kx,qy*ky);
+   for(let k=1;k<L;k++){qx+=S.dl[dp++];qy+=S.dl[dp++];co.push(qx*kx,qy*ky);}
+   rings.push([st,L]);
+   let ra=0;for(let k=0;k<L;k++){const j=(k+1)%L;ra+=co[2*(st+k)]*co[2*(st+j)+1]-co[2*(st+j)]*co[2*(st+k)+1];}
+   a+=(r===0?1:-1)*Math.abs(ra)/2;
+  }
+  area[s]=Math.max(0,a);
+  const nv=co.length/2;
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  const outerN=rings[0][1];
+  for(let i=0;i<nv;i++){
+   const x=co[2*i],y=co[2*i+1];
+   pos[2*(vp+i)]=x;pos[2*(vp+i)+1]=y;vShape[vp+i]=s;
+   if(i<outerN){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+  }
+  bbox[4*s]=x0;bbox[4*s+1]=y0;bbox[4*s+2]=x1;bbox[4*s+3]=y1;
+  if(x0<gx0)gx0=x0;if(y0<gy0)gy0=y0;if(x1>gx1)gx1=x1;if(y1>gy1)gy1=y1;
+  const tri=earcut(co,holes.length?holes:null,2);
+  for(let t=0;t<tri.length;t++)idx[ip++]=vp+tri[t];
+  for(const [st,L] of rings)for(let k=0;k<L;k++){edg[ep++]=vp+st+k;edg[ep++]=vp+st+(k+1)%L;}
+  vp+=nv;
+ }
+ triS[N]=ip;edgS[N]=ep;vS[N]=vp;
+ idx=idx.slice(0,ip);edg=edg.slice(0,ep);
+ var EXT=[gx0,gy0,gx1,gy1];
+}
+/* grille de sélection */
+const CELL=64,grid=new Map();
+for(let s=0;s<N;s++){
+ const c0=Math.floor(bbox[4*s]/CELL),c1=Math.floor(bbox[4*s+2]/CELL),r0=Math.floor(bbox[4*s+1]/CELL),r1=Math.floor(bbox[4*s+3]/CELL);
+ for(let cx=c0;cx<=c1;cx++)for(let cy=r0;cy<=r1;cy++){const k=cx*8192+cy;let a=grid.get(k);if(!a){a=[];grid.set(k,a);}a.push(s);}
+}
+function pick(wx,wy){
+ const a=grid.get(Math.floor(wx/CELL)*8192+Math.floor(wy/CELL));if(!a)return -1;
+ let best=-1,ba=1e18;
+ for(const s of a){
+  if(wx<bbox[4*s]||wx>bbox[4*s+2]||wy<bbox[4*s+1]||wy>bbox[4*s+3])continue;
+  for(let t=triS[s];t<triS[s+1];t+=3){
+   const i0=idx[t]*2,i1=idx[t+1]*2,i2=idx[t+2]*2;
+   const ax=pos[i0],ay=pos[i0+1],bx=pos[i1],by=pos[i1+1],cx=pos[i2],cy=pos[i2+1];
+   const d1=(wx-bx)*(ay-by)-(ax-bx)*(wy-by),d2=(wx-cx)*(by-cy)-(bx-cx)*(wy-cy),d3=(wx-ax)*(cy-ay)-(cx-ax)*(wy-ay);
+   if(!((d1<0||d2<0||d3<0)&&(d1>0||d2>0||d3>0))){if(area[s]<ba){ba=area[s];best=s;}break;}
+  }
+ }
+ return best;
+}
+
+/* ---------- critères ---------- */
+const AN=S.an_const,RE=S.an_rehab,SU=S.an_surel,HM=S.h_med,HX=S.h_max,VG=S.veg,PE=S.per,ARR=S.arr,TE=S.ter,SO=S.sol,IG=S.igh;
+const SNE=S.s_ne,SEF=S.s_eff,SAC=S.s_act,SCL=S.s_cl;
+const ZO=S.zo,HP=S.hp,PF=S.pf,RS=S.rs,ARN=S.ar_n;
+const NA=S.n_adr,DN=S.dvf_n,DL=S.dvf_last,PM=S.pm2;
+const NT=S.n_tot,LPC=S.last_pc,LPD=S.last_pd,SF=S.surf,CN=S.cvp_n,CK=S.cvp_k,RC=S.rec;
+const GRAY='#56626e';
+const PER_LAB=["Avant 1800","1801–1850","1851–1914","1915–1939","1940–1967","1968–1975","1976–1981","1982–1989","1990–1999","2000–2007","Depuis 2008","Non daté"];
+const SPEC=["#9e0142","#d53e4f","#f46d43","#fdae61","#fee08b","#ffffbf","#e6f598","#abdda4","#66c2a5","#3288bd","#7b6fd0"];
+const PMAP={1:0,2:1,3:2,5:3,6:4,7:5,8:6,9:7,10:8,11:9,12:10,13:11,0:11};
+function hexRgb(h){return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+function pack(h){const [r,g,b]=hexRgb(h);return (r|(g<<8)|(b<<16)|(255<<24))>>>0;}
+const KNOTS=[1750,1825,1882,1927,1953,1971,1979,1986,1995,2004,2015];
+function yearColor(y){
+ let i=0;if(y<=KNOTS[0])return SPEC[0];if(y>=KNOTS[10])return SPEC[10];
+ while(y>KNOTS[i+1])i++;
+ const t=(y-KNOTS[i])/(KNOTS[i+1]-KNOTS[i]),a=hexRgb(SPEC[i]),b=hexRgb(SPEC[i+1]);
+ return '#'+a.map((v,j)=>Math.round(v+(b[j]-v)*t).toString(16).padStart(2,'0')).join('');
+}
+const YEAR32=new Uint32Array(2100);for(let y=0;y<2100;y++)YEAR32[y]=pack(yearColor(y));
+const REH_LAB=["1900–1989","1990–1999","2000–2009","2010–2014","2015–2019","2020 et après","Aucune connue"];
+const REH_COL=["#7b6fd0","#3288bd","#66c2a5","#abdda4","#fee08b","#f46d43",GRAY];
+const SUR_LAB=["2000–2009","2010–2014","2015–2019","2020 et après","Aucune connue"];
+const SUR_COL=["#3288bd","#66c2a5","#fee08b","#f46d43",GRAY];
+const HT_LIM=[60,120,160,200,250,310,500,1000];
+const HT_LAB=["Moins de 6 m","6–12 m","12–16 m","16–20 m","20–25 m","25–31 m","31–50 m","50–100 m","Plus de 100 m"];
+const HT_COL=["#2f4a73","#3a6a9c","#3288bd","#66c2a5","#abdda4","#fee08b","#fdae61","#f46d43","#d53e4f"];
+const heightCls=A=>s=>{const v=A[s];let i=0;while(i<8&&v>=HT_LIM[i])i++;return i;};
+const ARR_LAB=Array.from({length:20},(_,i)=>(i+1)+(i?"e":"er")+" arr.").concat(["Non renseigné"]);
+const ARR_COL=Array.from({length:20},(_,i)=>{const h=i*18,l=(i%2?72:56);return hsl(h,62,l);}).concat([GRAY]);
+function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return '#'+[f(0),f(8),f(4)].map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('');}
+const PC_LAB=["Avant 1990","1990–1999","2000–2009","2010–2014","2015–2019","2020 et après","Aucun connu"];
+const lastCls=A=>s=>{const y=A[s];if(!y)return 6;return y<1990?0:y<2000?1:y<2010?2:y<2015?3:y<2020?4:5;};
+const CRIT=[
+ {id:'per',g:'Âge',name:'Période de construction',lab:PER_LAB,col:SPEC.concat([GRAY]),cls:s=>PMAP[PE[s]]??11},
+ {id:'yr',g:'Âge',name:'Année de construction',lab:["Année connue","Non daté"],grad:true,col:[null,GRAY],cls:s=>AN[s]?0:1},
+ {id:'reh',g:'Âge',name:'Réhabilitation',lab:REH_LAB,col:REH_COL,cls:s=>{const r=RE[s];if(r<1900)return 6;return r<1990?0:r<2000?1:r<2010?2:r<2015?3:r<2020?4:5;}},
+ {id:'sur',g:'Âge',name:'Surélévation',lab:SUR_LAB,col:SUR_COL,cls:s=>{const r=SU[s];if(!r)return 4;return r<2010?0:r<2015?1:r<2020?2:3;}},
+ {id:'hm',g:'Volume',name:'Hauteur médiane',lab:HT_LAB,col:HT_COL,cls:heightCls(HM)},
+ {id:'hx',g:'Volume',name:'Hauteur maximale',lab:HT_LAB,col:HT_COL,cls:heightCls(HX)},
+ {id:'dos',g:'Autorisations',name:"Dossiers d'urbanisme (nombre)",lab:["Aucun rattaché","1","2 à 3","4 à 6","7 à 12","13 et plus"],col:[GRAY,"#3a6a9c","#3288bd","#66c2a5","#fee08b","#f46d43"],cls:s=>{const n=NT[s];return n===0?0:n===1?1:n<=3?2:n<=6?3:n<=12?4:5;}},
+ {id:'pc',g:'Autorisations',name:'Dernier permis de construire accordé',lab:PC_LAB,col:REH_COL.slice(0,6).concat([GRAY]),cls:lastCls(LPC)},
+ {id:'pd',g:'Autorisations',name:'Dernier permis de démolir accordé',lab:PC_LAB,col:REH_COL.slice(0,6).concat([GRAY]),cls:lastCls(LPD)},
+ {id:'sf',g:'Autorisations',name:'Surface créée cumulée (indicatif)',lab:["Aucune renseignée","Moins de 20 m²","20 à 100 m²","100 à 500 m²","500 à 2 000 m²","Plus de 2 000 m²"],col:[GRAY,"#3a6a9c","#66c2a5","#fee08b","#fdae61","#d53e4f"],cls:s=>{const v=SF[s];return v===0?0:v<20?1:v<100?2:v<500?3:v<2000?4:5;}},
+ {id:'rc',g:'Autorisations',name:'Dossiers récents (6 mois)',lab:["Aucun","En cours d'instruction","Accordé","Refusé"],col:[GRAY,"#fee08b","#66c2a5","#d53e4f"],cls:s=>RC[s]},
+ {id:'cvp',g:'Patrimoine',name:'Commission du Vieux Paris',lab:["Jamais examiné","Examiné, vœu émis","Examiné, sans résolution"],col:[GRAY,"#f46d43","#3288bd"],cls:s=>CK[s]},
+ {id:'zo',g:'Urbanisme (PLU)',name:'Zone du PLU',lab:['Hors zone','UG : urbaine générale','UGSU : urbaine générale, services urbains','UV : urbaine verte','N : naturelle','PSMV : secteur sauvegardé','Autre'],col:[GRAY,'#4f8fd6','#7a6bd6','#3fae7a','#7a9a3a','#c9824a','#9a9aa8'],cls:s=>ZO[s]},
+ {id:'hp',g:'Urbanisme (PLU)',name:'Plafond de hauteur du PLU',lab:['Pas de plafond renseigné','18 m','25 m','31 m','37 m','Autre'],col:[GRAY,'#6fc3a0','#e3d36b','#f0a24c','#d9544d','#9a9aa8'],cls:s=>{const h=HP[s];return h===0?0:h===18?1:h===25?2:h===31?3:h===37?4:5;}},
+ {id:'dh',g:'Urbanisme (PLU)',name:'Marge sous le plafond (indicatif)',lab:['Pas de plafond renseigné','Dépasse le plafond','Moins de 3 m de marge','3 à 9 m de marge','9 m et plus de marge'],col:[GRAY,'#d53e4f','#f46d43','#fee08b','#66c2a5'],cls:s=>{const h=HP[s];if(!h)return 0;const m=h-HX[s]/10;return m<0?1:m<3?2:m<9?3:4;}},
+ {id:'pro',g:'Patrimoine',name:'Protection patrimoniale',lab:['Aucune','Dans un périmètre de protection','Protégé par le PLU (bâtiment, volumétrie, parcelle signalée)','Monument historique ou immeuble protégé (Apur)'],col:[GRAY,'#e9c46a','#f46d43','#d53e4f'],cls:s=>{const f=PF[s];return f&3?3:f&116?2:f&8?1:0;}},
+ {id:'rs',g:'Sous-sol et fouilles',name:'Risques du sous-sol',lab:['Aucun secteur','Carrières','Gypse','Zone inondable (PPRI)'],col:[GRAY,'#d4a373','#e5e5e5','#48cae4'],cls:s=>RS[s]},
+ {id:'ar',g:'Sous-sol et fouilles',name:'Fouilles à moins de 40 m',lab:['Aucune','1','2 à 3','4 à 9','10 et plus'],col:[GRAY,'#3a6a9c','#66c2a5','#fee08b','#f46d43'],cls:s=>{const n=ARN[s];return n===0?0:n===1?1:n<=3?2:n<=9?3:4;}},
+ {id:'toit',g:'Autres',name:'Toitures',lab:["Panneaux solaires","Végétalisée (≥ 10 m²)","Terrasse","Autre ou inconnue"],col:["#ffd166","#66c2a5","#3288bd",GRAY],cls:s=>SO[s]?0:VG[s]>=10?1:TE[s]?2:3},
+ {id:'arr',g:'Autres',name:'Arrondissement',lab:ARR_LAB,col:ARR_COL,cls:s=>ARR[s]>=1&&ARR[s]<=20?ARR[s]-1:20}
+];
+for(const c of CRIT){c.k=new Uint8Array(N);for(let s=0;s<N;s++)c.k[s]=c.cls(s);c.cnt=new Float64Array(c.lab.length);c.ha=new Float64Array(c.lab.length);for(let s=0;s<N;s++){c.cnt[c.k[s]]++;c.ha[c.k[s]]+=area[s]/1e4;}c.pal=c.col.map(h=>h?pack(h):0);}
+
+/* ---------- état ---------- */
+const st={crit:CRIT[0],en:null,y0:1700,y1:2026,h0:0,h1:60,und:true,reh:false,sur:false,igh:false,cvp:false,rcn:false};
+const CTX=pack('#1c2833'),GHOST=pack('#16212b');
+const shapeCol=new Uint32Array(N);
+const vcol=new Uint8Array(totalV*4),vcol32=new Uint32Array(vcol.buffer);
+let nShown=0;
+function recolor(){
+ const c=st.crit,en=st.en,k=c.k;
+ const yAct=st.y0>1700||st.y1<2026,hAct=st.h0>0||st.h1<60;
+ const hLo=st.h0*10,hHi=st.h1>=60?1e9:st.h1*10;
+ nShown=0;
+ for(let s=0;s<N;s++){
+  let ok=true;
+  if(yAct){const y=AN[s];ok=y?((st.y0<=1700||y>=st.y0)&&(st.y1>=2026||y<=st.y1)):st.und;}
+  if(ok&&hAct){const h=HM[s];ok=h>=hLo&&h<hHi;}
+  if(ok&&st.reh)ok=RE[s]>=1900;
+  if(ok&&st.sur)ok=SU[s]>0;
+  if(ok&&st.igh)ok=IG[s]===1;
+  if(ok&&st.cvp)ok=CN[s]>0;
+  if(ok&&st.rcn)ok=RC[s]>0;
+  let col;
+  if(!ok)col=CTX;
+  else if(!en[k[s]])col=GHOST;
+  else{col=(c.grad&&k[s]===0)?YEAR32[AN[s]]:c.pal[k[s]];nShown++;}
+  shapeCol[s]=col;
+ }
+ for(let v=0;v<totalV;v++)vcol32[v]=shapeCol[vShape[v]];
+ if(gl){gl.bindBuffer(gl.ARRAY_BUFFER,colBuf);gl.bufferData(gl.ARRAY_BUFFER,vcol,gl.DYNAMIC_DRAW);}
+ $('#count').textContent=nf.format(nShown)+" bâtiments affichés sur "+nf.format(N);
+ draw();
+}
+function setCrit(c){
+ st.crit=c;st.en=new Array(c.lab.length).fill(true);
+ document.querySelectorAll('#crit button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===c.id));
+ buildLegend();
+ const pb=document.querySelector('#crit button[aria-pressed=true]');if(pb)pb.after($('#legWrap'));
+ recolor();
+}
+function buildLegend(){
+ const c=st.crit,L=$('#legend');L.innerHTML='';
+ 
+ if(c.grad){
+  const g=document.createElement('div');g.className='grad';
+  g.style.background='linear-gradient(90deg,'+KNOTS.map((y,i)=>SPEC[i]+' '+Math.round(i/10*100)+'%').join(',')+')';
+  L.appendChild(g);
+  const t=document.createElement('div');t.className='ticks';t.innerHTML='<span>1750</span><span>1882</span><span>1953</span><span>1995</span><span>2015</span>';L.appendChild(t);
+ }
+ c.lab.forEach((lab,i)=>{
+  const r=document.createElement('div');r.className='row';r.dataset.i=i;
+  const col=c.col[i]||'#999';
+  r.innerHTML='<span class="sw" style="background:'+(c.grad&&i===0?'linear-gradient(90deg,'+SPEC[0]+','+SPEC[5]+','+SPEC[10]+')':col)+'"></span><span class="lb">'+lab+'</span><span class="n">'+nf.format(c.cnt[i])+' · '+nf.format(Math.round(c.ha[i]))+' ha</span>';
+  r.addEventListener('click',()=>{st.en[i]=!st.en[i];syncRows();recolor();});
+  r.addEventListener('dblclick',()=>{st.en=st.en.map((_,j)=>j===i);syncRows();recolor();});
+  L.appendChild(r);
+ });
+ syncRows();
+}
+function syncRows(){document.querySelectorAll('#legend .row').forEach(r=>r.classList.toggle('off',!st.en[+r.dataset.i]));}
+$('#reset').onclick=()=>{st.en=st.en.map(()=>true);syncRows();recolor();};
+{const box=$('#crit');let g='';for(const c of CRIT){if(c.g!==g){g=c.g;const d=document.createElement('div');d.className='g';d.textContent=g;box.appendChild(d);}
+ const b=document.createElement('button');b.type='button';b.dataset.id=c.id;b.innerHTML='<span class="dot"></span>'+c.name;b.onclick=()=>setCrit(c);box.appendChild(b);}}
+
+let ready=false;
+/* filtres */
+function rng(a,b,fl,lo,hi,out,fmtT,upd){
+ const A=$(a),Bx=$(b),F=$(fl);
+ function go(){let x=+A.value,y=+Bx.value;if(x>y){if(document.activeElement===A){x=y;A.value=x;}else{y=x;Bx.value=y;}}
+  const mn=+A.min,mx=+A.max;F.style.left=((x-mn)/(mx-mn)*100)+'%';F.style.right=(100-(y-mn)/(mx-mn)*100)+'%';
+  $(out).textContent=fmtT(x,y);upd(x,y);}
+ A.oninput=go;Bx.oninput=go;go();
+}
+let tm;const later=()=>{clearTimeout(tm);tm=setTimeout(recolor,40);};
+rng('#y0','#y1','#yF',0,0,'#yT',(x,y)=>(x<=1700&&y>=2026)?'toutes':(x<=1700?'avant 1700':x)+' – '+(y>=2026?'auj.':y),(x,y)=>{st.y0=x;st.y1=y;if(ready)later();});
+rng('#h0','#h1','#hF',0,0,'#hT',(x,y)=>(x<=0&&y>=60)?'toutes':x+' – '+(y>=60?'60 m et +':y+' m'),(x,y)=>{st.h0=x;st.h1=y;if(ready)later();});
+for(const [id,k] of [['#fUnd','und'],['#fReh','reh'],['#fSur','sur'],['#fIgh','igh'],['#fCvp','cvp'],['#fRec','rcn']])$(id).onchange=e=>{st[k]=e.target.checked;recolor();};
+$('#fLbl').onchange=e=>{showLbl=e.target.checked;draw();};
+$('#tog').onclick=()=>{const p=$('#panel');p.classList.toggle('min');$('#tog').textContent=p.classList.contains('min')?'Calques ▴':'Calques ▾';};
+
+/* ---------- WebGL ---------- */
+const cv=$('#cv');
+const gl=cv.getContext('webgl',{antialias:false,alpha:false});
+if(!gl||!gl.getExtension('OES_element_index_uint')){fail("WebGL n'est pas disponible dans ce navigateur.");return;}
+function prog2(vs,fs){const p=gl.createProgram();for(const [t,src] of [[gl.VERTEX_SHADER,vs],[gl.FRAGMENT_SHADER,fs]]){const sh=gl.createShader(t);gl.shaderSource(sh,src);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(sh));gl.attachShader(p,sh);}gl.linkProgram(p);return p;}
+const pFill=prog2('attribute vec2 a_pos;attribute vec4 a_col;uniform vec2 u_c;uniform vec2 u_s;varying vec4 v;void main(){gl_Position=vec4((a_pos-u_c)*u_s,0.,1.);v=a_col;}','precision mediump float;varying vec4 v;void main(){gl_FragColor=v;}');
+const pFlat=prog2('attribute vec2 a_pos;uniform vec2 u_c;uniform vec2 u_s;void main(){gl_Position=vec4((a_pos-u_c)*u_s,0.,1.);}','precision mediump float;uniform vec4 u_col;void main(){gl_FragColor=u_col;}');
+const posBuf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,posBuf);gl.bufferData(gl.ARRAY_BUFFER,pos,gl.STATIC_DRAW);
+const colBuf=gl.createBuffer();
+const idxBuf=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,idxBuf);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,idx,gl.STATIC_DRAW);
+const edgBuf=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,edgBuf);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,edg,gl.STATIC_DRAW);
+const view={cx:(EXT[0]+EXT[2])/2,cy:(EXT[1]+EXT[3])/2,k:.05};
+let W=1,Hh=1,dpr=1,hov=-1,sel=-1,fitK=.05;
+const lb=$('#lb'),lx=lb.getContext('2d');
+function resize(){dpr=Math.min(window.devicePixelRatio||1,2);W=cv.clientWidth;Hh=cv.clientHeight;cv.width=Math.round(W*dpr);cv.height=Math.round(Hh*dpr);lb.width=cv.width;lb.height=cv.height;}
+function fit(){const pw=window.innerWidth>760?340:0;const kx2=(W-pw-40)/(EXT[2]-EXT[0]),ky2=(Hh-40)/(EXT[3]-EXT[1]);fitK=Math.min(kx2,ky2);view.k=fitK;view.cx=(EXT[0]+EXT[2])/2-pw/2/fitK;view.cy=(EXT[1]+EXT[3])/2;}
+let rq=0;function draw(){if(!rq)rq=requestAnimationFrame(render);}
+function bindPos(p){const l=gl.getAttribLocation(p,'a_pos');gl.bindBuffer(gl.ARRAY_BUFFER,posBuf);gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);}
+function render(){
+ rq=0;gl.viewport(0,0,cv.width,cv.height);gl.clearColor(15/255,26/255,36/255,1);gl.clear(gl.COLOR_BUFFER_BIT);
+ const sx=2*view.k/W,sy=2*view.k/Hh;
+ gl.disable(gl.BLEND);gl.useProgram(pFill);
+ gl.uniform2f(gl.getUniformLocation(pFill,'u_c'),view.cx,view.cy);gl.uniform2f(gl.getUniformLocation(pFill,'u_s'),sx,sy);
+ bindPos(pFill);const lc=gl.getAttribLocation(pFill,'a_col');gl.bindBuffer(gl.ARRAY_BUFFER,colBuf);gl.enableVertexAttribArray(lc);gl.vertexAttribPointer(lc,4,gl.UNSIGNED_BYTE,true,0,0);
+ gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,idxBuf);gl.drawElements(gl.TRIANGLES,idx.length,gl.UNSIGNED_INT,0);
+ gl.disableVertexAttribArray(lc);
+ gl.useProgram(pFlat);gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+ gl.uniform2f(gl.getUniformLocation(pFlat,'u_c'),view.cx,view.cy);gl.uniform2f(gl.getUniformLocation(pFlat,'u_s'),sx,sy);
+ const uc=gl.getUniformLocation(pFlat,'u_col');bindPos(pFlat);
+ if(view.k>0.9){gl.uniform4f(uc,.04,.07,.1,Math.min(.65,(view.k-.9)*.5));gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,edgBuf);gl.drawElements(gl.LINES,edg.length,gl.UNSIGNED_INT,0);}
+ const hs=sel>=0?sel:hov;
+ if(hs>=0){gl.uniform4f(uc,1,1,1,.9);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,idxBuf);gl.drawElements(gl.TRIANGLES,triS[hs+1]-triS[hs],gl.UNSIGNED_INT,triS[hs]*4);}
+ scaleBar();drawLabels();
+}
+
+/* ---------- noms de rues et numéros ---------- */
+let LBL=null,showLbl=true;
+getJson('labels.json').then(j=>{j.s.sort((a,b)=>b[4]-a[4]);LBL=j;draw();}).catch(()=>{});
+const ABR=[[/^Boulevard /,'Bd '],[/^Avenue /,'Av. '],[/^Place /,'Pl. '],[/^Quai /,'Q. '],[/^Passage /,'Pass. ']];
+const shortName=n=>{for(const [r,s] of ABR)if(r.test(n))return n.replace(r,s);return n;};
+function drawLabels(){
+ lx.setTransform(1,0,0,1,0,0);lx.clearRect(0,0,lb.width,lb.height);
+ drawOv();
+ if(!LBL||!showLbl)return;
+ const k=view.k;
+ lx.setTransform(dpr,0,0,dpr,0,0);lx.textAlign='center';lx.textBaseline='middle';lx.lineJoin='round';
+ const X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;
+ const x0=view.cx-W/2/k-60,x1=view.cx+W/2/k+60,y0=view.cy-Hh/2/k-60,y1=view.cy+Hh/2/k+60;
+ /* numéros */
+ if(k>=1.25){
+  const fs=Math.min(13,8+k*.9);lx.font='500 '+fs+'px "Avenir Next",Avenir,"Segoe UI",sans-serif';
+  lx.lineWidth=3;lx.strokeStyle='rgba(15,26,36,.92)';lx.fillStyle='#ffd9a0';
+  const seen=new Set(),cell=fs*2.6;
+  for(const p of LBL.n){
+   const wx=p[0]/2,wy=p[1]/2;if(wx<x0||wx>x1||wy<y0||wy>y1)continue;
+   const sx=X(wx),sy=Y(wy),key=Math.round(sx/cell)*10000+Math.round(sy/(fs*1.4));
+   if(seen.has(key))continue;seen.add(key);
+   lx.strokeText(p[2],sx,sy);lx.fillText(p[2],sx,sy);
+  }
+ }
+ /* rues */
+ if(k>=.16){
+  const fs=Math.max(10,Math.min(15,9+k*2.2));lx.font='600 '+fs+'px "Avenir Next",Avenir,"Segoe UI",sans-serif';
+  lx.lineWidth=3.5;lx.strokeStyle='rgba(15,26,36,.95)';lx.fillStyle=k>=1.7?'#a9c4d8':'#d7e4ee';
+  const placed=[];const hit=(r)=>{for(const q of placed){if(r[0]<q[2]&&r[2]>q[0]&&r[1]<q[3]&&r[3]>q[1])return true;}return false;};
+  for(const l of LBL.s){
+   const wx=l[0],wy=l[1];if(wx<x0||wx>x1||wy<y0||wy>y1)continue;
+   let nm=l[3];let w=lx.measureText(nm).width;const len=l[4]*k;
+   if(w>len*1.05){nm=shortName(nm);w=lx.measureText(nm).width;}
+   if(w>len*1.05)continue;
+   const sx=X(wx),sy=Y(wy),a=-l[2]*Math.PI/180,c=Math.abs(Math.cos(a)),s_=Math.abs(Math.sin(a));
+   const hw=(w*c+fs*s_)/2+3,hh=(w*s_+fs*c)/2+2,r=[sx-hw,sy-hh,sx+hw,sy+hh];
+   if(hit(r))continue;placed.push(r);
+   lx.save();lx.translate(sx,sy);lx.rotate(a);lx.strokeText(nm,0,0);lx.fillText(nm,0,0);lx.restore();
+  }
+ }
+}
+function scaleBar(){
+ const target=110/view.k,p=Math.pow(10,Math.floor(Math.log10(target)));let m=p;for(const f of [1,2,5,10]){if(f*p<=target)m=f*p;}
+ $('#scB').style.width=(m*view.k)+'px';$('#scT').textContent=m>=1000?(m/1000)+' km':m+' m';
+}
+function s2w(x,y){const r=cv.getBoundingClientRect();return [view.cx+(x-r.left-W/2)/view.k,view.cy-(y-r.top-Hh/2)/view.k];}
+function zoomAt(x,y,f){const [wx,wy]=s2w(x,y);const r=cv.getBoundingClientRect();view.k=Math.max(fitK*.6,Math.min(14,view.k*f));view.cx=wx-(x-r.left-W/2)/view.k;view.cy=wy+(y-r.top-Hh/2)/view.k;draw();}
+const pts=new Map();let moved=false,pinch0=0,k0=1;
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);moved=false;if(pts.size===2){const [a,b]=[...pts.values()];pinch0=Math.hypot(a[0]-b[0],a[1]-b[1]);k0=view.k;}});
+cv.addEventListener('pointermove',e=>{
+ if(pts.has(e.pointerId)){
+  const o=pts.get(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);
+  if(pts.size===2){const [a,b]=[...pts.values()];const d=Math.hypot(a[0]-b[0],a[1]-b[1]);const f=d/pinch0*k0/view.k;zoomAt((a[0]+b[0])/2,(a[1]+b[1])/2,f);moved=true;return;}
+  const dx=e.clientX-o[0],dy=e.clientY-o[1];if(Math.abs(dx)+Math.abs(dy)>0){moved=true;view.cx-=dx/view.k;view.cy+=dy/view.k;draw();}
+ }else if(e.pointerType==='mouse'){hover(e.clientX,e.clientY);ovTip(e.clientX,e.clientY);}
+});
+function end(e){const was=pts.size===1&&!moved;pts.delete(e.pointerId);if(was){ovTip(e.clientX,e.clientY);const [wx,wy]=s2w(e.clientX,e.clientY);const s=pick(wx,wy);if(s>=0&&s!==sel){sel=s;showCard(s,true);}else{sel=-1;hov=-1;showCard(e.pointerType==='mouse'?pick(wx,wy):-1,false);}draw();}}
+cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',e=>pts.delete(e.pointerId));
+cv.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.clientX,e.clientY,Math.exp(-e.deltaY*(e.ctrlKey?.01:.0015)));},{passive:false});
+cv.addEventListener('dblclick',e=>zoomAt(e.clientX,e.clientY,2));
+cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&hov>=0){hov=-1;if(sel<0)showCard(-1);draw();}});
+function hover(x,y){if(sel>=0)return;const [wx,wy]=s2w(x,y);const s=pick(wx,wy);if(s!==hov){hov=s;showCard(s,false);draw();}}
+$('#cx').onclick=()=>{sel=-1;hov=-1;showCard(-1);draw();};addEventListener('keydown',e=>{if(e.key==='Escape'&&sel>=0){sel=-1;showCard(-1);draw();}});
+$('#zi').onclick=()=>zoomAt(innerWidth/2,innerHeight/2,1.6);$('#zo').onclick=()=>zoomAt(innerWidth/2,innerHeight/2,1/1.6);$('#zr').onclick=()=>{fit();draw();};
+const esc=x=>String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const TNAME={PC:'Permis de construire',PD:'Permis de démolir',PA:"Permis d'aménager",DP:'Déclaration préalable',DT:'Déclaration de travaux',RV:'Ravalement'};
+const fdate=d=>d?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):'';
+const NAFD={"01": "Culture et production animale", "02": "Sylviculture", "03": "Pêche et aquaculture", "05": "Extraction de houille", "06": "Extraction d'hydrocarbures", "07": "Extraction de minerais métalliques", "08": "Autres industries extractives", "09": "Soutien aux industries extractives", "10": "Industries alimentaires", "11": "Fabrication de boissons", "12": "Produits à base de tabac", "13": "Fabrication de textiles", "14": "Industrie de l'habillement", "15": "Cuir et chaussure", "16": "Travail du bois", "17": "Papier et carton", "18": "Imprimerie", "19": "Cokéfaction et raffinage", "20": "Industrie chimique", "21": "Industrie pharmaceutique", "22": "Caoutchouc et plastiques", "23": "Produits minéraux non métalliques", "24": "Métallurgie", "25": "Produits métalliques", "26": "Informatique, électronique, optique", "27": "Équipements électriques", "28": "Machines et équipements", "29": "Industrie automobile", "30": "Autres matériels de transport", "31": "Fabrication de meubles", "32": "Autres industries manufacturières", "33": "Réparation et installation de machines", "35": "Électricité, gaz, vapeur", "36": "Eau", "37": "Eaux usées", "38": "Déchets", "39": "Dépollution", "41": "Construction de bâtiments", "42": "Génie civil", "43": "Travaux de construction spécialisés", "45": "Commerce et réparation automobile", "46": "Commerce de gros", "47": "Commerce de détail", "49": "Transports terrestres", "50": "Transports par eau", "51": "Transports aériens", "52": "Entreposage et auxiliaires de transport", "53": "Poste et courrier", "55": "Hébergement", "56": "Restauration", "58": "Édition", "59": "Cinéma, vidéo, télévision, musique", "60": "Programmation et diffusion", "61": "Télécommunications", "62": "Programmation et conseil informatique", "63": "Services d'information", "64": "Services financiers", "65": "Assurance", "66": "Auxiliaires financiers et d'assurance", "68": "Activités immobilières", "69": "Juridique et comptable", "70": "Sièges sociaux, conseil de gestion", "71": "Architecture et ingénierie", "72": "Recherche-développement", "73": "Publicité et études de marché", "74": "Autres activités spécialisées et techniques", "75": "Vétérinaires", "77": "Location et location-bail", "78": "Activités liées à l'emploi", "79": "Agences de voyage", "80": "Enquêtes et sécurité", "81": "Services aux bâtiments, paysagisme", "82": "Soutien administratif aux entreprises", "84": "Administration publique", "85": "Enseignement", "86": "Santé humaine", "87": "Hébergement médico-social", "88": "Action sociale sans hébergement", "90": "Arts et spectacle", "91": "Bibliothèques, musées", "92": "Jeux d'argent", "93": "Sport, loisirs", "94": "Organisations associatives", "95": "Réparation d'ordinateurs et biens personnels", "96": "Autres services personnels", "97": "Ménages employeurs", "98": "Ménages, activités indifférenciées", "99": "Extra-territoriales"},TRN={"NN": "effectif non renseigné", "00": "0 salarié", "01": "1 à 2 salariés", "02": "3 à 5 salariés", "03": "6 à 9 salariés", "11": "10 à 19 salariés", "12": "20 à 49 salariés", "21": "50 à 99 salariés", "22": "100 à 199 salariés", "31": "200 à 249 salariés", "32": "250 à 499 salariés", "41": "500 à 999 salariés", "42": "1 000 à 1 999 salariés", "51": "2 000 à 4 999 salariés", "52": "5 000 à 9 999 salariés", "53": "10 000 salariés et plus"},GNM=["Autre", "Bureaux, conseil, finance, numérique", "Immobilier", "Commerce", "Hôtellerie, restauration", "Santé et social", "Enseignement", "Administration, associations, culture, loisirs", "Construction, industrie, transport, services aux bâtiments", "Services personnels et autres"];
+const SIRD={};function loadSir(a){return Promise.resolve(null);if(!SIRD[a])SIRD[a]=getJson('sir_'+String(a).padStart(2,'0')+'.json').catch(()=>null);return SIRD[a];}
+const ARRD={};let CVPD=null;
+function loadArr(a){if(!ARRD[a])ARRD[a]=getJson('arr_'+String(a).padStart(2,'0')+'.json').catch(()=>null);return ARRD[a];}
+function loadCvp(){if(!CVPD)CVPD=getJson('cvp.json').catch(()=>null);return CVPD;}
+const card=$('#card'),cb=$('#cb');let cardFor=-1;
+const eur=v=>nf.format(Math.round(v))+' €';
+const m2f=v=>nf.format(Math.round(v*10)/10)+' m²';
+function baseInfo(s,A,P){
+ const per=PER_LAB[PMAP[PE[s]]??11];
+ const row=(k,v)=>'<div><span class="k">'+k+' : </span>'+v+'</div>';
+ const toit=SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'—';
+ const niv=Math.max(1,Math.round(HM[s]/10/3)),shon=Math.round(area[s]*niv);
+ const ad=A&&A[s];
+ let head;
+ if(ad&&ad.length){head='<div class="t">'+esc(ad[0])+'</div>'+(ad.length>1?'<div class="k adl">'+(ad.length<=6?'Aussi : '+ad.slice(1).map(esc).join(' · '):ad.length+' adresses : '+ad.slice(0,6).map(esc).join(' · ')+' …')+'</div>':'');}
+ else if(A===undefined)head='<div class="t">Adresse…</div>';
+ else head='<div class="t">Pas d\'adresse rattachée</div><div class="k adl">Annexe, cour ou bâtiment sans numéro dans la Base Adresse Nationale</div>';
+ const pl=P&&P[s];
+ return head+'<div class="sb">'+(AN[s]?'Construit en '+AN[s]:'Date de construction inconnue')+' · Paris '+(ARR[s]?ARR[s]+'e':'')+'</div>'
+  +row('Période APUR',per)+row('Réhabilitation',RE[s]>=1900?RE[s]:'—')+row('Surélévation',SU[s]?SU[s]:'—')
+  +row('Hauteur médiane / max',(HM[s]/10).toFixed(1).replace('.',',')+' m / '+(HX[s]/10).toFixed(1).replace('.',',')+' m')
+  +row('Niveaux estimés',niv+' (hauteur médiane ÷ 3 m)')
+  +row('Emprise au sol',nf.format(Math.round(area[s]))+' m²')+row('Surface plancher estimée',nf.format(shon)+' m² (indicatif)')
+  +row('Toiture',toit)+(IG[s]?row('Immeuble de grande hauteur','oui'):'')
+  +(pl&&pl.length?row('Parcelle'+(pl.length>1?'s':'')+' cadastrale'+(pl.length>1?'s':''),pl.slice(0,4).map(x=>esc(x.slice(8,10)+' '+x.slice(10).replace(/^0+/,''))).join(', ')+(pl.length>4?' …':'')):'')
+  +(ad&&ad.length?'<div style="margin-top:5px"><a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(ad[0]+', Paris')+'" target="_blank" rel="noopener">Voir sur Google Maps</a></div>':'');
+}
+function dvfHtml(L,lim,pin){
+ return L.slice(0,lim).map(e=>{
+  const [mid,dt,nat,v,parts,nr,how]=e;
+  let pm='';
+  const res=parts.filter(p=>p[0]==='Appartement'||p[0]==='Maison');
+  const sm=res.reduce((a,p)=>a+(p[3]>0?p[3]:p[1]),0);
+  if(nat==='Vente'&&v>0&&nr<=6&&how<=2&&sm>=9)pm=' <span class="pm">≈ '+eur(v/sm)+'/m²</span>';
+  const pl=parts.map(p=>{let x=esc(p[0]);const b=[];if(p[1]>0)b.push(p[1]+' m² bâtis');if(p[3]>0)b.push('Carrez '+nf.format(p[3])+' m²');if(p[2]>0)b.push(p[2]+' p.');if(p[4]>0&&p[0].startsWith('Terrain'))b.push(nf.format(p[4])+' m² de terrain');return x+(b.length?' : '+b.join(', '):'');}).join('<br>');
+  return '<div class="dsr"><div class="hd"><span class="ty">'+esc(nat)+'</span><span class="dtt">'+fdate(dt)+'</span><span class="val">'+(v>0?eur(v):'Valeur non renseignée')+'</span>'+pm+'</div>'
+   +(pl?'<div class="ds">'+pl+'</div>':'')
+   +'<div class="dm">'+(nr>1?'Transaction de '+nr+' lots ou biens : valeur pour l’ensemble. ':'')+(how>1?'Rattachement approximatif ('+(how===2?'parcelle':'localisation')+'). ':'')+'<span>'+esc(mid)+'</span></div></div>';}).join('')
+  +(L.length>lim?'<div class="k" style="padding-top:4px">'+(pin?(L.length-lim)+' ventes plus anciennes non affichées.':'+ '+(L.length-lim)+' autres : cliquer pour la fiche complète.')+'</div>':'');
+}
+const REGL='https://regles-urbanisme.paris.fr/plu-bioclimatique/jsp/site/Portal.jsp?document_id=198&portlet_id=45',CARTO='https://regles-urbanisme.paris.fr/plu-bioclimatique/jsp/site/Portal.jsp?page_id=3',gpuUrl=(lo,la)=>'https://www.geoportail-urbanisme.gouv.fr/map/#tile=1&lon='+lo.toFixed(5)+'&lat='+la.toFixed(5)+'&zoom=18';
+const ZL=['','UG','UGSU','UV','N','PSMV','Autre'];
+function urbHtml(s,U,pin){
+ if(!ZO[s]&&!HP[s]&&!PF[s]&&!RS[s]&&!ARN[s])return '';
+ const row=(k,v)=>'<div><span class="k">'+k+' : </span>'+v+'</div>';
+ const f=PF[s],bd=[];
+ if(f&1)bd.push(['Monument historique','#d53e4f']);else if(f&2)bd.push(['Immeuble protégé','#d53e4f']);
+ if(f&4)bd.push(['Protégé par le PLU','#f46d43']);
+ if(f&16)bd.push(['Bâtiment moderne','#3288bd']);if(f&32)bd.push(['Volumétrie à conserver','#3288bd']);if(f&64)bd.push(['Parcelle signalée','#b07d1a']);
+ if(f&8)bd.push(['Périmètre de protection','#b07d1a']);
+ if(RS[s]===1)bd.push(['Carrières','#8a5a2b']);if(RS[s]===2)bd.push(['Gypse','#6b6b6b']);if(RS[s]===3)bd.push(['Zone inondable','#0077b6']);
+ let o='<h3>Urbanisme et patrimoine</h3>';
+ if(ZO[s])o+=row('Zone du PLU',ZL[ZO[s]]);
+ if(HP[s]){const hx=HX[s]/10,m=HP[s]-hx;o+=row('Plafond de hauteur du PLU',HP[s]+' m <span class="k">(hauteur max existante '+hx.toFixed(1).replace('.',',')+' m, '+(m<0?'dépasse de '+(-m).toFixed(1).replace('.',',')+' m':'marge '+m.toFixed(1).replace('.',',')+' m')+', indicatif)</span>');}
+ if(bd.length)o+='<div class="up">'+bd.map(b=>'<span class="bdg" style="color:'+b[1]+'">'+esc(b[0])+'</span>').join('')+'</div>';
+ if(ARN[s])o+=row('Fouilles archéologiques à moins de 40 m',ARN[s]);
+ if(pin){const [lo,la]=bldLonLat(s),a=(u,x)=>'<div class="dm" style="margin:2px 0"><a href="'+u+'" target="_blank" rel="noopener">'+x+'</a></div>';
+  o+=a(REGL,'Règlement du PLU bioclimatique (texte, portail de la Ville de Paris)')+a(gpuUrl(lo,la),'Plan de zonage sur le Géoportail de l\'urbanisme, centré sur le bâtiment')+a(CARTO,'Cartographie des règles à l\'adresse (portail de la Ville de Paris, saisir l\'adresse ou la parcelle)');}
+ if(!pin)return o;
+ if(!U&&(f||RS[s]||ARN[s]))return o+'<div class="k">Détail en cours de chargement…</div>';
+ if(!U)return o;
+ if(U.mh)for(const m of U.mh)o+='<div class="dsr"><div class="hd"><span class="ty">'+(m[3]==='MH'?'Monument historique':'Immeuble protégé')+'</span>'+(m[1]?'<span class="dtt">protégé en '+m[1]+'</span>':'')+'</div><div class="ds">'+esc(m[0])+'</div>'+(m[2]?'<div class="dm">Base Mérimée : '+esc(m[2])+'</div>':'')+'</div>';
+ if(U.pl)for(const m of U.pl)o+='<div class="dsr"><div class="hd"><span class="ty">'+esc(m[0])+'</span><span class="dtt">PLU</span></div>'+(m[2]?'<div class="ds">'+esc(m[2])+'</div>':'')+(m[1]?'<div class="dm">'+esc(m[1])+'</div>':'')+'</div>';
+ if(U.pp)o+='<div class="dm" style="margin:3px 0">'+U.pp.map(esc).join(' · ')+'</div>';
+ if(U.fl)o+=U.fl.map(x=>'<div class="dm">'+esc(x)+'</div>').join('');
+ if(U.ar){o+='<h3>Fouilles archéologiques proches</h3>';for(const a of U.ar)o+='<div class="dsr"><div class="hd"><span class="ty">'+esc(a[2]||'Opération')+'</span><span class="dtt">'+esc(a[1])+'</span><span class="k">à '+a[5]+' m</span></div><div class="ds">'+esc(a[0])+(a[4].length?' <span class="k">('+a[4].join(', ')+')</span>':'')+'</div>'+(a[3]?'<div class="dm">'+esc(a[3])+'</div>':'')+'</div>';}
+ return o;
+}
+async function showCard(s,pin){
+ if(s<0){card.hidden=true;cardFor=-1;return;}
+ card.hidden=false;card.classList.toggle('pin',!!pin);cardFor=s;
+ const lim=pin?60:3;
+ const body=h=>{if(cardFor!==s)return;cb.innerHTML=h;};
+ body(baseInfo(s,undefined,null)+'<div class="k" style="margin-top:8px">Chargement…</div>');
+ const [D,C,SR]=await Promise.all([loadArr(ARR[s]),CN[s]?loadCvp():null,(SNE[s]||SCL[s])?loadSir(ARR[s]):null]);
+ if(cardFor!==s)return;
+ const A=D?D.a:{},P=D?D.p:{};
+ let out=baseInfo(s,A,P)+urbHtml(s,D&&D.u&&D.u[s],pin);
+ const V=D&&D.v&&D.v[s];
+ if(DN[s]){
+  out+='<h3>Ventes DVF 2021-2025 ('+DN[s]+')'+(PM[s]?' · médiane '+eur(PM[s])+'/m²':'')+'</h3>'+(V?dvfHtml(V,pin?30:2,pin):'<div class="k">Détail indisponible.</div>');
+ }
+ if(SNE[s]||SCL[s]){
+  const R=SR&&SR.b[s];
+  out+='<h3>Occupants (Sirene) : '+nf.format(SNE[s])+' établissement'+(SNE[s]>1?'s':'')+' actif'+(SNE[s]>1?'s':'')+'</h3>';
+  if(R){
+   const eff=R[1];
+   out+='<div class="dm" style="margin-bottom:3px">'+(eff>0?'Effectif salarié estimé ≈ '+nf.format(eff)+' (tranches Sirene, indicatif). ':'Effectifs non renseignés. ')+(R[2]?R[2]+' établissement'+(R[2]>1?'s':'')+' fermé'+(R[2]>1?'s':'')+' depuis 2024. ':'')+'</div>';
+   if(SNE[s]>=30)out+='<div class="dm" style="color:#b3303f;margin-bottom:3px">Domiciliation probable : beaucoup d\'entreprises déclarées à cette adresse, sans activité forcément sur place.</div>';
+   if(R[3]&&R[3].length)out+='<div class="dm" style="margin-bottom:3px">'+R[3].map(g=>esc(GNM[g[0]])+' ('+g[1]+')').join(' · ')+'</div>';
+   out+=R[4].slice(0,pin?30:4).map(e=>{const dv=NAFD[(e[1]||'').slice(0,2)]||'';return '<div class="dsr"><div class="hd"><span class="ty">'+esc(e[0])+'</span>'+'</div><div class="ds">'+esc(dv)+(e[1]?' <span class="k">('+esc(e[1])+')</span>':'')+'</div><div class="dm">'+(e[2]?'Créé en '+e[2]+' · ':'')+esc(TRN[e[3]]||'effectif non renseigné')+'</div></div>';}).join('');
+   if(SNE[s]>(pin?30:4))out+='<div class="k" style="padding-top:4px">'+(pin?nf.format(SNE[s]-30)+' autres établissements non listés (30 plus importants affichés).':'+ '+nf.format(SNE[s]-4)+' autres : cliquer pour la fiche complète.')+'</div>';
+  }else out+='<div class="k">Détail indisponible.</div>';
+ }
+ out+='<h3>Dossiers d\'urbanisme ('+nf.format(NT[s])+')</h3>';
+ if(NT[s]){
+  const L=D&&D.b[s];
+  if(!L)out+='<div class="k">Détail indisponible.</div>';
+  else{
+   out+=L.slice(0,lim).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';const cl=/^(Favorable|Accord)/.test(dec)?'ok':/^(Défavorable|Rejet|Irrecevable)/.test(dec)?'no':'nt';
+    return '<div class="dsr"><div class="hd"><span class="ty">'+esc(TNAME[D.t[e[2]]])+'</span><span class="dtt">'+fdate(e[1])+'</span><span class="dec '+cl+'">'+esc(dec)+'</span></div>'
+     +(e[4]?'<div class="ds">'+esc(e[4])+'</div>':'')+'<div class="dm">'+esc(e[0])+(e[5]?' · '+esc(e[5]):'')+'</div></div>';}).join('');
+   if(L.length>lim)out+='<div class="k" style="padding-top:4px">'+(pin?nf.format(L.length-lim)+' dossiers plus anciens non affichés.':'+ '+nf.format(L.length-lim)+' autres : cliquer pour la fiche complète.')+'</div>';
+  }
+ }else out+='<div class="k">Aucun dossier rattaché à ce bâtiment.</div>';
+ if(CN[s]){
+  const L=C&&C.b[s];
+  out+='<h3>Commission du Vieux Paris ('+CN[s]+')</h3>'+(L?L.slice(0,pin?20:2).map(e=>'<div class="dsr"><div class="hd"><span class="ty">'+esc(e[1]||'Sans résolution')+'</span><span class="dtt">'+fdate(e[0])+'</span>'+(e[2]?'<span class="k">'+esc(e[2])+'</span>':'')+'</div>'
+   +(e[3]&&e[3]!=='Aucune'?'<div class="dm">'+esc(e[3])+'</div>':'')+(e[4]?'<div class="ds">'+esc(e[4])+'</div>':'')+(pin&&e[5]?'<div class="dm"><a href="'+esc(e[5])+'" target="_blank" rel="noopener">Compte rendu de séance (PDF)</a></div>':'')+'</div>').join(''):'<div class="k">Détail indisponible.</div>');
+ }
+ if(pin){PCTX={s,A,P,D,C,SR,V:V};out+=extHtml(s,A,D&&D.u&&D.u[s]);}
+ body(out);
+}
+/* ---------- calques superposés ---------- */
+const OVL=[
+{g:'PLU : gabarit',items:[
+ {id:'zonage',n:'Zones du PLU',k:'poly',a:.3,cols:['#4f8fd6','#7a6bd6','#3fae7a','#7a9a3a','#c9824a','#9a9aa8'],lab:['UG : urbaine générale','UGSU : urbaine générale, services urbains','UV : urbaine verte','N : naturelle','PSMV : secteur sauvegardé','Autre']},
+ {id:'hauteur',n:'Plafond de hauteur',k:'poly',a:.38,cols:['#6fc3a0','#e3d36b','#f0a24c','#d9544d','#9a9aa8'],lab:['18 m','25 m','31 m','37 m','Autre']},
+ {id:'hmc',n:'Hauteur max constructible (NGF)',k:'poly',a:.35,cols:['#e07fb0'],lab:['Zone concernée']},
+ {id:'filet',n:'Filets de hauteur',k:'line',cols:['#ff8c42','#ffd166','#06d6a0','#4cc9f0','#b388ff','#ff6b9d','#c0e218','#f4f4f4','#9a9aa8'],lab:['Code B','Code N','Code P','Code G','Code M','Code V','Code K','Code O','Autre code']},
+ {id:'fuseau',n:'Fuseaux de hauteur (NGF)',k:'poly',a:.3,cols:['#e8b04a'],lab:['Fuseau']},
+ {id:'ecm',n:'Emprises ECM',k:'poly',a:.35,cols:['#5ec4c4','#e6a23c'],lab:['Sans hauteur max','Avec hauteur max']},
+ {id:'ecml',n:'Limites des emprises ECM',k:'line',cols:['#5ec4c4'],lab:['Limite']},
+ {id:'ecbbv',n:'Emprises ECBBV',k:'poly',a:.35,cols:['#c58af9'],lab:['Emprise']},
+ {id:'isri',n:'Lignes ISRI',k:'line',cols:['#f94144'],lab:['Ligne']}]},
+{g:'PLU : végétal et paysage',items:[
+ {id:'ebc',n:'Espaces boisés classés',k:'poly',a:.5,cols:['#1b7f3b'],lab:['EBC']},
+ {id:'evp',n:'Espaces verts protégés',k:'poly',a:.45,cols:['#4cc26e'],lab:['EVP']},
+ {id:'elpv',n:'ELPV',k:'poly',a:.45,cols:['#9be15d'],lab:['ELPV']},
+ {id:'jpp',n:'JPP',k:'poly',a:.45,cols:['#c6e377'],lab:['JPP']},
+ {id:'arbal',n:'Alignements d\'arbres',k:'line',cols:['#35c46a'],lab:['Alignement']},
+ {id:'arbre',n:'Arbres remarquables',k:'pt',cols:['#35c46a'],lab:['Arbre']},
+ {id:'mce',n:'Zones MCE',k:'poly',a:.4,cols:['#70d6a8'],lab:['Zone']}]},
+{g:'PLU : secteurs et réserves',items:[
+ {id:'logsoc',n:'Logement social (ZDLS, ZNDLS, ZHDLS)',k:'poly',a:.35,cols:['#ef767a','#49beaa','#eeb868'],lab:['ZDLS','ZNDLS','ZHDLS']},
+ {id:'equidest',n:'Équidest',k:'poly',a:.4,cols:['#a78bfa'],lab:['Périmètre']},
+ {id:'sectpart',n:'Secteurs SMV, SDP, SOA',k:'poly',a:.35,cols:['#f77f00','#4895ef','#7bd389'],lab:['SMV','SDP','SOA']},
+ {id:'resl',n:'Réserves de logement',k:'poly',a:.55,cols:['#ff5d8f'],lab:['Réserve']},
+ {id:'rese',n:'Réserves d\'équipement',k:'poly',a:.55,cols:['#ffb703'],lab:['Réserve']},
+ {id:'resv',n:'Réserves de voirie',k:'poly',a:.55,cols:['#fb8500'],lab:['Réserve']},
+ {id:'ploc',n:'Localisation d\'équipements',k:'poly',a:.5,cols:['#8ecae6'],lab:['Périmètre']},
+ {id:'eal',n:'EAL',k:'poly',a:.45,cols:['#ffd6a5'],lab:['EAL']},
+ {id:'stcal',n:'STCAL',k:'poly',a:.45,cols:['#bdb2ff'],lab:['STCAL']},
+ {id:'hebt',n:'Secteur des tours',k:'poly',a:.2,cols:['#ffadad'],lab:['Secteur']},
+ {id:'pai',n:'Activités productives protégées',k:'pt',cols:['#f4a261'],lab:['Point']},
+ {id:'pepe',n:'Pépinières et incubateurs protégés',k:'pt',cols:['#e9c46a'],lab:['Point']},
+ {id:'agri',n:'Agriculture urbaine',k:'pt',cols:['#80ed99'],lab:['Point']},
+ {id:'protcom',n:'Protection du commerce (linéaires)',k:'line',cols:['#ff9f1c'],lab:['Linéaire']},
+ {id:'batch',n:'BCD',k:'poly',a:.5,cols:['#ffc6ff'],lab:['Emprise']}]},
+{g:'Protections patrimoniales',items:[
+ {id:'mh',n:'Monuments historiques (Apur)',k:'poly',a:.7,cols:['#ff4d6d','#ff9e00','#c77dff'],lab:['Monument historique','Protection ACR','Autre protection']},
+ {id:'pp',n:'Périmètres de protection',k:'poly',a:.18,cols:['#e76f51','#2a9d8f','#e9c46a','#8ab17d','#9a9aa8'],lab:['Abords de monuments historiques','Site patrimonial remarquable','Site classé','Site inscrit','Autre périmètre']},
+ {id:'pvp',n:'Bâtiments protégés par le PLU',k:'poly',a:.65,cols:['#ff6b6b'],lab:['Bâtiment ou élément protégé']},
+ {id:'epp',n:'Éléments particuliers protégés',k:'pt',cols:['#ff6b6b'],lab:['Point']},
+ {id:'ps',n:'Parcelles signalées',k:'pt',cols:['#ffd60a'],lab:['Point']},
+ {id:'batmod',n:'Bâtiments modernes',k:'poly',a:.6,cols:['#4cc9f0'],lab:['Bâtiment moderne']},
+ {id:'vec',n:'Volumétrie existante à conserver',k:'poly',a:.6,cols:['#f72585'],lab:['VEC']},
+ {id:'gdmag',n:'Grands magasins',k:'poly',a:.6,cols:['#b5179e'],lab:['Grand magasin']}]},
+{g:'Sous-sol et risques',items:[
+ {id:'carr',n:'Carrières (secteurs de risque)',k:'poly',a:.45,cols:['#d4a373'],lab:['Secteur']},
+ {id:'gyps',n:'Gypse (secteurs de risque)',k:'poly',a:.45,cols:['#e5e5e5'],lab:['Secteur']},
+ {id:'ppri',n:'Zones inondables (PPRI)',k:'poly',a:.4,cols:['#90e0ef','#48cae4','#0096c7','#0077b6','#e63946','#80b918'],lab:['Bleue claire','Bleue claire hors Seine','Bleue sombre','Bleue sombre hors Seine','Rouge','Verte']}]},
+{g:'Archéologie',items:[
+ {id:'archeo',n:'Opérations archéologiques',k:'pt',cols:['#c9a227','#e07a5f','#f2cc8f','#81b29a','#7aa2f7','#d6d6d6','#9a9aa8'],lab:['Préhistoire','Protohistoire','Antiquité','Moyen Âge','Temps modernes','Époque contemporaine','Période non précisée']}]},
+{g:'Mobilité',items:[
+ {id:'mob',n:'Comptages de trafic (vélo, voiture, etc.)',k:'pt',cols:['#7fb2d6','#4cc9f0','#ffd166','#ef476f'],lab:['Moins de 500 vélos par jour ou pas de comptage vélo','500 à 1 500 vélos par jour','1 500 à 4 000 vélos par jour','Plus de 4 000 vélos par jour']}]}
+];
+const OVO=[];for(const g of OVL)for(const o of g.items){o.on=false;o.d=null;OVO.push(o);}
+function decPath(p){const n=p.length>>1,a=new Float64Array(n*2);let x=p[0],y=p[1];a[0]=x/10;a[1]=y/10;for(let i=1;i<n;i++){x+=p[2*i];y+=p[2*i+1];a[2*i]=x/10;a[2*i+1]=y/10;}return a;}
+async function loadOv(o){
+ if(o.d)return o.d;
+ const j=await getJson('ov_'+o.id+'.json'),nc=o.cols.length;
+ const d={k:j.k,P:Array.from({length:nc},()=>new Path2D()),pts:[],hit:[]};
+ for(const f of j.f){
+  const c=Math.min(f[0],nc-1);
+  if(j.k==='pt'){d.pts.push([f[2]/10,f[3]/10,c,f[1]]);continue;}
+  const rings=f[2].map(decPath),P=d.P[c];
+  for(const a of rings){P.moveTo(a[0],a[1]);for(let i=2;i<a.length;i+=2)P.lineTo(a[i],a[i+1]);if(j.k==='poly')P.closePath();}
+  if(f[1]&&j.k==='poly'){let x0=1e18,y0=1e18,x1=-1e18,y1=-1e18;const a=rings[0];for(let i=0;i<a.length;i+=2){if(a[i]<x0)x0=a[i];if(a[i]>x1)x1=a[i];if(a[i+1]<y0)y0=a[i+1];if(a[i+1]>y1)y1=a[i+1];}d.hit.push({p:f[1],r:rings,b:[x0,y0,x1,y1]});}
+ }
+ o.d=d;return d;
+}
+let mark=null;
+function drawOv(){
+ const k=view.k;
+ lx.setTransform(dpr*k,0,0,-dpr*k,dpr*(W/2-view.cx*k),dpr*(Hh/2+view.cy*k));
+ lx.lineJoin='round';
+ let pts=false;
+ for(const o of OVO){
+  if(!o.on||!o.d)continue;const d=o.d;
+  if(d.k==='poly'){d.P.forEach((P,i)=>{lx.globalAlpha=o.a;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');lx.globalAlpha=Math.min(1,o.a+.4);lx.lineWidth=.9/k;lx.strokeStyle=o.cols[i];lx.stroke(P);});}
+  else if(d.k==='line'){lx.globalAlpha=.95;lx.lineWidth=1.7/k;d.P.forEach((P,i)=>{lx.strokeStyle=o.cols[i];lx.stroke(P);});}
+  else pts=true;
+ }
+ lx.globalAlpha=1;lx.setTransform(dpr,0,0,dpr,0,0);
+ if(pts){
+  const X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;
+  for(const o of OVO){
+   if(!o.on||!o.d||o.d.k!=='pt')continue;
+   lx.lineWidth=1.2;lx.strokeStyle='rgba(15,26,36,.9)';
+   for(const p of o.d.pts){const sx=X(p[0]),sy=Y(p[1]);if(sx<-8||sy<-8||sx>W+8||sy>Hh+8)continue;lx.fillStyle=o.cols[p[2]];lx.beginPath();lx.arc(sx,sy,o.id==='mob'?4+p[2]*1.5:4,0,6.2832);lx.fill();lx.stroke();}
+  }
+ }
+ if(mark){const sx=(mark.x-view.cx)*k+W/2,sy=Hh/2-(mark.y-view.cy)*k;lx.lineWidth=2.5;lx.strokeStyle='#fff';lx.beginPath();lx.arc(sx,sy,16,0,6.2832);lx.stroke();lx.lineWidth=1.2;lx.strokeStyle='#1A486A';lx.beginPath();lx.arc(sx,sy,18.5,0,6.2832);lx.stroke();}
+}
+function inRings(R,x,y){let c=false;for(const a of R){for(let i=0,j=a.length-2;i<a.length;j=i,i+=2){const xi=a[i],yi=a[i+1],xj=a[j],yj=a[j+1];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c;}}return c;}
+const tip=$('#tip');
+function ovTip(x,y){
+ const [wx,wy]=s2w(x,y),tol=7/view.k,L=[];
+ for(const o of OVO){
+  if(!o.on||!o.d)continue;const d=o.d;
+  if(d.k==='pt'){let best=null,bd=tol*tol;for(const p of d.pts){const dx=p[0]-wx,dy=p[1]-wy,dd=dx*dx+dy*dy;if(dd<bd){bd=dd;best=p;}}if(best&&best[3])L.push([o.n,best[3]]);}
+  else if(d.k==='poly'){for(const h of d.hit){if(wx<h.b[0]||wx>h.b[2]||wy<h.b[1]||wy>h.b[3])continue;if(inRings(h.r,wx,wy)){L.push([o.n,h.p]);break;}}}
+ }
+ if(!L.length){tip.hidden=true;return;}
+ tip.innerHTML=L.slice(0,5).map(e=>'<b>'+esc(e[0])+'</b><br>'+esc(e[1])).join('<hr>');tip.hidden=false;
+ const w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.min(innerWidth-w-8,x+14)+'px';tip.style.top=Math.min(innerHeight-h-8,y+14)+'px';
+}
+{
+ const box=$('#ovl');
+ for(const g of OVL){
+  const dt=document.createElement('details');dt.innerHTML='<summary>'+g.g+'</summary>';
+  for(const o of g.items){
+   const w=document.createElement('div');
+   const l=document.createElement('label');l.className='ck';
+   l.innerHTML='<input type="checkbox"><i class="sw2" style="background:'+o.cols[0]+'"></i><span>'+o.n+'</span>';
+   const lg=document.createElement('div');lg.className='ovlg';lg.hidden=true;
+   if(o.lab.length>1)lg.innerHTML=o.lab.map((t,i)=>'<div><i class="sw2" style="background:'+o.cols[i]+'"></i>'+t+'</div>').join('');
+   l.firstChild.onchange=async e=>{
+    o.on=e.target.checked;lg.hidden=!o.on||o.lab.length<2;
+    if(o.on&&!o.d){l.classList.add('ld');try{await loadOv(o);}catch(err){o.on=false;e.target.checked=false;lg.hidden=true;l.title='Chargement impossible';}l.classList.remove('ld');}
+    if(!o.on)tip.hidden=true;draw();
+   };
+   w.appendChild(l);w.appendChild(lg);dt.appendChild(w);
+  }
+  box.appendChild(dt);
+ }
+}
+/* ---------- recherche d'adresse ---------- */
+let ADDR=null;
+const nz=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’'\-]/g,' ').replace(/\s+/g,' ').trim();
+function loadAddr(){if(!ADDR)ADDR=getJson('addr.json').then(j=>j.map(e=>({n:e[0],z:nz(e[0]),a:e[1]}))).catch(()=>null);return ADDR;}
+const qi=$('#q'),sg=$('#sg');let sug=[],sgi=-1;
+async function suggest(){
+ const raw=nz(qi.value);if(raw.length<2){sg.hidden=true;return;}
+ const A=await loadAddr();if(!A)return;
+ const toks=raw.split(' '),ni=toks.findIndex(t=>/^\d+(bis|ter|quater|b|t|q)?$/.test(t));
+ const num=ni>=0?toks[ni]:null,ws=toks.filter((_,i)=>i!==ni);
+ if(!ws.length){sg.hidden=true;return;}
+ const joined=ws.join(' ');
+ let c=A.filter(s=>ws.every(w=>s.z.includes(w)));
+ c.sort((a,b)=>((a.z.startsWith(joined)?0:a.z.includes(joined)?1:2)-(b.z.startsWith(joined)?0:b.z.includes(joined)?1:2))||a.n.length-b.n.length);
+ sug=[];
+ for(const s of c.slice(0,14)){
+  if(num){
+   const nn=num.replace(/(bis|ter|quater)$/,m=>' '+m).replace(/(\d)(b|t|q)$/,(m,d,l)=>d+' '+({b:'bis',t:'ter',q:'quater'}[l]));
+   for(const e of s.a){if(nz(e[0])===nn){sug.push({t:e[0]+' '+s.n,s:'Paris '+(e[3]?(e[3]===1?'1er':e[3]+'e'):''),x:e[1],y:e[2],k:7});break;}}
+  }else{
+   let sx=0,sy=0;for(const e of s.a){sx+=e[1];sy+=e[2];}const m=s.a[s.a.length>>1];
+   sug.push({t:s.n,s:s.a.length+' numéros',x:m[1],y:m[2],k:1.8,street:true});
+  }
+  if(sug.length>=8)break;
+ }
+ sg.innerHTML=sug.length?'':'<div class="k">Aucune adresse trouvée</div>';
+ sug.forEach((r,i)=>{const d=document.createElement('div');d.innerHTML=esc(r.t)+' <span class="k">'+esc(r.s)+'</span>';d.onmousedown=e=>{e.preventDefault();goTo(r);};sg.appendChild(d);});
+ sgi=-1;sg.hidden=false;
+}
+function goTo(r){
+ sg.hidden=true;qi.value=r.t;qi.blur();
+ const wx=r.x/2,wy=r.y/2,pw=innerWidth>760?340:0;
+ view.k=r.k;view.cx=wx-pw/2/view.k;view.cy=wy;
+ if(r.street){mark=null;sel=-1;showCard(-1);draw();return;}
+ mark={x:wx,y:wy};
+ let s=pick(wx,wy);
+ if(s<0)for(const [dx,dy] of [[2,0],[-2,0],[0,2],[0,-2],[4,4],[-4,4],[4,-4],[-4,-4],[8,0],[-8,0],[0,8],[0,-8]]){s=pick(wx+dx,wy+dy);if(s>=0)break;}
+ if(s>=0){sel=s;showCard(s,true);}else{sel=-1;showCard(-1);}
+ draw();
+}
+qi.addEventListener('input',suggest);qi.addEventListener('focus',()=>{loadAddr();if(qi.value)suggest();});
+qi.addEventListener('blur',()=>setTimeout(()=>{sg.hidden=true;},150));
+qi.addEventListener('keydown',e=>{
+ const rows=[...sg.children];
+ if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();sgi=Math.max(0,Math.min(rows.length-1,sgi+(e.key==='ArrowDown'?1:-1)));rows.forEach((r,i)=>r.classList.toggle('on',i===sgi));}
+ else if(e.key==='Enter'){const r=sug[sgi>=0?sgi:0];if(r)goTo(r);}
+ else if(e.key==='Escape'){sg.hidden=true;qi.blur();}
+});
+cv.addEventListener('pointerdown',()=>{if(mark){mark=null;draw();}});
+cv.addEventListener('pointerleave',()=>{tip.hidden=true;});
+
+/* ---------- fiche PDF et ressources externes ---------- */
+const SRC={
+ apur:['Apur, « Emprise bâtie Paris », Open Data (licence ODbL)','https://www.apur.org/en/open-data-maps/open-data/built-areas-paris-and-metropolis-reading-urban-fabric'],
+ ban:['Base Adresse Nationale (BAN)','https://adresse.data.gouv.fr/'],
+ dvf:['DGFiP, « Demandes de valeurs foncières », géolocalisées par Etalab','https://www.data.gouv.fr/fr/datasets/demandes-de-valeurs-foncieres-geolocalisees/'],
+ calc:['Calcul de l\'outil à partir des données Apur (estimation indicative)',''],
+ plu:['Ville de Paris, PLU bioclimatique, Open Data','https://opendata.paris.fr/explore/?q=plub'],
+ pat:['Apur, couches « Patrimoine » (immeubles et périmètres protégés)','https://www.apur.org/en/open-data-maps/open-data/protected-heritage-paris-and-inner-suburbs-protected-areas-and-listed'],
+ arch:['Ville de Paris, Référentiel archéologique de Paris','https://opendata.paris.fr/explore/dataset/referentiel-archeologique-de-paris/'],
+ urb:['Ville de Paris, « Autorisations d\'Urbanisme - Historique » et « Dossiers récents d\'urbanisme »','https://opendata.paris.fr/explore/dataset/autorisations-durbanisme-h/'],
+ cvp:['Ville de Paris, « Commission du Vieux Paris - Adresses instruites »','https://opendata.paris.fr/explore/dataset/commission-du-vieux-paris-adresses-instruites/'],
+ gpu:['Géoportail de l\'urbanisme (État)','https://www.geoportail-urbanisme.gouv.fr/'],
+ reg:['Ville de Paris, Portail des règles d\'urbanisme (PLU bioclimatique)','https://regles-urbanisme.paris.fr/plu-bioclimatique/'],
+ sir:['Insee, base Sirene (stock du 01/11/2026)','https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/']
+};
+function bldCenter(s){const wx=(bbox[4*s]+bbox[4*s+2])/2,wy=(bbox[4*s+1]+bbox[4*s+3])/2;return [H.lon0+wx/(H.q*111320*Math.cos(H.lat0*Math.PI/180))*H.q,H.lat0+wy/(H.q*110574)*H.q];}
+function bldLonLat(s){const wx=(bbox[4*s]+bbox[4*s+2])/2,wy=(bbox[4*s+1]+bbox[4*s+3])/2;return [H.lon0+wx/(111320*Math.cos(H.lat0*Math.PI/180)),H.lat0+wy/110574];}
+const OPD='https://opendata.paris.fr/explore/dataset/',
+ dossUrl=n=>{const y=+(n.split(' ')[3]||0),rec=y>=24&&y<=40;return OPD+(rec?'dossiers-recents-durbanisme':'autorisations-durbanisme-h')+'/table/?q='+encodeURIComponent('"'+n+'"');},
+ banUrl=(a,arr)=>'https://api-adresse.data.gouv.fr/search/?limit=1&q='+encodeURIComponent(a+' 750'+String(arr||0).padStart(2,'0')+' Paris');
+let VERG=null;getJson('vergue.json').then(v=>{VERG=v;}).catch(()=>{});
+const ARKP='arko_default_67d426d4c0eab',ARKT='arko_default_64ca128917636';
+const arkUrl=(base,P,G,q)=>base+'?'+[P+'--filtreGroupes[mode]=simple',P+'--filtreGroupes[op]=AND',P+'--filtreGroupes[groupes][0]['+G+'][op]=AND',P+'--filtreGroupes[groupes][0]['+G+'][q][]='+encodeURIComponent(q),P+'--from=0',P+'--resultSize=50'].map(x=>x.replace(/\[/g,'%5B').replace(/\]/g,'%5D')).join('&');
+const archTopo=a=>arkUrl('https://archives.paris.fr/rechercher-et-consulter/faire-une-recherche-topographique',ARKT,'arko_default_64ca1320a6401',a.replace(/-/g,' '));
+const archPhoto=v=>arkUrl('https://archives.paris.fr/rechercher-dans-les-collections-photographiques',ARKP,'arko_default_67d42ab0a5eaa',v.replace(/-/g,' '));
+function vergNear(lo,la){if(!VERG)return [];const kx=111320*Math.cos(la*Math.PI/180),ky=110574;
+ return VERG.map(v=>[Math.hypot((v[0]-lo)*kx,(v[1]-la)*ky),v]).filter(d=>d[0]<=80).sort((a,b)=>a[0]-b[0]).slice(0,6);}
+const vergTitle=u=>u.replace(/^\d+\//,'').replace(/-\d{4}$/,'').replace(/-/g,' ');
+function extLinks(s,A,U){
+ const [lo,la]=bldLonLat(s),f5=v=>v.toFixed(5),ad0=A&&A[s]&&A[s][0],q=ad0?'ces sites n\'ont pas de lien direct vers un lieu : chercher « '+ad0+' » ou se repérer sur la carte':'';
+ const L=[
+  ['Remonter le temps (IGN) : cartes et photos aériennes anciennes','https://remonterletemps.ign.fr/comparer?lon='+f5(lo)+'&lat='+f5(la)+'&z=18'],
+  ['Règlement du PLU bioclimatique (texte)',REGL],
+  ['Zonage du PLU sur le Géoportail de l\'urbanisme, centré sur le bâtiment',gpuUrl(lo,la)],
+  ['Cassini | Grand Paris (Apur) : plans historiques de 1728 à nos jours','https://www.apur.org/fr/geo-data/cassini-grand-paris-plans-historiques-1728-nos-jours'],
+  ['Plan parcellaire de Paris en ligne (Ville de Paris, Vasserot et plans modernes)','https://www.paris.fr/pages/plans-donnees-et-documents-d-urbanisme-3708'],
+  ['Plans cadastraux des immeubles de Paris 1809-1856 (Archives nationales)','https://www.data.gouv.fr/datasets/plans-cadastraux-des-immeubles-de-paris-1809-1856'],
+  ['Plans d\'îlots Vasserot, projet Paris Time Machine','https://paris-timemachine.huma-num.fr/en/old-parcel-plans/'],
+  ...(ad0?[['Archives de Paris, recherche à l\'adresse « '+ad0+' » : permis de construire, casier sanitaire, calepins du cadastre, sommier foncier (résultats à trier, la recherche inclut des adresses voisines)',archTopo(ad0)],
+     ['Archives de Paris, photographies de la voie « '+ad0.replace(/^\d+\s*(bis|ter|quater|[a-z])?\s+/i,'')+' »',archPhoto(ad0.replace(/^\d+\s*(bis|ter|quater|[a-z])?\s+/i,''))]]
+    :[['Photographies anciennes des Archives de Paris, recherche dans les collections','https://archives.paris.fr/rechercher-dans-les-collections-photographiques',q]]),
+  ['Photographies de la Commission du Vieux Paris depuis 1916, carte interactive','https://fnp.huma-num.fr/adws/app/515ec27b-90ce-11ec-a660-af5a22dfde2b/',q],
+  ...(()=>{const vn=vergNear(lo,la);return vn.length?vn.map(d=>['Photographie ancienne (Vergue) : '+vergTitle(d[1][3])+(d[1][2]>=1800?', '+d[1][2]:'')+', prise à '+Math.round(d[0])+' m','https://vergue.com/post/'+d[1][3]+'.html']):[['Photographies du Paris du XIXe siècle (Vergue), carte','https://vergue.com/carto-vergue-paris/','aucune photographie à moins de 80 m du bâtiment']];})(),
+  ['OpenStreetMap','https://www.openstreetmap.org/?mlat='+f5(la)+'&mlon='+f5(lo)+'#map=19/'+f5(la)+'/'+f5(lo)],
+  ['Google Maps','https://www.google.com/maps/search/?api=1&query='+f5(la)+','+f5(lo)]
+ ];
+ if(U&&U.mh)for(const m of U.mh)if(m[2])L.unshift(['Notice Mérimée '+m[2]+' (base POP, ministère de la Culture)','https://www.pop.culture.gouv.fr/notice/merimee/'+encodeURIComponent(m[2])]);
+ return L;
+}
+function extHtml(s,A,U){
+ return '<h3>Cartes anciennes, archives, photos (liens externes)</h3>'+extLinks(s,A,U).map(l=>'<div class="dm" style="margin:2px 0"><a href="'+esc(l[1])+'" target="_blank" rel="noopener">'+esc(l[0])+'</a>'+(l[2]?'<div class="k" style="font-size:11px">'+esc(l[2])+'</div>':'')+'</div>').join('')
+  +'<div style="margin:12px 0 2px"><button id="pdfb" type="button" class="pdfb">Exporter la fiche en PDF, avec sources</button> <span id="pdfm" class="k"></span></div>';
+}
+function docModel(s,c){
+ const {A,P,D,C,SR,V}=c,U=D&&D.u&&D.u[s],ad=A&&A[s]||[],sec=[];
+ const dm=v=>(v/10).toFixed(1).replace('.',',');
+ const add=(h,items)=>{if(items.length)sec.push({h,items});};
+ const it=(t,k,u)=>({t,s:SRC[k][0],u:u||SRC[k][1]});
+ const pl=P&&P[s]||[];
+ const niv=Math.max(1,Math.round(HM[s]/10/3));
+ add('Identification',[
+  it('Adresse'+(ad.length>1?'s':'')+' : '+(ad.length?ad.join(' ; '):'aucune adresse rattachée'),'ban',ad.length?banUrl(ad[0],ARR[s]):''),
+  it('Arrondissement : '+(ARR[s]?ARR[s]+'e':'—'),'apur'),
+  ...(pl.length?[it('Parcelle'+(pl.length>1?'s':'')+' cadastrale'+(pl.length>1?'s':'')+' : '+pl.slice(0,8).map(x=>x.slice(8,10)+' '+x.slice(10).replace(/^0+/,'')).join(', '),'dvf')]:[])]);
+ add('Caractéristiques du bâtiment',[
+  it('Année de construction : '+(AN[s]||'inconnue')+' (dates parfois approximatives)','apur'),
+  it('Période : '+PER_LAB[PMAP[PE[s]]??11],'apur'),
+  it('Réhabilitation : '+(RE[s]>=1900?RE[s]:'—')+' ; surélévation : '+(SU[s]||'—'),'apur'),
+  it('Hauteur médiane / maximale : '+dm(HM[s])+' m / '+dm(HX[s])+' m','apur'),
+  it('Emprise au sol : '+nf.format(Math.round(area[s]))+' m²','apur'),
+  it('Niveaux estimés : '+niv+' (hauteur médiane ÷ 3 m) ; surface de plancher estimée : '+nf.format(Math.round(area[s]*niv))+' m²','calc'),
+  it('Toiture : '+(SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'autre ou inconnue')+(IG[s]?' ; immeuble de grande hauteur':''),'apur')]);
+ const ur=[];
+ if(ZO[s]){const [lo,la]=bldLonLat(s);ur.push(it('Zone du PLU : '+ZL[ZO[s]],'plu',OPD+'plub_zonage/'));ur.push(it('Règlement du PLU bioclimatique (texte)','reg',REGL));ur.push(it('Plan de zonage sur le Géoportail de l\'urbanisme, centré sur le bâtiment','gpu',gpuUrl(lo,la)));ur.push(it('Cartographie des règles à l\'adresse : saisir l\'adresse ou la parcelle','reg',CARTO));}
+ if(HP[s])ur.push(it('Plafond de hauteur du PLU : '+HP[s]+' m (hauteur maximale existante '+dm(HX[s])+' m ; comparaison indicative)','plu',OPD+'plub_hauteur/'));
+ if(U){
+  for(const m of U.mh||[])ur.push(it((m[3]==='MH'?'Monument historique':'Immeuble protégé')+' : '+m[0]+(m[1]?', protégé en '+m[1]:'')+(m[2]?' (Mérimée '+m[2]+')':''),'pat',m[2]?'https://www.pop.culture.gouv.fr/notice/merimee/'+encodeURIComponent(m[2]):''));
+  for(const m of U.pl||[])ur.push(it(m[0]+' (PLU)'+(m[2]?' : '+m[2]:'')+(m[1]?'. '+m[1]:''),'plu',OPD+'plub_pvp/'));
+  if(U.pp)ur.push(it('Périmètres : '+U.pp.join(' ; '),'pat','https://www.apur.org/en/open-data-maps/open-data/protected-heritage-paris-and-inner-suburbs-protected-areas-and-listed'));
+  for(const x of U.fl||[])ur.push(it(x,'plu'));
+ }
+ if(RS[s]&&!(U&&U.fl))ur.push(it('Secteur de risque : '+['','carrières','gypse','zone inondable (PPRI)'][RS[s]],'plu',OPD+['','plub_carriere/','plub_gypse/','plub_pprizone/'][RS[s]]));
+ add('Urbanisme et patrimoine',ur);
+ if(U&&U.ar)add('Fouilles archéologiques à moins de 40 m',U.ar.map(a=>it((a[2]||'Opération')+', '+a[1]+', à '+a[5]+' m : '+a[0]+(a[4].length?' ('+a[4].join(', ')+')':'')+(a[3]?'. '+a[3]:''),'arch')));
+ if(D&&D.b&&D.b[s])add('Dossiers d\'urbanisme ('+nf.format(NT[s])+')',D.b[s].slice(0,60).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';return it(TNAME[D.t[e[2]]]+', '+fdate(e[1])+', '+dec+(e[4]?' : '+e[4]:'')+' (dossier '+e[0]+(e[5]?', '+e[5]:'')+')','urb',dossUrl(e[0]));}));
+ if(C&&C.b&&C.b[s])add('Commission du Vieux Paris ('+CN[s]+')',C.b[s].slice(0,20).map(e=>it(fdate(e[0])+', '+(e[1]||'sans résolution')+(e[2]?', '+e[2]:'')+(e[3]&&e[3]!=='Aucune'?', '+e[3]:'')+(e[4]?' : '+e[4]:''),'cvp',e[5]||'')));
+ if(V)add('Ventes DVF 2021-2025 ('+DN[s]+')'+(PM[s]?', médiane '+eur(PM[s])+'/m²':''),V.slice(0,30).map(e=>{const [mid,dt,nat,v,parts,nr,how]=e;return it(nat+', '+fdate(dt)+' : '+(v>0?eur(v):'valeur non renseignée')+(nr>1?' (transaction de '+nr+' biens, valeur pour l\'ensemble)':'')+' ; '+parts.map(p=>p[0]+(p[1]>0?' '+p[1]+' m² bâtis':'')+(p[3]>0?', Carrez '+nf.format(p[3])+' m²':'')+(p[2]>0?', '+p[2]+' p.':'')).join(' ; ')+(how>1?' ; rattachement approximatif':'')+' (mutation '+mid+')','dvf');}));
+ const R=SR&&SR.b&&SR.b[s];
+ if(R)add('Occupants, Sirene ('+nf.format(SNE[s])+' établissements actifs)',[it('Effectif salarié estimé : '+(R[1]>0?'≈ '+nf.format(R[1]):'non renseigné')+' ; établissements fermés depuis 2024 : '+(R[2]||0)+(SNE[s]>=30?' ; domiciliation probable (nombreuses entreprises déclarées)':''),'sir'),...R[4].slice(0,30).map(e=>it(e[0]+' : '+(NAFD[(e[1]||'').slice(0,2)]||'activité inconnue')+(e[1]?' ('+e[1]+')':'')+(e[2]?', créé en '+e[2]:'')+', '+(TRN[e[3]]||'effectif non renseigné'),'sir',/^\d{14}$/.test(e[5]||'')?'https://annuaire-entreprises.data.gouv.fr/etablissement/'+e[5]:''))]);
+ const ex=extLinks(s,A,U);
+ sec.push({h:'Pour aller plus loin (liens externes)',items:ex.map(l=>({t:l[0]+(l[2]?' ('+l[2]+')':''),s:'',u:l[1]}))});
+ const BYN={};for(const k in SRC)BYN[SRC[k][0]]=SRC[k][1];const us=new Map();for(const S_ of sec)for(const i of S_.items)if(i.s&&!us.has(i.s))us.set(i.s,BYN[i.s]||i.u);
+ sec.push({h:'Sources et licences',items:[{t:'Toutes les données proviennent de jeux de données ouverts (licence ODbL ou Licence Ouverte, selon le producteur), extraits le 15/11/2026. Les dossiers d\'urbanisme sont rattachés au bâtiment par leur adresse, par la parcelle ou par leur localisation : le rattachement est approximatif et ne remplace ni un extrait cadastral, ni une note de renseignements d\'urbanisme, ni la consultation des documents d\'origine. Les hauteurs, niveaux et surfaces de plancher sont des estimations. Jeux de données utilisés dans cette fiche :',s:'',u:''},...[...us].map(([s,u])=>({t:s+(u?' - '+u:''),s:'',u:u||null}))]});
+ return {title:ad[0]||'Bâtiment sans adresse rattachée',sub:'Paris '+(ARR[s]?ARR[s]+'e':'')+(ad.length>1?' · '+(ad.length-1)+' autre'+(ad.length>2?'s':'')+' adresse'+(ad.length>2?'s':''):''),sec};
+}
+
+function captureParcel(s){
+ try{
+  const sv={cx:view.cx,cy:view.cy,k:view.k},ss=sel,sm=mark;
+  const bw=bbox[4*s+2]-bbox[4*s],bh=bbox[4*s+3]-bbox[4*s+1];
+  const cwC=Math.min(cv.width,Math.round(cv.height*1.5)),chC=Math.round(cwC/1.5);
+  const cwCss=cwC/dpr;
+  view.k=Math.max(.8,Math.min(8,cwCss*.5/Math.max(60,Math.max(bw,bh*1.5)*1.6)));
+  view.cx=(bbox[4*s]+bbox[4*s+2])/2;view.cy=(bbox[4*s+1]+bbox[4*s+3])/2;sel=s;mark=null;
+  render();
+  const o=document.createElement('canvas');o.width=cwC;o.height=chC;const c=o.getContext('2d');
+  const sx=Math.round((cv.width-cwC)/2),sy=Math.round((cv.height-chC)/2);
+  c.fillStyle='#0f1a24';c.fillRect(0,0,cwC,chC);
+  c.drawImage(cv,sx,sy,cwC,chC,0,0,cwC,chC);c.drawImage(lb,sx,sy,cwC,chC,0,0,cwC,chC);
+  const url=o.toDataURL('image/jpeg',.86);
+  const wm=cwCss/view.k;
+  view.cx=sv.cx;view.cy=sv.cy;view.k=sv.k;sel=ss;mark=sm;render();
+  return {url,w:cwC,h:chC,wm};
+ }catch(e){return null;}
+}
+function makePdf(M_,IMG){
+ const PW=595.28,PH=841.89,MG=56,LW=PW-2*MG,pages=[];let cur,y;
+ const g=document.createElement('canvas').getContext('2d');
+ const wid=(t,sz,b)=>{g.font=(b?'bold ':'')+sz+'px Arial, Helvetica, sans-serif';return g.measureText(t).width;};
+ const CP={'€':'\x80','…':'\x85','‘':'\x91','’':'\x92','“':'\x93','”':'\x94','•':'\x95','–':'\x96','—':'\x97','œ':'\x9c','Œ':'\x8c','≈':'~','→':'-','·':'\xb7'};
+ const enc=t=>String(t).replace(/[\r\n\t]+/g,' ').replace(/[   ]/g,' ').replace(/[\s\S]/g,c=>{const k=c.charCodeAt(0);if(k<128)return (c==='\\'||c==='('||c===')')?'\\'+c:c;if(k<256)return c;return CP[c]||'?';});
+ const newPage=()=>{cur={ops:[],ln:[]};pages.push(cur);y=PH-MG;};
+ function wrap(t,sz,b,w){const out=[];let l='';for(const word of String(t).split(/\s+/)){if(!word)continue;let c=l?l+' '+word:word;if(wid(c,sz,b)<=w){l=c;continue;}if(l)out.push(l);if(wid(word,sz,b)>w){let p='';for(const ch of word){if(wid(p+ch,sz,b)>w){out.push(p);p=ch;}else p+=ch;}l=p;}else l=word;}if(l)out.push(l);return out;}
+ function put(t,sz,b,col,ind,url,gap,lead){
+  const lines=wrap(t,sz,b,LW-ind),ld=sz*(lead||1.45);
+  for(const l of lines){if(y-ld<MG+20)newPage();y-=ld;cur.ops.push('BT /F'+(b?2:1)+' '+sz+' Tf '+col+' rg '+(MG+ind).toFixed(2)+' '+y.toFixed(2)+' Td ('+enc(l)+') Tj ET');if(url)cur.ln.push([MG+ind,y-2,MG+ind+wid(l,sz,b),y+sz,url]);}
+  y-=gap||0;
+ }
+ newPage();
+ put(M_.title,24,true,'0.10 0.28 0.41',0,null,4,1.25);
+ put(M_.sub,12,false,'0.32 0.46 0.56',0,null,8);
+ put('Fiche générée le '+new Date().toLocaleDateString('fr-FR')+' avec Stratigraphy. Données ouvertes ; rattachements des dossiers, ventes et établissements au bâtiment par adresse ou localisation, donc approximatifs.',8.5,false,'0.45 0.45 0.45',0,null,18);
+ let imgH=0;
+ if(IMG){const w=LW,h=w*IMG.h/IMG.w;if(y-h<MG+40)newPage();y-=h;cur.ops.push('q '+w.toFixed(2)+' 0 0 '+h.toFixed(2)+' '+MG+' '+y.toFixed(2)+' cm /Im1 Do Q');
+  y-=14;put('Capture de la carte Stratigraphy, largeur d\'environ '+Math.round(IMG.wm/10)*10+' m. Bâtiment sélectionné en blanc, couleurs selon le calque « '+(IMG.layer||'')+' ». Fond : emprise bâtie Apur ; numéros : Base Adresse Nationale.',7.5,false,'0.45 0.45 0.45',0,null,10);}
+ for(const S_ of M_.sec){
+  if(y<MG+110)newPage();
+  y-=24;put(S_.h.toUpperCase(),12,true,'0.10 0.28 0.41',0,null,0,1.2);
+  y-=3;cur.ops.push('0.75 0.81 0.85 RG 0.7 w '+MG+' '+y.toFixed(2)+' m '+(PW-MG)+' '+y.toFixed(2)+' l S');y-=10;
+  for(const i of S_.items){
+   put(i.t,9.5,false,'0.1 0.1 0.1',0,(!i.s&&i.u)?i.u:null,0,1.5);
+   if(i.s){y-=2;put('Source : '+i.s+(i.u?' - '+i.u:''),7.5,false,'0.35 0.5 0.62',10,i.u||null,9,1.4);}else y-=9;
+  }
+ }
+ pages.forEach((p,i)=>{p.ops.push('BT /F1 7.5 Tf 0.5 0.5 0.5 rg '+(PW-MG-44).toFixed(2)+' 26 Td (Page '+(i+1)+' / '+pages.length+') Tj ET');});
+ const objs=[];const add=s=>{objs.push(s);return objs.length;};
+ add('<< /Type /Catalog /Pages 2 0 R >>');add('');add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+ let imObj=0;
+ if(IMG){const bin=atob(IMG.url.split(',')[1]);imObj=add('<< /Type /XObject /Subtype /Image /Width '+IMG.w+' /Height '+IMG.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+bin.length+' >>\nstream\n'+bin+'\nendstream');}
+ const kids=[];
+ for(const p of pages){
+  const cs=p.ops.join('\n'),cn=add('<< /Length '+cs.length+' >>\nstream\n'+cs+'\nendstream');
+  const an=p.ln.map(l=>add('<< /Type /Annot /Subtype /Link /Rect ['+l.slice(0,4).map(v=>v.toFixed(2)).join(' ')+'] /Border [0 0 0] /A << /S /URI /URI ('+enc(l[4])+') >> >>'));
+  const pn=add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>'+(imObj?' /XObject << /Im1 '+imObj+' 0 R >>':'')+' >> /Contents '+cn+' 0 R'+(an.length?' /Annots ['+an.map(a=>a+' 0 R').join(' ')+']':'')+' >>');
+  kids.push(pn);
+ }
+ objs[1]='<< /Type /Pages /Count '+kids.length+' /Kids ['+kids.map(k=>k+' 0 R').join(' ')+'] >>';
+ let out='%PDF-1.4\n',offs=[];
+ objs.forEach((o,i)=>{offs.push(out.length);out+=(i+1)+' 0 obj\n'+o+'\nendobj\n';});
+ const xr=out.length;out+='xref\n0 '+(objs.length+1)+'\n0000000000 65535 f \n'+offs.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+'trailer\n<< /Size '+(objs.length+1)+' /Root 1 0 R >>\nstartxref\n'+xr+'\n%%EOF';
+ const u8=new Uint8Array(out.length);for(let i=0;i<out.length;i++)u8[i]=out.charCodeAt(i)&255;
+ return new Blob([u8],{type:'application/pdf'});
+}
+$('#srcb').onclick=e=>{const o=$('#srct').hidden;$('#srct').hidden=!o;e.currentTarget.setAttribute('aria-expanded',o);};
+let PCTX=null;
+cb.addEventListener('click',async e=>{
+ if(e.target.id!=='pdfb'||!PCTX)return;
+ const m=$('#pdfm');
+ try{
+  const M_=docModel(PCTX.s,PCTX),IMG=captureParcel(PCTX.s),blob=makePdf(M_,(IMG&&(IMG.layer=st.crit.name,IMG))),url=URL.createObjectURL(blob);
+  const nm='fiche-'+(M_.title.replace(/[^\w]+/g,'-').replace(/^-|-$/g,'').toLowerCase()||'batiment')+'.pdf';
+  let dls=null;try{dls=window.claude&&claude.use?await claude.use('downloads'):null;}catch(_){}
+  if(dls){try{await dls.save({filename:nm,data:blob});m.textContent='PDF enregistré.';}catch(er){m.textContent=er&&er.code==='declined'?'Enregistrement annulé.':'Enregistrement impossible ('+((er&&er.code)||'erreur')+').';}}
+  else{const a=document.createElement('a');a.href=url;a.download=nm;document.body.appendChild(a);a.click();a.remove();m.innerHTML='PDF généré. <a href="'+url+'" target="_blank" rel="noopener" download="'+esc(nm)+'">Ouvrir ou enregistrer</a>';}
+ }catch(err){m.textContent='Échec de la génération du PDF ('+err.message+').';}
+});
+
+function fiche(s){if(sel<0)showCard(s,false);}
+new ResizeObserver(()=>{const first=W===1;resize();if(first)fit();draw();}).observe(cv);
+resize();fit();
+setCrit(CRIT[0]);ready=true;
+$('#load').style.display='none';
+})();
+</script>
+</body>
+</html>
