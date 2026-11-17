@@ -211,7 +211,7 @@ if(typeof earcut==='undefined'){fail("La bibliothèque de triangulation n'a pas 
 if(typeof DecompressionStream==='undefined'){fail("Ce navigateur ne sait pas décompresser les données (DecompressionStream). Essayer une version récente de Chrome, Safari ou Firefox.");return;}
 
 /* ---------- données ---------- */
-async function getBin(u){const r=await fetch(u);if(!r.ok)throw new Error(u+' : '+r.status);let b=await r.arrayBuffer();const v=new Uint8Array(b);if(v[0]===0x1f&&v[1]===0x8b)b=await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();return b;}
+const DV='202611171316';async function getBin(u){const r=await fetch(u+(u.includes('?')?'&':'?')+'v='+DV);if(!r.ok)throw new Error(u+' : '+r.status);let b=await r.arrayBuffer();const v=new Uint8Array(b);if(v[0]===0x1f&&v[1]===0x8b)b=await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();return b;}
 async function getJson(u){return JSON.parse(new TextDecoder().decode(await getBin(u)));}
 prog("Chargement des données…",.05); await tick();
 let buf;try{buf=await getBin('data.json');}catch(e){fail("Impossible de charger les données ("+e.message+").");return;}
