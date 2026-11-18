@@ -196,6 +196,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
    <div id="sunLeg" hidden><div class="grad" style="background:linear-gradient(90deg,#0d0887,#6a00a8,#b12a90,#e16462,#fca636,#f0f921)"></div><div class="ticks"><span>0 h</span><span id="sunMax"></span></div><div class="hint" id="sunMsg"></div></div>
    <div class="hint" style="margin-top:6px">Ombres calculées d'après les emprises et les hauteurs médianes Apur (toits plats), posées sur un modèle de terrain de 10 m (points de nivellement de la Ville de Paris et courbes IGN) : ombres du relief, au sol et sur les toitures voisines, sans végétation. Visibles à l'échelle du quartier. Le cumul porte sur la vue affichée.</div>
   </div>
+  <div class="ovslot" data-g="Ensoleillement"></div>
   </details>
   <details class="lsec" data-g="Filtres"><summary><span class="chev"></span>Filtres<span class="lsn"></span></summary>
   <div class="flt"><div class="top"><span>Année de constr.</span><b id="yT"></b></div>
@@ -358,7 +359,7 @@ function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n
 const PC_LAB=["Avant 1990","1990–1999","2000–2009","2010–2014","2015–2019","2020 et après","Aucun connu"];
 const lastCls=A=>s=>{const y=A[s];if(!y)return 6;return y<1990?0:y<2000?1:y<2010?2:y<2015?3:y<2020?4:5;};
 const ORG={per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
-mh:'Apur',pp:'Apur',courbe:'IGN',com:'Apur',cad:'DGFiP, IGN'};
+mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',com:'Apur',cad:'DGFiP, IGN'};
 const orgOf=id=>ORG[id]||(/^at[m0-9]/.test(id)?'Michel Huard, Atlas historique de Paris':'Ville de Paris'),orgHtml=id=>'<small class="org">'+orgOf(id)+'</small>';
 const CRIT=[
  {id:'neu',g:'Plan',name:'Plan neutre (aucun calque)',lab:['Bâtiment'],col:['#8b98a4'],cls:s=>0},
@@ -1048,6 +1049,7 @@ const OVL=[
  {id:'ecbbv',n:'Emprises ECBBV',k:'poly',a:.35,cols:['#c58af9'],lab:['Emprise']},
  {id:'isri',n:'Lignes ISRI',k:'line',cols:['#f94144'],lab:['Ligne']}]},
 {g:'PLU : végétal et paysage',items:[
+ {id:'veg',n:'Hauteur de la végétation (canopée 2021)',k:'poly',a:.6,cols:['#c7e9a0','#74c476','#238b45','#b7e4d9','#41b6a6','#0b7a75'],lab:['Domaine privé : moins de 1 m (pelouses, massifs)','Domaine privé : 1 à 10 m (arbustes, jeunes arbres)','Domaine privé : plus de 10 m (grands arbres)','Domaine public : moins de 1 m','Domaine public : 1 à 10 m','Domaine public : plus de 10 m']},
  {id:'ebc',n:'Espaces boisés classés',k:'poly',a:.5,cols:['#1b7f3b'],lab:['EBC']},
  {id:'evp',n:'Espaces verts protégés',k:'poly',a:.45,cols:['#4cc26e'],lab:['EVP']},
  {id:'elpv',n:'ELPV',k:'poly',a:.45,cols:['#9be15d'],lab:['ELPV']},
@@ -1080,6 +1082,10 @@ const OVL=[
  {id:'batmod',n:'Bâtiments modernes',k:'poly',a:.6,cols:['#4cc9f0'],lab:['Bâtiment moderne']},
  {id:'vec',n:'Volumétrie existante à conserver',k:'poly',a:.6,cols:['#f72585'],lab:['VEC']},
  {id:'gdmag',n:'Grands magasins',k:'poly',a:.6,cols:['#b5179e'],lab:['Grand magasin']}]},
+{g:'Îlots de chaleur',items:[
+ {id:'lcz',n:'Zones climatiques locales (sensibilité à la chaleur)',k:'poly',a:.42,cols:['#8c0000','#d10000','#ff0000','#bf4d00','#ff6600','#ff9955','#bcbcbc','#ffccaa','#006a00','#00aa00','#648525','#b9db79','#4a4a4a','#fbf7ae','#6a6aff'],lab:['LCZ 1 : compact, grande hauteur','LCZ 2 : compact, hauteur moyenne','LCZ 3 : compact, faible hauteur','LCZ 4 : ouvert, grande hauteur','LCZ 5 : ouvert, hauteur moyenne','LCZ 6 : ouvert, faible hauteur','LCZ 8 : grands bâtiments bas','LCZ 9 : bâti épars','LCZ A : arbres denses','LCZ B : arbres épars','LCZ C : arbustes','LCZ D : végétation basse','LCZ E : sol minéral, imperméable','LCZ F : sol nu','LCZ G : eau']},
+ {id:'frais',n:'Îlots de fraîcheur : espaces verts',k:'poly',a:.5,cols:['#1a9e77','#8fd19e','#e9e29b'],lab:['Très ombragé, frais (plus de 50 % de végétation haute)','Partiellement ombragé (25 à 50 %)','Peu ombragé (moins de 25 %, frais la nuit seulement)']},
+ {id:'fraiq',n:'Îlots de fraîcheur : équipements',k:'pt',cols:['#4cc9f0','#c7a6ff','#9ef01a'],lab:['Eau : piscines, baignades, bains-douches','Intérieurs frais : musées, bibliothèques, mairies, lieux de culte','Brumisateurs et ombrières']}]},
 {g:'Sous-sol et risques',items:[
  {id:'carr',n:'Carrières (secteurs de risque)',k:'poly',a:.45,cols:['#d4a373'],lab:['Secteur']},
  {id:'gyps',n:'Gypse (secteurs de risque)',k:'poly',a:.45,cols:['#e5e5e5'],lab:['Secteur']},
@@ -1193,7 +1199,7 @@ function ovTip(x,y){
  const w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.min(innerWidth-w-8,x+14)+'px';tip.style.top=Math.min(innerHeight-h-8,y+14)+'px';
 }
 {
- const DEST={'PLU : gabarit':['Volume','Gabarit du PLU'],'Protections patrimoniales':['Patrimoine','Protections patrimoniales'],'PLU : végétal et paysage':['Urbanisme (PLU)','Végétal et paysage'],'PLU : secteurs et réserves':['Urbanisme (PLU)','Secteurs et réserves'],'Sous-sol et risques':['Sous-sol et fouilles','Sous-sol et risques'],'Archéologie':['Sous-sol et fouilles','Archéologie'],'Mobilité':['Urbanisme (PLU)','Mobilité'],'Commerces':['Usages','Commerces (BDCOM 2017)'],'Atlas historique de Paris':['Histoire','Atlas historique de Paris (de l\'Antiquité à 1900)'],'Cadastre':['Urbanisme (PLU)','Cadastre'],'Voirie':['Urbanisme (PLU)','Voirie (plan de voirie de la Ville)'],'Relief':['Sous-sol et fouilles','Relief et nivellement']};
+ const DEST={'PLU : gabarit':['Volume','Gabarit du PLU'],'Protections patrimoniales':['Patrimoine','Protections patrimoniales'],'PLU : végétal et paysage':['Urbanisme (PLU)','Végétal et paysage'],'PLU : secteurs et réserves':['Urbanisme (PLU)','Secteurs et réserves'],'Sous-sol et risques':['Sous-sol et fouilles','Sous-sol et risques'],'Archéologie':['Sous-sol et fouilles','Archéologie'],'Mobilité':['Urbanisme (PLU)','Mobilité'],'Commerces':['Usages','Commerces (BDCOM 2017)'],'Îlots de chaleur':['Ensoleillement','Îlots de chaleur et de fraîcheur'],'Atlas historique de Paris':['Histoire','Atlas historique de Paris (de l\'Antiquité à 1900)'],'Cadastre':['Urbanisme (PLU)','Cadastre'],'Voirie':['Urbanisme (PLU)','Voirie (plan de voirie de la Ville)'],'Relief':['Sous-sol et fouilles','Relief et nivellement']};
  for(const g of OVL){
   const [sec,lab]=DEST[g.g]||['Urbanisme (PLU)',g.g];
   const box=document.querySelector('.ovslot[data-g="'+sec+'"]')||$('#ovl');
@@ -1404,6 +1410,9 @@ const SRC={
  bdnb:['CSTB, Base de données nationale des bâtiments (BDNB open), dernier millésime publié (Licence Ouverte)','https://bdnb.io/'],
  dpe:['Ademe, diagnostics de performance énergétique, via la BDNB (Licence Ouverte)','https://data.ademe.fr/'],
  co2:['Calcul de l\'outil : surface de plancher estimée × seuil RE2020 « IC construction » 2025 des logements collectifs (650 kg CO₂e/m²) ; ordre de grandeur indicatif, pas une analyse de cycle de vie','https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000043936914'],
+ lcz:['Cerema, « Cartographie des zones climatiques locales (LCZ) », aire urbaine de Paris, images SPOT 2022 (Licence Ouverte)','https://www.data.gouv.fr/datasets/cartographie-des-zones-climatiques-locales-lcz-des-93-territoires-de-plus-de-50-000-habitants-en-france'],
+ veg:['Apur, « Hauteur de la végétation 2021 », Open Data (licence ODbL)','https://opendata.apur.org/'],
+ frais:['Ville de Paris, « Îlots de fraîcheur » (espaces verts frais, équipements et activités), Open Data','https://opendata.paris.fr/explore/dataset/ilots-de-fraicheur-espaces-verts-frais/'],
  sir:['Insee, base Sirene (stock du 01/11/2026)','https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/']
 };
 
