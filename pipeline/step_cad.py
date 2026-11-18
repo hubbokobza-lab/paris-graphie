@@ -6,22 +6,45 @@ from core import *
 WFS = ('https://data.geopf.fr/wfs/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=CADASTRALPARCELS.PARCELLAIRE_EXPRESS:parcelle'
        '&count=5000&startIndex={si}&outputFormat=application/json&bbox={a},{b},{c},{d},urn:ogc:def:crs:EPSG::4326')
 
+ETALAB = 'https://cadastre.data.gouv.fr/data/etalab-cadastre/latest/geojson/departements/75/cadastre-75-parcelles.json.gz'
+
+def _wfs_tile(url):
+    for i in range(6):
+        try:
+            return json.loads(http(url, timeout=240))
+        except Exception as e:
+            log('  tuile cadastre, nouvel essai', i + 1, str(e)[:80]); time.sleep(15 * (i + 1))
+    raise RuntimeError('cadastre IGN indisponible')
+
 def parcelles():
+    """Parcelles de Paris : fichier Etalab (un seul téléchargement), sinon service WFS de l'IGN par tuiles."""
     p = os.path.join(RAW, 'parcelles.json')
     if os.path.exists(p) and time.time() - os.path.getmtime(p) < 20 * 3600: return json.load(open(p))
-    P = {}
-    for i in range(26):
-        for j in range(11):
-            lon = 2.22 + i * 0.01; lat = 48.81 + j * 0.01; si = 0
-            while True:
-                d = get_json(WFS.format(si=si, a=lat, b=lon, c=lat + .01, d=lon + .01), timeout=240)
-                for x in d['features']:
-                    if x['properties'].get('code_dep') == '75': P[x['properties']['idu']] = x
-                if len(d['features']) < 5000: break
-                si += 5000
-    log('  cadastre :', len(P), 'parcelles')
-    if len(P) < 60000: raise RuntimeError('cadastre incomplet')
-    L = list(P.values()); json.dump(L, open(p, 'w')); return L
+    L = None
+    try:
+        src = fetch(ETALAB, 'cadastre-75-parcelles.json', min_size=20_000_000)
+        L = []
+        for x in json.load(open(src))['features']:
+            q = x['properties']; idu = q['id']
+            x['properties'] = {'idu': idu, 'code_arr': q['commune'][-3:], 'section': q['section'], 'numero': q['numero'], 'contenance': int(q.get('contenance') or 0)}
+            L.append(x)
+        log('  cadastre Etalab :', len(L), 'parcelles')
+    except Exception as e:
+        log('  cadastre Etalab indisponible (%s), repli sur le service IGN' % str(e)[:120]); L = None
+    if not L:
+        P = {}
+        for i in range(26):
+            for j in range(11):
+                lon = 2.22 + i * 0.01; lat = 48.81 + j * 0.01; si = 0
+                while True:
+                    d = _wfs_tile(WFS.format(si=si, a=lat, b=lon, c=lat + .01, d=lon + .01))
+                    for x in d['features']:
+                        if x['properties'].get('code_dep') == '75': P[x['properties']['idu']] = x
+                    if len(d['features']) < 5000: break
+                    si += 5000
+        L = list(P.values()); log('  cadastre IGN :', len(L), 'parcelles')
+    if len(L) < 60000: raise RuntimeError('cadastre incomplet (%d parcelles)' % len(L))
+    json.dump(L, open(p, 'w')); return L
 
 def run(st):
     g = st.geo(); polys, areas, N = g.polys, g.areas, st.N

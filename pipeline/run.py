@@ -41,7 +41,15 @@ def main():
         st = State(); step_base.run(st); done('apur')
         ban = step_ban.run(st); done('ban'); step_urba.run(st, ban); done('urb', 'cvp'); step_misc.private_zero(st); step_misc.relief(st)
         step_plu.run(st); done('plu', 'pat', 'arch', 'reg', 'gpu'); step_usage.run(st); done('typ', 'com')
-        step_bdnb.run(st); done('bdnb', 'dpe'); step_cad.run(st); done('cad'); step_cad.voirie(st); done('voir')
+        step_bdnb.run(st); done('bdnb', 'dpe')
+        try:
+            step_cad.run(st); done('cad')
+        except Exception as e:      # le cadastre ne doit pas bloquer la mise à jour
+            print('::warning title=Cadastre non mis à jour::%s' % str(e)[:300], flush=True)
+            if a.site:
+                for f in ('ov_cad.json',):
+                    if os.path.exists(os.path.join(a.site, f)): st.files[f] = open(os.path.join(a.site, f), 'rb').read()
+        step_cad.voirie(st); done('voir')
         # fichiers calculés lors d'exécutions précédentes mais non régénérés (ex. calque mobilité en échec)
         if a.site:
             for f in os.listdir(a.site):
