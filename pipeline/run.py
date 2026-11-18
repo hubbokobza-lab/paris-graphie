@@ -29,10 +29,19 @@ def main():
         a.site = None
         if a.mode == 'weekly': log('pas de site existant : reconstruction complète'); a.mode = 'full'
     prev = State(a.site) if a.site else None
+    # dates d'extraction par source (affichées dans le site et les PDF)
+    SD = json.load(open(os.path.join(STATIC, 'sources_init.json')))
+    if a.site and os.path.exists(os.path.join(a.site, 'sources.json')):
+        raw = open(os.path.join(a.site, 'sources.json'), 'rb').read()
+        SD.update(json.loads(gzip.decompress(raw) if raw[:2] == b'\x1f\x8b' else raw))
+    today = time.strftime('%Y-%m-%d')
+    def done(*keys):
+        for k in keys: SD[k] = today
     if a.mode == 'full':
-        st = State(); step_base.run(st)
-        ban = step_ban.run(st); step_urba.run(st, ban); step_misc.private_zero(st); step_misc.relief(st)
-        step_plu.run(st); step_usage.run(st); step_bdnb.run(st); step_cad.run(st); step_cad.voirie(st)
+        st = State(); step_base.run(st); done('apur')
+        ban = step_ban.run(st); done('ban'); step_urba.run(st, ban); done('urb', 'cvp'); step_misc.private_zero(st); step_misc.relief(st)
+        step_plu.run(st); done('plu', 'pat', 'arch', 'reg', 'gpu'); step_usage.run(st); done('typ', 'com')
+        step_bdnb.run(st); done('bdnb', 'dpe'); step_cad.run(st); done('cad'); step_cad.voirie(st); done('voir')
         # fichiers calculés lors d'exécutions précédentes mais non régénérés (ex. calque mobilité en échec)
         if a.site:
             for f in os.listdir(a.site):
@@ -43,7 +52,9 @@ def main():
         for f in os.listdir(a.site):     # on repart de tous les fichiers publiés
             if f.endswith('.json') and not f.startswith(('arr_', 'data')) and not os.path.exists(os.path.join(STATIC, f)):
                 st.files[f] = open(os.path.join(a.site, f), 'rb').read()
-        ban = step_ban.run(st); step_urba.run(st, ban)
+        ban = step_ban.run(st); done('ban'); step_urba.run(st, ban); done('urb', 'cvp')
+    SD['_maj'] = today
+    st.files['sources.json'] = json.dumps(SD, ensure_ascii=False).encode()
     check(st, prev)
     if os.path.exists(a.out): shutil.rmtree(a.out)
     step_site.run(st, a.out)

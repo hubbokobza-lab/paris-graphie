@@ -24,7 +24,26 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2
 .crit .g{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);margin:8px 8px 2px}
 .org{margin-left:auto;padding-left:8px;font-size:10px;opacity:.5;white-space:nowrap;text-align:right;flex:none;max-width:42%;white-space:normal;line-height:1.2}
 #xmsg{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:8px 14px;border-radius:5px;z-index:9;box-shadow:0 2px 12px rgba(0,0,0,.4)}#xmsg a{color:#fff}
-#zx.on{background:var(--ink);color:#fff}
+#zx{font-size:10.5px;font-weight:700;letter-spacing:.03em}#zx.on{background:var(--ink);color:#fff}
+
+#card .pdfrow{margin:8px 0 10px}
+#card details.fsec{border-top:1px solid var(--line);margin:0}
+#card details.fsec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:9px 0;font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--ink)}
+#card details.fsec>summary::-webkit-details-marker{display:none}
+#card details.fsec>summary .chev{width:8px;height:8px;border-right:1.6px solid var(--ink2);border-bottom:1.6px solid var(--ink2);transform:rotate(-45deg);transition:transform .15s;flex:none;margin-right:2px}
+#card details.fsec[open]>summary .chev{transform:rotate(45deg)}
+#card details.fsec>summary .gn{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:0;background:var(--bg2);color:var(--ink2);border-radius:9px;padding:1px 7px}
+#card .fbody{padding:0 0 10px 18px}
+#card .sub2{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);margin:10px 0 4px;font-weight:600}
+#card .lkr{margin:3px 0}
+
+details.lsec{border-top:1px solid var(--line);margin:0 4px}
+details.lsec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:10px 4px;font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--ink)}
+details.lsec>summary::-webkit-details-marker{display:none}
+details.lsec>summary .chev{width:7px;height:7px;border-right:1.6px solid var(--ink2);border-bottom:1.6px solid var(--ink2);transform:rotate(-45deg);transition:transform .15s;flex:none}
+details.lsec[open]>summary .chev{transform:rotate(45deg)}
+details.lsec>summary .lsn{margin-left:auto;font-size:10.5px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--accent,#2b6cb0)}
+details.lsec[open]{padding-bottom:8px}
 .dot{width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;flex:none}
 button[aria-pressed=true] .dot{background:#fff;border-color:#fff}
 #legend{display:flex;flex-direction:column;gap:1px}
@@ -168,7 +187,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
   <div class="crit" id="crit"></div>
   <div id="legWrap" style="margin:4px 0 6px 8px;padding-left:8px;border-left:3px solid var(--bg2)"><div id="legend"></div><div class="hint" id="legHint">Clic : masquer ou afficher une classe. Double-clic : isoler la classe.<a class="lk" id="reset">tout réafficher</a></div></div>
   <div id="ovl" hidden></div>
-  <h2>Ensoleillement</h2>
+  <details class="lsec" data-g="Ensoleillement"><summary><span class="chev"></span>Ensoleillement<span class="lsn"></span></summary>
   <label class="ck"><input type="checkbox" id="sunOn">Héliodon : ombres portées des bâtiments</label>
   <div id="sunUI" hidden>
    <div class="sunrow"><input type="date" id="sunD"><button type="button" class="sunq" data-d="12-21">21 déc.</button><button type="button" class="sunq" data-d="03-20">20 mars</button><button type="button" class="sunq" data-d="06-21">21 juin</button></div>
@@ -177,7 +196,8 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
    <div id="sunLeg" hidden><div class="grad" style="background:linear-gradient(90deg,#0d0887,#6a00a8,#b12a90,#e16462,#fca636,#f0f921)"></div><div class="ticks"><span>0 h</span><span id="sunMax"></span></div><div class="hint" id="sunMsg"></div></div>
    <div class="hint" style="margin-top:6px">Ombres calculées d'après les emprises et les hauteurs médianes Apur (toits plats), posées sur un modèle de terrain de 10 m (points de nivellement de la Ville de Paris et courbes IGN) : ombres du relief, au sol et sur les toitures voisines, sans végétation. Visibles à l'échelle du quartier. Le cumul porte sur la vue affichée.</div>
   </div>
-  <h2>Filtres</h2>
+  </details>
+  <details class="lsec" data-g="Filtres"><summary><span class="chev"></span>Filtres<span class="lsn"></span></summary>
   <div class="flt"><div class="top"><span>Année de constr.</span><b id="yT"></b></div>
    <div class="rng"><div class="tr"></div><div class="fl" id="yF"></div><input type="range" id="y0" min="1700" max="2026" value="1700"><input type="range" id="y1" min="1700" max="2026" value="2026"></div></div>
   <div class="flt"><div class="top"><span>Niveaux (estimés)</span><b id="nT"></b></div>
@@ -188,17 +208,21 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
   <label class="ck"><input type="checkbox" id="fReh">Réhabilités seulement</label>
   <label class="ck"><input type="checkbox" id="fSur">Surélevés seulement</label>
   <label class="ck"><input type="checkbox" id="fIgh">IGH seulement</label>
-  <label class="ck"><input type="checkbox" id="fLbl" checked>Noms de rues et numéros</label>
-  <label class="ck"><input type="checkbox" id="fArr" checked>Arrondissements et quartiers</label>
   <label class="ck"><input type="checkbox" id="fCvp">Passés en Commission du Vieux Paris</label>
   <label class="ck"><input type="checkbox" id="fRec">Avec un dossier récent (6 mois)</label>
   <div id="count"></div>
+  </details>
+  <details class="lsec" data-g="Affichage" open><summary><span class="chev"></span>Affichage du fond de plan<span class="lsn"></span></summary>
+  <label class="ck"><input type="checkbox" id="fLbl" checked>Noms de rues et numéros</label>
+  <label class="ck"><input type="checkbox" id="fArr" checked>Arrondissements et quartiers</label>
+  <label class="ck"><input type="checkbox" id="fTrot" checked>Trottoirs et terre-pleins (à l'échelle de la rue)</label>
+  </details>
  </div>
- <footer><button id="srcb" type="button" aria-expanded="false">Sources et licences</button><div id="srct" hidden>Sources, licence ODbL, extraction du 15/11/2026 : Apur, « Emprise bâtie Paris » ; Ville de Paris, « Autorisations d'Urbanisme - Historique » et « Dossiers récents d'urbanisme », « Commission du Vieux Paris - Adresses instruites » ; Base Adresse Nationale (adresses, noms de rues) ; DGFiP, « Demandes de valeurs foncières » géolocalisées par Etalab (ventes 2021-2025) ; Insee, base Sirene (stock du 01/11/2026) ; Ville de Paris, PLU bioclimatique (zonage, hauteurs, protections, secteurs), points de nivellement du plan de voirie ; IGN, courbes de niveau (Licence Ouverte) ; Référentiel archéologique de Paris, comptages multimodaux et compteurs vélo ; Apur, protections patrimoniales (monuments historiques, périmètres), typologie du bâti et commerces en rez-de-chaussée (BDCOM 2017) ; CSTB, Base de données nationale des bâtiments (fichiers fonciers, DPE de l'Ademe, logements sociaux, copropriétés, Licence Ouverte) ; ministère de la Culture, base Mérimée (motifs et historiques des monuments historiques, Licence Ouverte). Dossiers rattachés au bâtiment par leur adresse : rattachement approximatif (96 % des dossiers). Dates APUR parfois approximatives.</div></footer>
+ <footer><button id="srcb" type="button" aria-expanded="false">Sources et licences</button><div id="srct" hidden></div></footer>
 </aside>
 <div id="tip" hidden></div>
 <div id="card" hidden><button id="cx" type="button" aria-label="Fermer">×</button><div id="cb"></div></div>
-<div id="zoom"><button id="zi" type="button" aria-label="Zoom avant">+</button><button id="zo" type="button" aria-label="Zoom arrière">−</button><button id="zr" type="button" aria-label="Recadrer">⌂</button><button id="zx" type="button" aria-label="Exporter une zone en PDF géoréférencé" title="Exporter une zone en PDF géoréférencé : tracer un rectangle sur la carte">▭</button></div><div id="xmsg" hidden></div>
+<div id="zoom"><button id="zi" type="button" aria-label="Zoom avant">+</button><button id="zo" type="button" aria-label="Zoom arrière">−</button><button id="zr" type="button" aria-label="Recadrer">⌂</button><button id="zx" type="button" aria-label="Exporter une zone en DXF géoréférencé" title="Exporter une zone en DXF géoréférencé (Lambert 93), un calque par couche : tracer un rectangle sur la carte">DXF</button></div><div id="xmsg" hidden></div>
 <div id="scale"><span id="scT"></span><i id="scB"></i></div>
 
 <script src="https://cdn.jsdelivr.net/npm/earcut@2.2.4/dist/earcut.min.js"></script>
@@ -439,7 +463,7 @@ function buildLegend(){
 function syncRows(){document.querySelectorAll('#legend .row').forEach(r=>r.classList.toggle('off',!st.en[+r.dataset.i]));}
 $('#reset').onclick=()=>{st.en=st.en.map(()=>true);syncRows();recolor();};
 {const box=$('#crit');let g='';const slot=x=>{if(!x)return;const s=document.createElement('div');s.className='ovslot';s.dataset.g=x;box.appendChild(s);};for(const c of CRIT){if(c.id==='neu')continue;if(c.g!==g){slot(g);g=c.g;const d=document.createElement('div');d.className='g';d.textContent=g;box.appendChild(d);}
- const b=document.createElement('button');b.type='button';b.dataset.id=c.id;b.innerHTML='<span class="dot"></span><span class="cn">'+c.name+'</span>'+orgHtml(c.id);b.onclick=()=>setCrit(st.crit===c?CRIT[0]:c);box.appendChild(b);}slot(g);}
+ const b=document.createElement('button');b.type='button';b.dataset.id=c.id;b.innerHTML='<span class="dot"></span><span class="cn">'+c.name+'</span>'+orgHtml(c.id);b.onclick=()=>setCrit(st.crit===c?CRIT[0]:c);box.appendChild(b);}slot(g);{const d=document.createElement('div');d.className='g';d.textContent='Histoire';box.appendChild(d);slot('Histoire');}}
 
 let ready=false;
 /* filtres */
@@ -455,7 +479,7 @@ rng('#y0','#y1','#yF',0,0,'#yT',(x,y)=>(x<=1700&&y>=2026)?'toutes':(x<=1700?'ava
 rng('#n0','#n1','#nF',1,1,'#nT',(x,y)=>(x<=1&&y>=15)?'tous':(x===y?x:x+' – '+(y>=15?'15 et +':y))+' niv.',(x,y)=>{st.n0=x;st.n1=y;if(ready)later();});
 rng('#h0','#h1','#hF',0,0,'#hT',(x,y)=>(x<=0&&y>=60)?'toutes':x+' – '+(y>=60?'60 m et +':y+' m'),(x,y)=>{st.h0=x;st.h1=y;if(ready)later();});
 for(const [id,k] of [['#fUnd','und'],['#fReh','reh'],['#fSur','sur'],['#fIgh','igh'],['#fCvp','cvp'],['#fRec','rcn']])$(id).onchange=e=>{st[k]=e.target.checked;recolor();};
-$('#fLbl').onchange=e=>{showLbl=e.target.checked;draw();};$('#fArr').onchange=e=>{showArr=e.target.checked;draw();};
+$('#fLbl').onchange=e=>{showLbl=e.target.checked;draw();};$('#fArr').onchange=e=>{showArr=e.target.checked;draw();};$('#fTrot').onchange=e=>{for(const o of BASEOV)o.on=e.target.checked;draw();};
 function syncTog(){const p=$('#panel');$('#tog').textContent=p.classList.contains('min')?'Calques ▴':'Fermer ▾';}
 $('#tog').onclick=()=>{$('#panel').classList.toggle('min');syncTog();};
 $('#panel header').addEventListener('click',e=>{if(isMob()&&e.target.tagName!=='INPUT'&&e.target.id!=='tog'&&!e.target.closest('#sg')){$('#panel').classList.toggle('min');syncTog();}});
@@ -738,8 +762,8 @@ function end(e){const was=pts.size===1&&!moved;pts.delete(e.pointerId);if(was){o
 cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',e=>pts.delete(e.pointerId));
 cv.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.clientX,e.clientY,Math.exp(-e.deltaY*(e.ctrlKey?.01:.0015)));},{passive:false});
 cv.addEventListener('dblclick',e=>zoomAt(e.clientX,e.clientY,2));
-cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&hov>=0){hov=-1;if(sel<0)showCard(-1);draw();}});
-function hover(x,y){if(sel>=0)return;const [wx,wy]=s2w(x,y);const s=pick(wx,wy);if(s!==hov){hov=s;showCard(s,false);draw();}}
+cv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&hov>=0){hov=-1;draw();}});
+function hover(x,y){if(sel>=0)return;const [wx,wy]=s2w(x,y);const s=pick(wx,wy);if(s!==hov){hov=s;draw();}}
 $('#cx').onclick=()=>{sel=-1;hov=-1;showCard(-1);draw();};addEventListener('keydown',e=>{if(e.key==='Escape'&&sel>=0){sel=-1;showCard(-1);draw();}});
 $('#zi').onclick=()=>zoomAt(innerWidth/2,innerHeight/2,1.6);$('#zo').onclick=()=>zoomAt(innerWidth/2,innerHeight/2,1/1.6);$('#zr').onclick=()=>{fit();draw();};
 const esc=x=>String(x??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -855,6 +879,144 @@ function atlHtml(M,pin){if(!M.length)return '';const yl=m=>m.y?(m.y<1000?'vers '
  if(G.length){const seen=new Set(),U=[];for(const m of G){const k=m.p[0][1]+'|'+m.y;if(seen.has(k))continue;seen.add(k);U.push(m);}
   h+='<div class="dm" style="margin:6px 0 2px"><b>Plans d\'ensemble et cartes thématiques ('+U.length+')</b></div><div class="dm" style="margin-left:8px;line-height:1.5">'+U.map(m=>'<a href="'+m.p[0][1]+'" target="_blank" rel="noopener">'+esc(m.p[0][0])+(m.y&&!m.p[0][0].includes(String(m.y))?' ('+yl(m)+')':'')+'</a>').join(' · ')+'</div>';}
  return h;}
+/* ---------- fiche : un seul modèle pour la fenêtre et pour le PDF ---------- */
+const SEC_OPEN=new Set(['bati']);
+function inPts(r,x,y){let c=false;for(let i=0,j=r.length-1;i<r.length;j=i++){const a=r[i],b=r[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])c=!c;}return c;}
+function quartierOf(s){if(!BASE||!BASE.q)return '';const x=(bbox[4*s]+bbox[4*s+2])/2,y=(bbox[4*s+1]+bbox[4*s+3])/2;for(const q of BASE.q)for(const r of q.rings)if(inPts(r,x,y))return q.n;return '';}
+function cardModel(s,c){
+ const {A,P,D,C,SR,AT}=c,U=D&&D.u&&D.u[s],ad=(A&&A[s])||[],[lo,la]=bldLonLat(s),f5=v=>v.toFixed(5),S=[];
+ const row=(k,v)=>'<div><span class="k">'+k+' : </span>'+v+'</div>';
+ const lk=(u,x,note)=>'<div class="dm lkr"><a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(x)+'</a>'+(note?'<div class="k" style="font-size:11px">'+esc(note)+'</div>':'')+'</div>';
+ const it=(t,k,u)=>({t,s:k?srcLabel(k):'',u:u||(k?SRC[k][1]:'')});
+ const L_=(t,u,note)=>({t:t+(note?' ('+note+')':''),s:'',u});
+ const sub=x=>'<div class="sub2">'+x+'</div>';
+ const sec=(id,h,html,items,n)=>{if(html||items.length)S.push({id,h,html,items,n:n||0});};
+ const dm=v=>(v/10).toFixed(1).replace('.',',');
+ const q0=ad[0]?'ce site n\'a pas de lien direct vers un lieu : chercher « '+ad[0]+' » ou se repérer sur la carte':'';
+ // 1. Adresse et parcelle
+ {const q=quartierOf(s),Cc=D&&D.c&&D.c[s],pl=P&&P[s]||[];
+  let h=row('Arrondissement',ARR[s]?ARR[s]+'e':'—')+(q?row('Quartier administratif',esc(q)):'');
+  if(ad.length>1)h+=row('Adresses ('+ad.length+')',ad.map(esc).join(' · '));
+  if(Cc&&Cc.length)h+=row(Cc.length>1?'Parcelles cadastrales':'Parcelle cadastrale',Cc.map(c=>'<a href="'+cadUrl(c[0])+'" target="_blank" rel="noopener">'+esc(cadTxt(c))+'</a>').join(' · '));
+  else if(pl.length)h+=row('Parcelle'+(pl.length>1?'s':''),pl.slice(0,4).map(x=>esc(x.slice(8,10)+' '+x.slice(10).replace(/^0+/,''))).join(', '));
+  const gm='https://www.google.com/maps/search/?api=1&query='+(ad[0]?encodeURIComponent(ad[0]+', Paris'):f5(la)+','+f5(lo)),osm='https://www.openstreetmap.org/?mlat='+f5(la)+'&mlon='+f5(lo)+'#map=19/'+f5(la)+'/'+f5(lo);
+  h+=sub('Voir le lieu')+lk(gm,'Google Maps')+lk(osm,'OpenStreetMap');
+  const items=[it('Adresse'+(ad.length>1?'s':'')+' : '+(ad.length?ad.join(' ; '):'aucune adresse rattachée'),'ban',ad.length?banUrl(ad[0],ARR[s]):''),it('Arrondissement : '+(ARR[s]?ARR[s]+'e':'—'),'apur')];
+  if(q)items.push(it('Quartier administratif : '+q,'quart'));
+  if(Cc&&Cc.length)items.push(...Cc.map(c=>it('Parcelle cadastrale '+cadTxt(c),'cad',cadUrl(c[0]))));
+  items.push(L_('Voir le lieu sur Google Maps',gm),L_('Voir le lieu sur OpenStreetMap',osm));
+  sec('id','Adresse et parcelle',h,items);}
+ // 2. Bâtiment
+ {const per=PER_LAB[PMAP[PE[s]]??11],toit=SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'—',niv=nivOf(s);
+  const h=row('Année de construction',AN[s]||'inconnue')+row('Période (Apur)',per)+row('Réhabilitation',RE[s]>=1900?RE[s]:'—')+row('Surélévation',SU[s]?SU[s]:'—')
+   +row('Hauteur médiane / max',dm(HM[s])+' m / '+dm(HX[s])+' m')+row('Niveaux',niv+(BN[s]>0?' (fichiers fonciers)':' (estimé : hauteur médiane ÷ 3 m)'))
+   +row('Emprise au sol',nf.format(Math.round(area[s]))+' m²')+row('Surface de plancher estimée',nf.format(SPL(s))+' m² (indicatif)')
+   +(TYP[s]?row('Typologie (Apur)',TY_LAB[TYP[s]]):'')+row('Toiture',toit)+(IG[s]?row('Immeuble de grande hauteur','oui'):'');
+  const items=[it('Année de construction : '+(AN[s]||'inconnue')+' (dates parfois approximatives)','apur'),it('Période : '+per,'apur'),
+   it('Réhabilitation : '+(RE[s]>=1900?RE[s]:'—')+' ; surélévation : '+(SU[s]||'—'),'apur'),it('Hauteur médiane / maximale : '+dm(HM[s])+' m / '+dm(HX[s])+' m','apur'),
+   it('Emprise au sol : '+nf.format(Math.round(area[s]))+' m²','apur'),
+   it('Niveaux : '+niv+(BN[s]>0?' (fichiers fonciers, via la BDNB)':' (estimé : hauteur médiane ÷ 3 m)')+' ; surface de plancher estimée : '+nf.format(SPL(s))+' m² (emprise × niveaux)','calc'),
+   ...(TYP[s]?[it('Typologie : '+TY_LAB[TYP[s]],'typ')]:[]),
+   it('Toiture : '+(SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'autre ou inconnue')+(IG[s]?' ; immeuble de grande hauteur':''),'apur')];
+  sec('bati','Bâtiment',h,items);}
+ // 3. Usages, énergie et carbone
+ {const B=D&&D.n&&D.n[s],R=bdnbRows(s,B),K=D&&D.k&&D.k[s];
+  let h=R.map(r=>row(r[0],esc(String(r[1])))).join('')+'<div class="mot"><span class="k">Carbone d\'une reconstruction (ordre de grandeur) : </span>'+co2Txt(s)+'</div>';
+  const items=[...R.map(r=>it(r[0]+' : '+r[1],r[2])),it('Carbone d\'une reconstruction à neuf (ordre de grandeur) : '+co2Txt(s),'co2')];
+  if(K&&K.length){h+=sub('Commerces en rez-de-chaussée ('+K.length+')')+'<div class="k" style="margin:-2px 0 6px">Base des commerces de l\'Apur (BDCOM), relevé de 2017</div>'+K.slice(0,40).map(e=>'<div class="dm" style="margin:3px 0"><i class="sw2" style="display:inline-block;vertical-align:-1px;margin-right:6px;background:'+COM_COL[Math.max(0,(e[0]||7)-1)]+'"></i><b>'+esc(e[1])+'</b><span class="k">'+(e[5]?' · '+esc(e[5]):'')+(e[2]?' · '+esc(e[2]):'')+(e[4]?' · '+esc(e[4]):'')+'</span></div>').join('')+(K.length>40?'<div class="k">… et '+(K.length-40)+' autres</div>':'');
+   items.push(...K.slice(0,60).map(e=>it('Commerce : '+e[1]+(e[5]?', '+e[5]:'')+(e[2]?', '+e[2]:'')+(e[3]?', '+e[3]:'')+(e[4]?', '+e[4]:''),'com')));}
+  sec('usage','Usages, énergie et carbone',h,items);}
+ // 4. Autorisations d'urbanisme
+ {const L=D&&D.b&&D.b[s];let h='',items=[];
+  if(NT[s]&&L){h=L.slice(0,60).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';const cl=/^(Favorable|Accord)/.test(dec)?'ok':/^(Défavorable|Rejet|Irrecevable)/.test(dec)?'no':'nt';
+    return '<div class="dsr"><div class="hd"><span class="ty">'+esc(TNAME[D.t[e[2]]])+'</span><span class="dtt">'+fdate(e[1])+'</span><span class="dec '+cl+'">'+esc(dec)+'</span></div>'
+     +(e[4]?'<div class="ds">'+esc(e[4])+'</div>':'')+'<div class="dm"><a href="'+esc(dossUrl(e[0]))+'" target="_blank" rel="noopener">'+esc(e[0])+'</a>'+(e[5]?' · '+esc(e[5]):'')+'</div></div>';}).join('')+(L.length>60?'<div class="k" style="padding-top:4px">'+nf.format(L.length-60)+' dossiers plus anciens non affichés.</div>':'');
+   items=L.slice(0,60).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';return it(TNAME[D.t[e[2]]]+', '+fdate(e[1])+', '+dec+(e[4]?' : '+e[4]:'')+' (dossier '+e[0]+(e[5]?', '+e[5]:'')+')','urb',dossUrl(e[0]));});}
+  else h='<div class="k">Aucun dossier rattaché à ce bâtiment depuis 1990.</div>';
+  if(ad[0]){const u=archTopo(ad[0]);h+=sub('Dossiers plus anciens')+lk(u,'Archives de Paris, recherche à l\'adresse : permis de construire anciens, casier sanitaire, calepins du cadastre, sommier foncier','résultats à trier, la recherche inclut des adresses voisines');
+   items.push(L_('Archives de Paris, recherche à l\'adresse « '+ad[0]+' » : permis de construire anciens, casier sanitaire, calepins du cadastre, sommier foncier',u,'résultats à trier'));}
+  sec('aut','Autorisations d\'urbanisme',h,items,NT[s]);}
+ // 5. Patrimoine
+ {const f=PF[s],bd=[];let h='',items=[];
+  if(f&1)bd.push(['Monument historique','#d53e4f']);else if(f&2)bd.push(['Immeuble protégé','#d53e4f']);
+  if(f&4)bd.push(['Protégé par le PLU','#f46d43']);if(f&16)bd.push(['Bâtiment moderne','#3288bd']);if(f&32)bd.push(['Volumétrie à conserver','#3288bd']);if(f&64)bd.push(['Parcelle signalée','#b07d1a']);if(f&8)bd.push(['Périmètre de protection','#b07d1a']);
+  if(bd.length)h+='<div class="up">'+bd.map(b=>'<span class="bdg" style="color:'+b[1]+'">'+esc(b[0])+'</span>').join('')+'</div>';
+  if(U){
+   if(U.mh)for(const m of mhUniq(U.mh)){const M=m[2]?mhDetail(m[2]):null,mu=m[2]?'https://www.pop.culture.gouv.fr/notice/merimee/'+encodeURIComponent(m[2]):'';
+    h+='<div class="dsr"><div class="hd"><span class="ty">'+(m[3]==='MH'?'Monument historique':'Immeuble protégé')+'</span>'+(M&&M.typ?'<span class="dtt">'+esc(M.typ)+'</span>':m[1]?'<span class="dtt">protégé en '+m[1]+'</span>':'')+'</div><div class="ds">'+esc(M&&M.titre||m[0])+'</div>'
+     +(M&&M.prec?'<div class="mot"><span class="k">Motif de protection : </span>'+esc(M.prec)+'</div>':'')+(M&&M.date?'<div class="dm">'+esc(M.date.replace(/ ; /g,' · '))+(M.siecle?' · '+esc(M.siecle):'')+(M.statut?' · '+esc(M.statut):'')+'</div>':'')
+     +(M&&M.hist?'<details class="hist"><summary>Historique (notice Mérimée)</summary><div class="dm">'+esc(M.hist)+'</div></details>':'')+(m[2]?'<div class="dm"><a href="'+mu+'" target="_blank" rel="noopener">Notice Mérimée '+esc(m[2])+'</a></div>':'')+'</div>';
+    items.push(it((m[3]==='MH'?'Monument historique':'Immeuble protégé')+' : '+(M&&M.titre||m[0])+(M&&M.typ?' ('+M.typ+')':m[1]?', protégé en '+m[1]:'')+(m[2]?', Mérimée '+m[2]:''),'pat',mu));
+    if(M&&M.prec)items.push(it('Motif de protection : '+M.prec,'mer',mu));if(M&&M.date)items.push(it('Arrêtés : '+M.date+(M.statut?' ; '+M.statut:''),'mer',mu));if(M&&M.hist)items.push(it('Historique : '+M.hist,'mer',mu));}
+   if(U.pl)for(const m of U.pl){h+='<div class="dsr"><div class="hd"><span class="ty">'+esc(m[0])+'</span><span class="dtt">PLU</span></div>'+(m[2]?'<div class="ds">'+esc(m[2])+'</div>':'')+(m[1]?'<div class="mot"><span class="k">Motif de protection : </span>'+esc(m[1])+'</div>':'')+'</div>';
+    items.push(it(m[0]+' (PLU)'+(m[2]?' : '+m[2]:'')+(m[1]?'. Motif de protection : '+m[1]:''),'plu',OPD+'plub_pvp/'));}
+   if(U.pp){h+=row('Périmètres',U.pp.map(esc).join(' · '));items.push(it('Périmètres : '+U.pp.join(' ; '),'pat'));}
+   for(const x of (U.fl||[]).filter(x=>!/^(Secteur de risque|Plan de prévention)/.test(x))){h+='<div class="dm">'+esc(x)+'</div>';items.push(it(x,'plu'));}
+  }
+  const L=C&&C.b&&C.b[s];
+  if(CN[s]&&L){h+=sub('Commission du Vieux Paris ('+CN[s]+')')+L.slice(0,20).map(e=>'<div class="dsr"><div class="hd"><span class="ty">'+esc(e[1]||'Sans résolution')+'</span><span class="dtt">'+fdate(e[0])+'</span>'+(e[2]?'<span class="k">'+esc(e[2])+'</span>':'')+'</div>'
+    +(e[3]&&e[3]!=='Aucune'?'<div class="dm">'+esc(e[3])+'</div>':'')+(e[4]?'<div class="ds">'+esc(e[4])+'</div>':'')+(e[5]?'<div class="dm"><a href="'+esc(e[5])+'" target="_blank" rel="noopener">Compte rendu de séance (PDF)</a></div>':'')+'</div>').join('');
+   items.push(...L.slice(0,20).map(e=>it('Commission du Vieux Paris, '+fdate(e[0])+', '+(e[1]||'sans résolution')+(e[2]?', '+e[2]:'')+(e[3]&&e[3]!=='Aucune'?', '+e[3]:'')+(e[4]?' : '+e[4]:''),'cvp',e[5]||'')));}
+  const cvph='https://fnp.huma-num.fr/adws/app/515ec27b-90ce-11ec-a660-af5a22dfde2b/';
+  h+=sub('Photographies')+lk(cvph,'Photographies de la Commission du Vieux Paris depuis 1916, carte interactive',q0);items.push(L_('Photographies de la Commission du Vieux Paris depuis 1916, carte interactive',cvph,q0));
+  sec('pat','Patrimoine',bd.length||U||CN[s]?h:h,items,(f&3?1:0)+(CN[s]||0));}
+ // 6. Urbanisme (PLU)
+ {let h='',items=[];
+  if(ZO[s]){h+=row('Zone du PLU',ZL[ZO[s]]);items.push(it('Zone du PLU : '+ZL[ZO[s]],'plu',OPD+'plub_zonage/'));}
+  if(HP[s]){const hx=HX[s]/10,m=HP[s]-hx;h+=row('Plafond de hauteur du PLU',HP[s]+' m <span class="k">(hauteur max existante '+hx.toFixed(1).replace('.',',')+' m, '+(m<0?'dépasse de '+(-m).toFixed(1).replace('.',',')+' m':'marge '+m.toFixed(1).replace('.',',')+' m')+', indicatif)</span>');
+   items.push(it('Plafond de hauteur du PLU : '+HP[s]+' m (hauteur maximale existante '+dm(HX[s])+' m ; comparaison indicative)','plu',OPD+'plub_hauteur/'));}
+  h+=sub('Règles applicables')+lk(REGL,'Règlement du PLU bioclimatique (texte, portail de la Ville de Paris)')+lk(gpuUrl(lo,la),'Plan de zonage sur le Géoportail de l\'urbanisme, centré sur le bâtiment')+lk(CARTO,'Cartographie des règles à l\'adresse (portail de la Ville de Paris)','saisir l\'adresse ou la parcelle');
+  items.push(it('Règlement du PLU bioclimatique (texte)','reg',REGL),it('Plan de zonage sur le Géoportail de l\'urbanisme, centré sur le bâtiment','gpu',gpuUrl(lo,la)),it('Cartographie des règles à l\'adresse : saisir l\'adresse ou la parcelle','reg',CARTO));
+  sec('plu','Urbanisme (PLU)',h,items);}
+ // 7. Sous-sol, risques et fouilles
+ {let h='',items=[];const rk=(U&&U.fl||[]).filter(x=>/^(Secteur de risque|Plan de prévention)/.test(x));
+  for(const x of rk){h+='<div class="dm">'+esc(x)+'</div>';items.push(it(x,'plu',OPD+['','plub_carriere/','plub_gypse/','plub_pprizone/'][RS[s]]||''));}
+  if(!rk.length&&RS[s]){const x='Secteur de risque : '+['','carrières','gypse','zone inondable (PPRI)'][RS[s]];h+='<div class="dm">'+x+'</div>';items.push(it(x,'plu',OPD+['','plub_carriere/','plub_gypse/','plub_pprizone/'][RS[s]]));}
+  if(U&&U.ar){h+=sub('Fouilles archéologiques à moins de 40 m ('+U.ar.length+')')+U.ar.map(a=>'<div class="dsr"><div class="hd"><span class="ty">'+esc(a[2]||'Opération')+'</span><span class="dtt">'+esc(a[1])+'</span><span class="k">à '+a[5]+' m</span></div><div class="ds">'+esc(a[0])+(a[4].length?' <span class="k">('+a[4].join(', ')+')</span>':'')+'</div>'+(a[3]?'<div class="dm">'+esc(a[3])+'</div>':'')+'</div>').join('');
+   items.push(...U.ar.map(a=>it('Fouille : '+(a[2]||'opération')+', '+a[1]+', à '+a[5]+' m : '+a[0]+(a[4].length?' ('+a[4].join(', ')+')':'')+(a[3]?'. '+a[3]:''),'arch')));}
+  if(!h)h='<div class="k">Aucun secteur de risque ni fouille recensée à proximité.</div>';
+  sec('sol','Sous-sol, risques et fouilles',h,items,(RS[s]?1:0)+(U&&U.ar?U.ar.length:0));}
+ // 8. Histoire : cartes et photos anciennes
+ {let h='',items=[];const M=atlasOf(s,AT);
+  if(M.length){h+=sub('Atlas historique de Paris (Michel Huard)')+atlHtml(M,true).replace(/^<h3>[^<]*<\/h3>/,'');
+   items.push(...M.filter(m=>!m.g).map(m=>it('Atlas historique : '+(m.y?(m.y<1000?'vers '+m.y:m.y)+', ':'')+atlName(m)+' (page « '+m.p[0][0]+' »)','atl',m.p[0][1])));}
+  const vn=vergNear(lo,la);
+  h+=sub('Photographies anciennes');
+  if(vn.length)for(const d of vn){const t='Photographie ancienne (Vergue) : '+vergTitle(d[1][3])+(d[1][2]>=1800?', '+d[1][2]:'')+', prise à '+Math.round(d[0])+' m',u='https://vergue.com/post/'+d[1][3]+'.html';h+=lk(u,t);items.push(L_(t,u));}
+  else{h+=lk('https://vergue.com/carto-vergue-paris/','Photographies du Paris du XIXe siècle (Vergue), carte','aucune photographie à moins de 80 m du bâtiment');}
+  const voie=ad[0]?ad[0].replace(/^\d+\s*(bis|ter|quater|[a-z])?\s+/i,''):'';
+  if(voie){const u=archPhoto(voie);h+=lk(u,'Archives de Paris, photographies de la voie « '+voie+' »');items.push(L_('Archives de Paris, photographies de la voie « '+voie+' »',u));}
+  const P2=[['Remonter le temps (IGN) : cartes et photos aériennes anciennes','https://remonterletemps.ign.fr/comparer?lon='+f5(lo)+'&lat='+f5(la)+'&z=18'],
+   ['Cassini | Grand Paris (Apur) : plans historiques de 1728 à nos jours','https://www.apur.org/fr/geo-data/cassini-grand-paris-plans-historiques-1728-nos-jours'],
+   ['Plan parcellaire de Paris en ligne (Ville de Paris, Vasserot et plans modernes)','https://www.paris.fr/pages/plans-donnees-et-documents-d-urbanisme-3708'],
+   ['Plans cadastraux des immeubles de Paris 1809-1856 (Archives nationales)','https://www.data.gouv.fr/datasets/plans-cadastraux-des-immeubles-de-paris-1809-1856'],
+   ['Plans d\'îlots Vasserot, projet Paris Time Machine','https://paris-timemachine.huma-num.fr/en/old-parcel-plans/']];
+  h+=sub('Cartes et plans anciens');for(const [t,u] of P2){h+=lk(u,t);items.push(L_(t,u));}
+  sec('hist','Histoire : cartes et photos anciennes',h,items,M.filter(m=>!m.g).length);}
+
+ // ventes et occupants (version interne seulement)
+ {const V=D&&D.v&&D.v[s],sec2=[];const add=(h_,items)=>{sec2.push({h:h_,items});};
+ if(V)add('Ventes DVF 2021-2025 ('+DN[s]+')'+(PM[s]?', médiane '+eur(PM[s])+'/m²':''),V.slice(0,30).map(e=>{const [mid,dt,nat,v,parts,nr,how]=e;return it(nat+', '+fdate(dt)+' : '+(v>0?eur(v):'valeur non renseignée')+(nr>1?' (transaction de '+nr+' biens, valeur pour l\'ensemble)':'')+' ; '+parts.map(p=>p[0]+(p[1]>0?' '+p[1]+' m² bâtis':'')+(p[3]>0?', Carrez '+nf.format(p[3])+' m²':'')+(p[2]>0?', '+p[2]+' p.':'')).join(' ; ')+(how>1?' ; rattachement approximatif':'')+' (mutation '+mid+')','dvf');}));
+ const R=SR&&SR.b&&SR.b[s];
+ if(R)add('Occupants, Sirene ('+nf.format(SNE[s])+' établissements actifs)',[it('Effectif salarié estimé : '+(R[1]>0?'≈ '+nf.format(R[1]):'non renseigné')+' ; établissements fermés depuis 2024 : '+(R[2]||0)+(SNE[s]>=30?' ; domiciliation probable (nombreuses entreprises déclarées)':''),'sir'),...R[4].slice(0,30).map(e=>it(e[0]+' : '+(NAFD[(e[1]||'').slice(0,2)]||'activité inconnue')+(e[1]?' ('+e[1]+')':'')+(e[2]?', créé en '+e[2]:'')+', '+(TRN[e[3]]||'effectif non renseigné'),'sir',/^\d{14}$/.test(e[5]||'')?'https://annuaire-entreprises.data.gouv.fr/etablissement/'+e[5]:''))]);
+
+  if(DN[s]){const x=sec2.find(z=>z.h.startsWith('Ventes'));sec('dvf','Ventes (DVF 2021-2025)'+(PM[s]?', médiane '+eur(PM[s])+'/m²':''),V?dvfHtml(V,30,true):'<div class="k">Détail indisponible.</div>',x?x.items:[],DN[s]);}
+ if(SNE[s]||SCL[s]){const x=sec2.find(z=>z.h.startsWith('Occupants'));
+  const R=SR&&SR.b[s];
+  let out='';
+  if(R){
+   const eff=R[1];
+   out+='<div class="dm" style="margin-bottom:3px">'+(eff>0?'Effectif salarié estimé ≈ '+nf.format(eff)+' (tranches Sirene, indicatif). ':'Effectifs non renseignés. ')+(R[2]?R[2]+' établissement'+(R[2]>1?'s':'')+' fermé'+(R[2]>1?'s':'')+' depuis 2024. ':'')+'</div>';
+   if(SNE[s]>=30)out+='<div class="dm" style="color:#b3303f;margin-bottom:3px">Domiciliation probable : beaucoup d\'entreprises déclarées à cette adresse, sans activité forcément sur place.</div>';
+   if(R[3]&&R[3].length)out+='<div class="dm" style="margin-bottom:3px">'+R[3].map(g=>esc(GNM[g[0]])+' ('+g[1]+')').join(' · ')+'</div>';
+   out+=R[4].slice(0,30).map(e=>{const dv=NAFD[(e[1]||'').slice(0,2)]||'';return '<div class="dsr"><div class="hd"><span class="ty">'+esc(e[0])+'</span>'+'</div><div class="ds">'+esc(dv)+(e[1]?' <span class="k">('+esc(e[1])+')</span>':'')+'</div><div class="dm">'+(e[2]?'Créé en '+e[2]+' · ':'')+esc(TRN[e[3]]||'effectif non renseigné')+'</div></div>';}).join('');
+   if(SNE[s]>30)out+='<div class="k" style="padding-top:4px">'+(pin?nf.format(SNE[s]-30)+' autres établissements non listés (30 plus importants affichés).':'+ '+nf.format(SNE[s]-4)+' autres : cliquer pour la fiche complète.')+'</div>';
+  }else out+='<div class="k">Détail indisponible.</div>';
+ 
+   sec('sir','Occupants (Sirene)',out,x?x.items:[],SNE[s]);}
+ }
+ return S;
+}
 async function showCard(s,pin){
  if(s<0){card.hidden=true;cardFor=-1;document.body.classList.remove('cardon');return;}
  card.hidden=false;card.classList.toggle('pin',!!pin);cardFor=s;
@@ -864,46 +1026,14 @@ async function showCard(s,pin){
  body(baseInfo(s,undefined,null)+'<div class="k" style="margin-top:8px">Chargement…</div>');
  const [D,C,SR,,AT]=await Promise.all([loadArr(ARR[s]),CN[s]?loadCvp():null,(SNE[s]||SCL[s])?loadSir(ARR[s]):null,(PF[s]&3)?loadMhd():null,loadAtl()]);
  if(cardFor!==s)return;
- const A=D?D.a:{},P=D?D.p:{};
- let out=baseInfo(s,A,P)+urbHtml(s,D&&D.u&&D.u[s],pin);
- {const B=D&&D.n&&D.n[s];out+=bdnbHtml(s,B,pin);}
- out+=cadHtml(D&&D.c&&D.c[s]);out+=atlHtml(atlasOf(s,AT),pin);
- const K=D&&D.k&&D.k[s];
- if(K&&K.length){out+='<h3>Commerces en rez-de-chaussée ('+K.length+')</h3><div class="k" style="margin:-2px 0 6px">Base des commerces de l\'Apur (BDCOM), relevé de 2017</div>'+K.slice(0,pin?40:3).map(e=>'<div class="dm" style="margin:3px 0"><i class="sw2" style="display:inline-block;vertical-align:-1px;margin-right:6px;background:'+COM_COL[Math.max(0,(e[0]||7)-1)]+'"></i><b>'+esc(e[1])+'</b><span class="k">'+(e[5]?' · '+esc(e[5]):'')+(e[2]?' · '+esc(e[2]):'')+(e[4]?' · '+esc(e[4]):'')+'</span></div>').join('')+(K.length>(pin?40:3)?'<div class="k">… et '+(K.length-(pin?40:3))+' autres</div>':'');}
- const V=D&&D.v&&D.v[s];
- if(DN[s]){
-  out+='<h3>Ventes DVF 2021-2025 ('+DN[s]+')'+(PM[s]?' · médiane '+eur(PM[s])+'/m²':'')+'</h3>'+(V?dvfHtml(V,pin?30:2,pin):'<div class="k">Détail indisponible.</div>');
- }
- if(SNE[s]||SCL[s]){
-  const R=SR&&SR.b[s];
-  out+='<h3>Occupants (Sirene) : '+nf.format(SNE[s])+' établissement'+(SNE[s]>1?'s':'')+' actif'+(SNE[s]>1?'s':'')+'</h3>';
-  if(R){
-   const eff=R[1];
-   out+='<div class="dm" style="margin-bottom:3px">'+(eff>0?'Effectif salarié estimé ≈ '+nf.format(eff)+' (tranches Sirene, indicatif). ':'Effectifs non renseignés. ')+(R[2]?R[2]+' établissement'+(R[2]>1?'s':'')+' fermé'+(R[2]>1?'s':'')+' depuis 2024. ':'')+'</div>';
-   if(SNE[s]>=30)out+='<div class="dm" style="color:#b3303f;margin-bottom:3px">Domiciliation probable : beaucoup d\'entreprises déclarées à cette adresse, sans activité forcément sur place.</div>';
-   if(R[3]&&R[3].length)out+='<div class="dm" style="margin-bottom:3px">'+R[3].map(g=>esc(GNM[g[0]])+' ('+g[1]+')').join(' · ')+'</div>';
-   out+=R[4].slice(0,pin?30:4).map(e=>{const dv=NAFD[(e[1]||'').slice(0,2)]||'';return '<div class="dsr"><div class="hd"><span class="ty">'+esc(e[0])+'</span>'+'</div><div class="ds">'+esc(dv)+(e[1]?' <span class="k">('+esc(e[1])+')</span>':'')+'</div><div class="dm">'+(e[2]?'Créé en '+e[2]+' · ':'')+esc(TRN[e[3]]||'effectif non renseigné')+'</div></div>';}).join('');
-   if(SNE[s]>(pin?30:4))out+='<div class="k" style="padding-top:4px">'+(pin?nf.format(SNE[s]-30)+' autres établissements non listés (30 plus importants affichés).':'+ '+nf.format(SNE[s]-4)+' autres : cliquer pour la fiche complète.')+'</div>';
-  }else out+='<div class="k">Détail indisponible.</div>';
- }
- out+='<h3>Dossiers d\'urbanisme ('+nf.format(NT[s])+')</h3>';
- if(NT[s]){
-  const L=D&&D.b[s];
-  if(!L)out+='<div class="k">Détail indisponible.</div>';
-  else{
-   out+=L.slice(0,lim).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';const cl=/^(Favorable|Accord)/.test(dec)?'ok':/^(Défavorable|Rejet|Irrecevable)/.test(dec)?'no':'nt';
-    return '<div class="dsr"><div class="hd"><span class="ty">'+esc(TNAME[D.t[e[2]]])+'</span><span class="dtt">'+fdate(e[1])+'</span><span class="dec '+cl+'">'+esc(dec)+'</span></div>'
-     +(e[4]?'<div class="ds">'+esc(e[4])+'</div>':'')+'<div class="dm">'+esc(e[0])+(e[5]?' · '+esc(e[5]):'')+'</div></div>';}).join('');
-   if(L.length>lim)out+='<div class="k" style="padding-top:4px">'+(pin?nf.format(L.length-lim)+' dossiers plus anciens non affichés.':'+ '+nf.format(L.length-lim)+' autres : cliquer pour la fiche complète.')+'</div>';
-  }
- }else out+='<div class="k">Aucun dossier rattaché à ce bâtiment.</div>';
- if(CN[s]){
-  const L=C&&C.b[s];
-  out+='<h3>Commission du Vieux Paris ('+CN[s]+')</h3>'+(L?L.slice(0,pin?20:2).map(e=>'<div class="dsr"><div class="hd"><span class="ty">'+esc(e[1]||'Sans résolution')+'</span><span class="dtt">'+fdate(e[0])+'</span>'+(e[2]?'<span class="k">'+esc(e[2])+'</span>':'')+'</div>'
-   +(e[3]&&e[3]!=='Aucune'?'<div class="dm">'+esc(e[3])+'</div>':'')+(e[4]?'<div class="ds">'+esc(e[4])+'</div>':'')+(pin&&e[5]?'<div class="dm"><a href="'+esc(e[5])+'" target="_blank" rel="noopener">Compte rendu de séance (PDF)</a></div>':'')+'</div>').join(''):'<div class="k">Détail indisponible.</div>');
- }
- if(pin){PCTX={s,A,P,D,C,SR,V:V,atl:AT};out+=extHtml(s,A,D&&D.u&&D.u[s]);}
+ const A=D?D.a:{},P=D?D.p:{},M=cardModel(s,{A,P,D,C,SR,AT}),ad=A&&A[s]||[];
+ PCTX={s,A,P,D,C,SR,atl:AT,M};
+ let out=(ad.length?'<div class="t">'+esc(ad[0])+'</div>':'<div class="t">Pas d\'adresse rattachée</div><div class="k adl">Annexe, cour ou bâtiment sans numéro dans la Base Adresse Nationale</div>')
+  +'<div class="sb">'+(AN[s]?'Construit en '+AN[s]:'Date de construction inconnue')+' · Paris '+(ARR[s]?ARR[s]+'e':'')+(ad.length>1?' · '+ad.length+' adresses':'')+'</div>'+legendHtml(s)
+  +'<div class="pdfrow"><button id="pdfb" type="button" class="pdfb">Exporter la fiche en PDF</button> <span id="pdfm" class="k"></span></div>';
+ out+=M.map(x=>'<details class="fsec" data-id="'+x.id+'"'+(SEC_OPEN.has(x.id)?' open':'')+'><summary><span class="chev"></span>'+esc(x.h)+(x.n?'<span class="gn">'+nf.format(x.n)+'</span>':'')+'</summary><div class="fbody">'+x.html+'</div></details>').join('');
  body(out);
+ cb.querySelectorAll('details.fsec').forEach(d=>d.addEventListener('toggle',()=>{d.open?SEC_OPEN.add(d.dataset.id):SEC_OPEN.delete(d.dataset.id);}));
 }
 /* ---------- calques superposés ---------- */
 const OVL=[
@@ -972,8 +1102,6 @@ const OVL=[
  {id:'at1850',src:'paris 1850 a',n:'Paris en 1850',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/5.html'],url:'https://paris-atlas-historique.fr/5.html'},
  {id:'at1900',src:'paris 1900',n:'Paris en 1900',k:'poly',a:.5,atlas:true,cols:['#d8c48e'],lsuf:'',lcol:'#fff',lab:['Carte de Michel Huard, Atlas historique de Paris : paris-atlas-historique.fr/63.html'],url:'https://paris-atlas-historique.fr/63.html'}]},
 {g:'Voirie',items:[
- {id:'trot',n:'Trottoirs',k:'poly',a:.5,cols:['#c3c9cf'],lab:['Emprise des trottoirs (plan de voirie)'],minK:.45},
- {id:'tpl',n:'Terre-pleins',k:'poly',a:.55,cols:['#9fb59a'],lab:['Terre-plein'],minK:.45},
  {id:'ppi',n:'Passages piétons',k:'poly',a:.75,cols:['#f2f2f2'],lab:['Passage piéton'],minK:.8}]},
 {g:'Cadastre',items:[
  {id:'cad',n:'Parcelles cadastrales',k:'poly',a:0,cols:['#f3e2a9'],lab:['Limite de parcelle (survol : numéro et contenance, à l\'échelle du quartier)'],minK:.6}]},
@@ -983,8 +1111,11 @@ const OVL=[
  {id:'mob',n:'Comptages de trafic (vélo, voiture, etc.)',k:'pt',cols:['#7fb2d6','#4cc9f0','#ffd166','#ef476f'],lab:['Moins de 500 vélos par jour ou pas de comptage vélo','500 à 1 500 vélos par jour','1 500 à 4 000 vélos par jour','Plus de 4 000 vélos par jour']}]}
 ];
 const OVO=[];for(const g of OVL)for(const o of g.items){o.on=false;o.d=null;OVO.push(o);}
+const BASEOV=[{id:'trot',n:'Trottoirs',k:'poly',a:.5,cols:['#c3c9cf'],lab:['Emprise des trottoirs (plan de voirie)'],minK:.45,base:true},{id:'tpl',n:'Terre-pleins',k:'poly',a:.55,cols:['#9fb59a'],lab:['Terre-plein'],minK:.45,base:true}];
+for(const o of BASEOV.slice().reverse()){o.on=true;o.d=null;OVO.unshift(o);}
+ORG.trot=ORG.tpl='Ville de Paris';
 function decPath(p){const n=p.length>>1,a=new Float64Array(n*2);let x=p[0],y=p[1];a[0]=x/10;a[1]=y/10;for(let i=1;i<n;i++){x+=p[2*i];y+=p[2*i+1];a[2*i]=x/10;a[2*i+1]=y/10;}return a;}
-const OCELL=700;
+const OCELL=700,ATLBG='#f2ecdd',ATLFONT='"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua","Hoefler Text",Georgia,"Times New Roman",serif';
 function cellPath(d,rings,c){const a=rings[0];let x0=1e18,y0=1e18,x1=-1e18,y1=-1e18;for(const r of rings)for(let i=0;i<r.length;i+=2){const x=r[i],y=r[i+1];if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
  const key=Math.floor((x0+x1)/2/OCELL)+','+Math.floor((y0+y1)/2/OCELL);let C=d.cells.get(key);if(!C){C={b:[x0,y0,x1,y1],P:new Array(d.nc)};d.cells.set(key,C);}
  const b=C.b;if(x0<b[0])b[0]=x0;if(y0<b[1])b[1]=y0;if(x1>b[2])b[2]=x1;if(y1>b[3])b[3]=y1;return C.P[c]||(C.P[c]=new Path2D());}
@@ -994,7 +1125,7 @@ function eachP(d,fn){const k=view.k,hw=W/2/k,hh=Hh/2/k,X0=view.cx-hw,X1=view.cx+
 async function loadOv(o){
  if(o.d)return o.d;
  const j=await getJson('ov_'+o.id+'.json');if(j.cols)o.cols=j.cols;const nc=o.cols.length;o.raw=j;
- const d={k:j.k,nc,cells:new Map(),pts:[],hit:[]};
+ const d={k:j.k,nc,cells:new Map(),pts:[],hit:[]};if(j.bg)d.bg=j.bg.map(v=>v/10);
  for(const f of j.f){
   const c=Math.min(f[0],nc-1);
   if(j.k==='pt'){d.pts.push([f[2]/10,f[3]/10,c,f[1]]);continue;}
@@ -1024,8 +1155,9 @@ function drawOv(){
  lx.lineJoin='round';
  let pts=false;
  for(const o of OVO){
+  if(o.base&&o.on&&!o.d&&!o.ld&&k>=o.minK){o.ld=1;loadOv(o).then(()=>draw()).catch(()=>{});}
   if(!o.on||!o.d||(o.minK&&k<o.minK&&o.d.k!=='pt'))continue;const d=o.d;
-  if(o.atlas){lx.globalAlpha=o.a;eachP(d,(P,i)=>{lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');});lx.globalAlpha=1;continue;}
+  if(o.atlas){lx.globalAlpha=o.a;if(d.bg){const b=d.bg;lx.beginPath();lx.moveTo(b[0],b[1]);for(let i=2;i<8;i+=2)lx.lineTo(b[i],b[i+1]);lx.closePath();lx.fillStyle=ATLBG;lx.fill();}eachP(d,(P,i)=>{lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');});lx.globalAlpha=1;continue;}
   if(d.k==='poly'&&o.a===0){lx.globalAlpha=Math.min(.55,.25+(k-.7)*.2);lx.lineWidth=.8/k;lx.strokeStyle=o.cols[0];eachP(d,P=>lx.stroke(P));lx.globalAlpha=1;continue;}
   if(d.k==='poly'){eachP(d,(P,i)=>{if(o.hatch){lx.globalAlpha=o.hal?.06:.13;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');lx.globalAlpha=1;lx.fillStyle=hatchPat(o.cols[i],o.hatch[i],k,o.hsp,o.hal);lx.fill(P,'evenodd');}else{lx.globalAlpha=o.a;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');}lx.globalAlpha=Math.min(1,o.a+.4);lx.lineWidth=.9/k;lx.strokeStyle=o.cols[i];lx.stroke(P);});}
   else if(d.k==='line'){lx.globalAlpha=.95;eachP(d,(P,i)=>{lx.lineWidth=(o.lw?o.lw[i]:1.7)/k;lx.strokeStyle=o.cols[i];lx.stroke(P);});}
@@ -1033,8 +1165,9 @@ function drawOv(){
  }
  lx.globalAlpha=1;lx.setTransform(dpr,0,0,dpr,0,0);
  for(const o of OVO){if(!o.on||!o.d||!o.d.L||k<.25||(o.atlas&&k<.9))continue;const suf=o.lsuf??' m',lc=o.lcol||o.cols[1]||o.cols[0];const X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;
-  lx.font='600 10.5px Inter, system-ui, sans-serif';lx.textAlign='center';lx.textBaseline='middle';lx.lineJoin='round';
-  for(const l of o.d.L){if((k<.8||(o.atlas&&k<2))&&!l[3])continue;const sx=X(l[0]),sy=Y(l[1]);if(sx<-20||sy<-20||sx>W+20||sy>Hh+20)continue;lx.lineWidth=3.5;lx.strokeStyle='rgba(15,26,36,.9)';lx.strokeText(l[2]+suf,sx,sy);lx.fillStyle=lc;lx.fillText(l[2]+suf,sx,sy);}}
+  lx.font=o.atlas?'italic 500 '+Math.round(Math.min(15,Math.max(11,k*6)))+'px '+ATLFONT:'600 10.5px Inter, system-ui, sans-serif';lx.textAlign='center';lx.textBaseline='middle';lx.lineJoin='round';
+  const hal=o.atlas?'rgba(242,236,221,.92)':'rgba(15,26,36,.9)',fc=o.atlas?'#3a2c1c':lc;
+  for(const l of o.d.L){if((k<.8||(o.atlas&&k<2))&&!l[3])continue;const sx=X(l[0]),sy=Y(l[1]);if(sx<-20||sy<-20||sx>W+20||sy>Hh+20)continue;lx.lineWidth=3.5;lx.strokeStyle=hal;lx.strokeText(l[2]+suf,sx,sy);lx.fillStyle=fc;lx.fillText(l[2]+suf,sx,sy);}}
  if(pts){
   const X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;
   for(const o of OVO){
@@ -1060,7 +1193,7 @@ function ovTip(x,y){
  const w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.min(innerWidth-w-8,x+14)+'px';tip.style.top=Math.min(innerHeight-h-8,y+14)+'px';
 }
 {
- const DEST={'PLU : gabarit':['Volume','Gabarit du PLU'],'Protections patrimoniales':['Patrimoine','Protections patrimoniales'],'PLU : végétal et paysage':['Urbanisme (PLU)','Végétal et paysage'],'PLU : secteurs et réserves':['Urbanisme (PLU)','Secteurs et réserves'],'Sous-sol et risques':['Urbanisme (PLU)','Sous-sol et risques'],'Archéologie':['Urbanisme (PLU)','Archéologie'],'Mobilité':['Urbanisme (PLU)','Mobilité'],'Commerces':['Usages','Commerces (BDCOM 2017)'],'Atlas historique de Paris':['Patrimoine','Atlas historique de Paris (de l\'Antiquité à 1900)'],'Cadastre':['Urbanisme (PLU)','Cadastre'],'Voirie':['Urbanisme (PLU)','Voirie (plan de voirie de la Ville)'],'Relief':['Sous-sol et fouilles','Relief et nivellement']};
+ const DEST={'PLU : gabarit':['Volume','Gabarit du PLU'],'Protections patrimoniales':['Patrimoine','Protections patrimoniales'],'PLU : végétal et paysage':['Urbanisme (PLU)','Végétal et paysage'],'PLU : secteurs et réserves':['Urbanisme (PLU)','Secteurs et réserves'],'Sous-sol et risques':['Sous-sol et fouilles','Sous-sol et risques'],'Archéologie':['Sous-sol et fouilles','Archéologie'],'Mobilité':['Urbanisme (PLU)','Mobilité'],'Commerces':['Usages','Commerces (BDCOM 2017)'],'Atlas historique de Paris':['Histoire','Atlas historique de Paris (de l\'Antiquité à 1900)'],'Cadastre':['Urbanisme (PLU)','Cadastre'],'Voirie':['Urbanisme (PLU)','Voirie (plan de voirie de la Ville)'],'Relief':['Sous-sol et fouilles','Relief et nivellement']};
  for(const g of OVL){
   const [sec,lab]=DEST[g.g]||['Urbanisme (PLU)',g.g];
   const box=document.querySelector('.ovslot[data-g="'+sec+'"]')||$('#ovl');
@@ -1089,6 +1222,18 @@ function ovTip(x,y){
   box.appendChild(dt);
  }
 }
+/* rubriques repliables du panneau */
+{const box=$('#crit'),kids=[...box.children];let cur=null;const LS=(()=>{try{return JSON.parse(localStorage.getItem('pg_open')||'null');}catch(e){return null;}})()||['Âge'];
+ const save=()=>{try{localStorage.setItem('pg_open',JSON.stringify([...document.querySelectorAll('details.lsec[open]')].map(d=>d.dataset.g)));}catch(e){}};
+ for(const k of kids){if(k.classList.contains('g')){cur=document.createElement('details');cur.className='lsec';cur.dataset.g=k.textContent;if(LS.includes(k.textContent))cur.open=true;
+   cur.innerHTML='<summary><span class="chev"></span>'+esc(k.textContent)+'<span class="lsn"></span></summary>';box.insertBefore(cur,k);k.remove();cur.addEventListener('toggle',save);continue;}
+  if(cur)cur.appendChild(k);}
+ for(const d of document.querySelectorAll('#scroll > details.lsec'))d.addEventListener('toggle',save);
+ for(const d of document.querySelectorAll('#scroll > details.lsec'))if(LS.includes(d.dataset.g))d.open=true;
+}
+{const f=setCrit;setCrit=function(c){f(c);openActive();};document.addEventListener('change',e=>{if(e.target.closest&&e.target.closest('.ovgrp'))setTimeout(openActive,0);});}
+function openActive(){const b=document.querySelector('#crit button.on');if(b){const d=b.closest('details.lsec');if(d)d.open=true;}
+ document.querySelectorAll('details.lsec').forEach(d=>{const n=d.querySelectorAll('button.on').length+[...d.querySelectorAll('.ovgrp input[type=checkbox]:not(.gck)')].filter(c=>c.checked).length;const s=d.querySelector('.lsn');if(s)s.textContent=n?n+' actif'+(n>1?'s':''):'';});}
 
 
 const INFRAME=(()=>{try{return window.top!==window.self;}catch(e){return true;}})();
@@ -1098,114 +1243,92 @@ async function savePdf(blob,nm,show){
  const url=URL.createObjectURL(blob);
  try{const a=document.createElement('a');a.href=url;a.download=nm;document.body.appendChild(a);a.click();a.remove();}catch(e){}
  const full='https://hubbokobza-lab.github.io/paris-graphie/';
- show('PDF généré : <a href="'+url+'" download="'+esc(nm)+'">enregistrer</a> · <a href="#" data-open="1">ouvrir</a>'+(INFRAME?'<br><span style="font-size:11.5px;opacity:.85">Si rien ne se passe, votre navigateur bloque le téléchargement dans le cadre de la page : <a href="'+full+'" target="_blank" rel="noopener">ouvrir la carte en plein écran</a>.</span>':''),u=>{
+ show((nm.endsWith('.dxf')?'DXF prêt':'PDF généré')+' : <a href="'+url+'" download="'+esc(nm)+'">enregistrer</a> · <a href="#" data-open="1">ouvrir</a>'+(INFRAME?'<br><span style="font-size:11.5px;opacity:.85">Si rien ne se passe, votre navigateur bloque le téléchargement dans le cadre de la page : <a href="'+full+'" target="_blank" rel="noopener">ouvrir la carte en plein écran</a>.</span>':''),u=>{
   const o=u.querySelector('[data-open]');if(o)o.onclick=ev=>{ev.preventDefault();const w=window.open(url,'_blank');if(!w){location.href=url;}};});
 }
 /* ---------- export d'une zone en PDF géoréférencé ---------- */
 let XP=null;const xmsg=$('#xmsg');
 function xMsg(h){xmsg.innerHTML=h;xmsg.hidden=!h;}
-$('#zx').onclick=()=>{if(XP){XP=null;$('#zx').classList.remove('on');xMsg('');cv.style.cursor='';draw();return;}XP={a:null,b:null};$('#zx').classList.add('on');cv.style.cursor='crosshair';xMsg('Tracez un rectangle sur la carte (Échap pour annuler)');};
+$('#zx').onclick=()=>{if(XP){XP=null;$('#zx').classList.remove('on');xMsg('');cv.style.cursor='';draw();return;}XP={a:null,b:null};$('#zx').classList.add('on');cv.style.cursor='crosshair';xMsg('Tracez un rectangle sur la carte : export DXF géoréférencé en Lambert 93 (Échap pour annuler)');};
 addEventListener('keydown',e=>{if(e.key==='Escape'&&XP){XP=null;$('#zx').classList.remove('on');xMsg('');cv.style.cursor='';draw();}});
 cv.addEventListener('pointerdown',e=>{if(!XP)return;e.stopImmediatePropagation();e.preventDefault();XP.a=s2w(e.clientX,e.clientY);XP.b=XP.a;cv.setPointerCapture(e.pointerId);},true);
 cv.addEventListener('pointermove',e=>{if(!XP)return;e.stopImmediatePropagation();if(!XP.a)return;XP.b=s2w(e.clientX,e.clientY);draw();},true);
 cv.addEventListener('pointerup',async e=>{if(!XP||!XP.a)return;e.stopImmediatePropagation();const a=XP.a,b=XP.b;const R=[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[0],b[0]),Math.max(a[1],b[1])];
  if(R[2]-R[0]<20||R[3]-R[1]<20){XP.a=null;draw();return;}
- XP=null;$('#zx').classList.remove('on');cv.style.cursor='';xMsg('Préparation du PDF…');
- try{const blob=await geoPdf(R),u=URL.createObjectURL(blob),nm='paris-graphie-zone.pdf';
-  URL.revokeObjectURL(u);
-  await savePdf(blob,nm,(h,cb)=>{xMsg(h+' · <a href="#" id="xclose">fermer</a>');$('#xclose').onclick=ev=>{ev.preventDefault();xMsg('');};if(cb)cb(xmsg);});
+ XP=null;$('#zx').classList.remove('on');cv.style.cursor='';xMsg('Préparation du DXF…');
+ try{const r=await geoDxf(R),blob=r.blob,nm='paris-graphie-zone-L93-'+new Date().toISOString().slice(0,10)+'.dxf';
+  await savePdf(blob,nm,(h,cb)=>{xMsg(h.replace('DXF prêt','DXF prêt ('+r.nb+' bâtiments, '+r.no+' objets de calques, '+r.nl+' calques DXF, Lambert 93)').replace('PDF enregistré','DXF enregistré')+' · <a href="#" id="xclose">fermer</a>');$('#xclose').onclick=ev=>{ev.preventDefault();xMsg('');};if(cb)cb(xmsg);});
  }catch(err){xMsg('Échec de l\'export : '+esc(String(err&&err.message||err)));}
  draw();},true);
 function drawXRect(){if(!XP||!XP.a)return;const k=view.k,X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;lx.setTransform(dpr,0,0,dpr,0,0);
  const x0=X(Math.min(XP.a[0],XP.b[0])),x1=X(Math.max(XP.a[0],XP.b[0])),y0=Y(Math.max(XP.a[1],XP.b[1])),y1=Y(Math.min(XP.a[1],XP.b[1]));
  lx.fillStyle='rgba(255,255,255,.12)';lx.fillRect(x0,y0,x1-x0,y1-y0);lx.setLineDash([6,4]);lx.strokeStyle='#fff';lx.lineWidth=1.5;lx.strokeRect(x0,y0,x1-x0,y1-y0);lx.setLineDash([]);
  const wm=Math.abs(XP.b[0]-XP.a[0]),hm=Math.abs(XP.b[1]-XP.a[1]);lx.font='600 12px Inter, system-ui, sans-serif';lx.fillStyle='#fff';lx.textAlign='left';lx.fillText(Math.round(wm)+' × '+Math.round(hm)+' m',x0+4,y0-6);}
-const w2ll=(x,y)=>[H.lon0+x/(111320*Math.cos(H.lat0*Math.PI/180)),H.lat0+y/110574];
-async function geoPdf(R){
- const [X0,Y0,X1,Y1]=R,wm=X1-X0,hm=Y1-Y0,land=wm>=hm;
- const PW=land?1190.55:841.89,PH=land?841.89:1190.55,MG=28,HEAD=46,FOOT=150;
- const aw=PW-2*MG,ah=PH-MG-HEAD-FOOT,sc=Math.min(aw/wm,ah/hm),mw=wm*sc,mh=hm*sc,mx=MG+(aw-mw)/2,my=MG+FOOT+(ah-mh)/2;
- const px=x=>(mx+(x-X0)*sc).toFixed(2),py=y=>(my+(y-Y0)*sc).toFixed(2);
- const ops=[],gs=new Map(),gsName=a=>{a=Math.round(a*100)/100;if(!gs.has(a))gs.set(a,'/G'+gs.size);return gs.get(a);};
- const rgb=h=>{const v=parseInt(h.slice(1),16);return [(v>>16&255)/255,(v>>8&255)/255,(v&255)/255].map(x=>x.toFixed(3)).join(' ');};
- const rgbP=c=>[(c&255)/255,(c>>8&255)/255,(c>>16&255)/255].map(x=>x.toFixed(3)).join(' ');
- const CP={'€':'\x80','…':'\x85','’':'\x92','“':'\x93','”':'\x94','–':'\x96','—':'\x97','œ':'\x9c','Œ':'\x8c','≈':'~','→':'-','·':'\xb7','×':'\xd7','²':'\xb2'};
- const enc=s=>String(s).replace(/[\r\n\t]+/g,' ').replace(/[\s\S]/g,c=>{const k=c.charCodeAt(0);if(k<128)return (c==='\\'||c==='('||c===')')?'\\'+c:c;if(k<256)return c;return CP[c]||'?';});
- const txt=(x,y,s,sz,b,col)=>ops.push('BT /F'+(b?2:1)+' '+sz+' Tf '+(col||'0.1 0.1 0.1')+' rg '+x.toFixed(2)+' '+y.toFixed(2)+' Td ('+enc(s)+') Tj ET');
- const inR=b=>b[2]>=X0&&b[0]<=X1&&b[3]>=Y0&&b[1]<=Y1;
- // fond et cadre de la carte (découpé)
- ops.push('q '+mx.toFixed(2)+' '+my.toFixed(2)+' '+mw.toFixed(2)+' '+mh.toFixed(2)+' re W n');
- ops.push('0.059 0.102 0.141 rg '+mx.toFixed(2)+' '+my.toFixed(2)+' '+mw.toFixed(2)+' '+mh.toFixed(2)+' re f');
- if(BASE&&BASE.w){const P=[];for(const poly of BASE.w)for(const r of poly){P.push(px(r[0][0])+' '+py(r[0][1])+' m');for(let i=1;i<r.length;i++)P.push(px(r[i][0])+' '+py(r[i][1])+' l');P.push('h');}ops.push('0.094 0.204 0.306 rg '+P.join(' ')+' f*');}
- // bâtiments, groupés par couleur
- const byC=new Map();
+/* ---------- export DXF géoréférencé (Lambert 93, EPSG:2154), un calque par couche ---------- */
+const L93=(()=>{const a=6378137,e=0.0818191910428158,l0=3*Math.PI/180,p0=46.5*Math.PI/180,p1=44*Math.PI/180,p2=49*Math.PI/180;
+ const m=p=>Math.cos(p)/Math.sqrt(1-e*e*Math.sin(p)**2),tt=p=>Math.tan(Math.PI/4-p/2)/Math.pow((1-e*Math.sin(p))/(1+e*Math.sin(p)),e/2);
+ const n=(Math.log(m(p1))-Math.log(m(p2)))/(Math.log(tt(p1))-Math.log(tt(p2))),F=m(p1)/(n*Math.pow(tt(p1),n)),r0=a*F*Math.pow(tt(p0),n);
+ return (lon,lat)=>{const r=a*F*Math.pow(tt(lat*Math.PI/180),n),th=n*(lon*Math.PI/180-l0);return [700000+r*Math.sin(th),6600000+r0-r*Math.cos(th)];};})();
+const ACI=(()=>{const L=[[1,[255,0,0]],[2,[255,255,0]],[3,[0,255,0]],[4,[0,255,255]],[5,[0,0,255]],[6,[255,0,255]],[7,[255,255,255]],[8,[128,128,128]],[9,[192,192,192]]];
+ const V=[[1,1],[1,.5],[.8,1],[.8,.5],[.6,1],[.6,.5],[.5,1],[.5,.5],[.3,1],[.3,.5]];
+ for(let h=0;h<24;h++)V.forEach(([v,s],j)=>{const hh=h*15/60,i=Math.floor(hh),f=hh-i,p=v*(1-s),q=v*(1-s*f),t=v*(1-s*(1-f));const rgb=[[v,t,p],[q,v,p],[p,v,t],[p,q,v],[t,p,v],[v,p,q]][i%6];L.push([10+h*10+j,rgb.map(x=>Math.round(x*255))]);});
+ for(let g=0;g<6;g++)L.push([250+g,[51+g*41,51+g*41,51+g*41].map(x=>Math.min(255,x))]);
+ return h=>{const v=parseInt((h||'#888888').slice(1,7),16),r=v>>16&255,g=v>>8&255,b=v&255;let best=7,bd=1e9;for(const [i,c] of L){const d=(c[0]-r)**2+(c[1]-g)**2+(c[2]-b)**2;if(d<bd){bd=d;best=i;}}return best;};})();
+function lname(s){s=String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z0-9]+/g,'_').replace(/^_|_$/g,'');return (s||'CALQUE').slice(0,31);}
+async function geoDxf(R){
+ const [X0,Y0,X1,Y1]=R,LY=new Map(),ENT=[];
+ const kx=111320*Math.cos(H.lat0*Math.PI/180),toL=(x,y)=>L93(H.lon0+x/kx,H.lat0+y/110574);
+ const lay=(nm,col)=>{nm=lname(nm);if(!LY.has(nm))LY.set(nm,ACI(col));return nm;};
+ const f=v=>v.toFixed(3);
+ const pl=(layer,pts,closed)=>{if(pts.length<2)return;ENT.push('0\nPOLYLINE\n8\n'+layer+'\n66\n1\n70\n'+(closed?1:0)+'\n10\n0\n20\n0\n30\n0');
+  for(const [x,y] of pts){const [a,b]=toL(x,y);ENT.push('0\nVERTEX\n8\n'+layer+'\n10\n'+f(a)+'\n20\n'+f(b)+'\n30\n0');}ENT.push('0\nSEQEND\n8\n'+layer);};
+ const tx=(layer,x,y,h,s,rot)=>{const [a,b]=toL(x,y);ENT.push('0\nTEXT\n8\n'+layer+'\n10\n'+f(a)+'\n20\n'+f(b)+'\n30\n0\n40\n'+h+'\n1\n'+String(s).replace(/[\r\n]/g,' ')+(rot?'\n50\n'+rot:'')+'\n72\n1\n11\n'+f(a)+'\n21\n'+f(b)+'\n31\n0');};
+ const inB=b=>b[2]>=X0&&b[0]<=X1&&b[3]>=Y0&&b[1]<=Y1;
+ // cadre de la zone
+ pl(lay('CADRE_ZONE','#ff0000'),[[X0,Y0],[X1,Y0],[X1,Y1],[X0,Y1]],true);
+ // Seine
+ if(BASE&&BASE.w){const L_=lay('SEINE_ET_CANAUX','#18344e');for(const poly of BASE.w)for(const r of poly){let b=[1e18,1e18,-1e18,-1e18];for(const p of r){b=[Math.min(b[0],p[0]),Math.min(b[1],p[1]),Math.max(b[2],p[0]),Math.max(b[3],p[1])];}if(inB(b))pl(L_,r,true);}}
+ // bâtiments : un calque par classe du calque actif
+ const c=st.crit,neu=c.id==='neu';let nb=0;
  for(let s=0;s<N;s++){if(bbox[4*s+2]<X0||bbox[4*s]>X1||bbox[4*s+3]<Y0||bbox[4*s+1]>Y1)continue;
-  const c=shapeCol[s];let L=byC.get(c);if(!L)byC.set(c,L=[]);let prev=-1;
-  for(let e=edgS[s];e<edgS[s+1];e+=2){const a=edg[e],b=edg[e+1];if(a!==prev){if(prev>=0)L.push('h');L.push(px(pos[2*a])+' '+py(pos[2*a+1])+' m');}else L.push(px(pos[2*a])+' '+py(pos[2*a+1])+' l');prev=b;}
-  if(prev>=0)L.push('h');}
- for(const [c,L] of byC)ops.push(rgbP(c)+' rg '+L.join(' ')+' f*');
- // contours
- ops.push('0.04 0.07 0.10 RG 0.25 w');for(const [c,L] of byC)ops.push(L.join(' ')+' S');
- // calques superposés actifs
- const legOv=[];
- for(const o of OVO){if(!o.on||!o.raw)continue;const j=o.raw;let n=0;
-  if(j.k==='pt'){for(const f of j.f){const x=f[2]/10,y=f[3]/10;if(x<X0||x>X1||y<Y0||y>Y1)continue;const r=(o.r||3)*.8,cx=+px(x),cy=+py(y),c=o.cols[Math.min(f[0],o.cols.length-1)];
-    ops.push(rgb(c)+' rg 0.06 0.1 0.14 RG 0.5 w '+(cx-r).toFixed(2)+' '+(cy-r).toFixed(2)+' '+(2*r).toFixed(2)+' '+(2*r).toFixed(2)+' re B');n++;}}
-  else{const groups=new Map();
-   for(const f of j.f){const rings=f[2].map(decPath);let b=[1e18,1e18,-1e18,-1e18];for(const a of rings)for(let i=0;i<a.length;i+=2){if(a[i]<b[0])b[0]=a[i];if(a[i]>b[2])b[2]=a[i];if(a[i+1]<b[1])b[1]=a[i+1];if(a[i+1]>b[3])b[3]=a[i+1];}
-    if(!inR(b))continue;const c=Math.min(f[0],o.cols.length-1);let G=groups.get(c);if(!G)groups.set(c,G=[]);
-    for(const a of rings){G.push(px(a[0])+' '+py(a[1])+' m');for(let i=2;i<a.length;i+=2)G.push(px(a[i])+' '+py(a[i+1])+' l');if(j.k==='poly')G.push('h');}n++;}
-   const order=[...groups.keys()].sort((a,b)=>a-b);
-   for(const c of order){const G=groups.get(c).join(' '),col=rgb(o.cols[c]);
-    if(j.k==='line')ops.push('q '+gsName(.95)+' gs '+col+' RG '+((o.lw?o.lw[c]:1.7)*.6).toFixed(2)+' w '+G+' S Q');
-    else if(o.atlas)ops.push('q '+gsName(o.a)+' gs '+col+' rg '+G+' f* Q');
-    else if(o.a===0)ops.push('q '+gsName(.5)+' gs '+col+' RG 0.3 w '+G+' S Q');
-    else ops.push('q '+gsName(o.a)+' gs '+col+' rg '+G+' f* Q q '+gsName(Math.min(1,o.a+.4))+' gs '+col+' RG 0.4 w '+G+' S Q');}}
-  if(n)legOv.push(o);}
- // limites d'arrondissement et de quartier
- if(BASE&&showArr){const ln=(rs,dash,wd,al)=>{const P=[];for(const a of rs)for(const r of a.rings){P.push(px(r[0][0])+' '+py(r[0][1])+' m');for(let i=1;i<r.length;i++)P.push(px(r[i][0])+' '+py(r[i][1])+' l');P.push('h');}ops.push('q '+gsName(al)+' gs 0.92 0.95 0.97 RG '+wd+' w ['+dash+'] 0 d '+P.join(' ')+' S Q');};
-  ln(BASE.q,'1.5 3',.5,.45);ln(BASE.a,'5 3',.9,.7);
-  for(const q of BASE.q){const [x,y]=q.c;if(x<X0||x>X1||y<Y0||y>Y1)continue;txt(+px(x)-q.n.length*2.4,+py(y),q.n.toUpperCase(),7,true,'1 0.92 0.75');}}
- ops.push('Q');
- // cadre, titre, échelle, nord
- ops.push('0.10 0.28 0.41 RG 0.8 w '+mx.toFixed(2)+' '+my.toFixed(2)+' '+mw.toFixed(2)+' '+mh.toFixed(2)+' re S');
- const [lo0,la0]=w2ll(X0,Y0),[lo1,la1]=w2ll(X1,Y1);
- txt(MG,PH-MG-18,'Paris-graphie, extrait géoréférencé',16,true,'0.10 0.28 0.41');
- txt(MG,PH-MG-34,'Zone de '+Math.round(wm)+' × '+Math.round(hm)+' m · calque : '+(st.crit.id==='neu'?'plan neutre':st.crit.name)+' · généré le '+new Date().toLocaleDateString('fr-FR'),9,false,'0.35 0.35 0.35');
- const echM=[10,20,50,100,200,500,1000,2000].find(v=>v*sc>=60)||5000,ex=mx,ey=my-16;
- ops.push('0.1 0.1 0.1 rg '+ex.toFixed(2)+' '+ey.toFixed(2)+' '+(echM*sc).toFixed(2)+' 3 re f');txt(ex+echM*sc+5,ey-1,echM>=1000?(echM/1000)+' km':echM+' m',8,false);
- txt(ex,ey-13,'Échelle 1:'+Math.round(1/(sc/72*0.0254)).toLocaleString('fr-FR').replace(/ | /g,' ')+' au format '+(land?'A3 paysage':'A3 portrait'),7.5,false,'0.4 0.4 0.4');
- const nx=mx+mw-14,ny=my-30;ops.push('0.1 0.1 0.1 rg '+nx+' '+(ny+22)+' m '+(nx-5)+' '+ny+' l '+nx+' '+(ny+5)+' l '+(nx+5)+' '+ny+' l h f');txt(nx-3,ny-10,'N',8,true);
- txt(mx,my-46,'Coins : SO '+la0.toFixed(5)+', '+lo0.toFixed(5)+' · NE '+la1.toFixed(5)+', '+lo1.toFixed(5)+' (WGS 84). Géoréférencement intégré au PDF (lisible par QGIS, Acrobat, Avenza).',7.5,false,'0.4 0.4 0.4');
- // légende
- let ly=my-64;const col2=MG+aw/2;let lx_=MG;
- const sw=(x,y,c,lab,b)=>{ops.push(rgb(c)+' rg '+x.toFixed(2)+' '+(y-1).toFixed(2)+' 8 8 re f');txt(x+12,y,lab,7.5,b);};
- if(st.crit.id!=='neu'){txt(MG,ly,'Calque : '+st.crit.name+' ('+orgOf(st.crit.id)+')',8.5,true,'0.10 0.28 0.41');ly-=12;
-  const it=st.crit.lab.map((l,i)=>[st.crit.col[i]||'#999',l]).filter(e=>e[0]);let i=0;for(const e of it){const cx=MG+(i%3)*(aw/6),cy=ly-Math.floor(i/3)*11;sw(cx,cy,e[0],e[1].slice(0,48));i++;}ly-=Math.ceil(it.length/3)*11+6;}
- else{txt(MG,ly,'Bâtiments : emprise bâtie Apur',8,false);ly-=12;}
- if(legOv.length){txt(col2,my-64,'Calques superposés',8.5,true,'0.10 0.28 0.41');let y2=my-76;
-  for(const o of legOv.slice(0,8)){sw(col2,y2,o.cols[0],(o.n+' ('+orgOf(o.id)+')').slice(0,90));y2-=11;}
-  if(legOv.length>8)txt(col2,y2,'… et '+(legOv.length-8)+' autres',7.5,false);}
- txt(MG,MG-6,'Sources : Apur (emprise bâtie) ; Ville de Paris (Seine, limites, PLU, voirie) ; '+(legOv.length?'producteurs indiqués pour chaque calque ; ':'')+'données ouvertes (ODbL ou Licence Ouverte). Atlas historique : Michel Huard, paris-atlas-historique.fr.',6.5,false,'0.45 0.45 0.45');
- // géoréférencement (ISO 32000-2, mesure GEO)
- const g=[w2ll(X0,Y0),w2ll(X0,Y1),w2ll(X1,Y1),w2ll(X1,Y0)];
- const vp='/VP [<< /Type /Viewport /Name (Carte) /BBox ['+[mx,my,mx+mw,my+mh].map(v=>v.toFixed(2)).join(' ')+'] /Measure << /Type /Measure /Subtype /GEO /Bounds [0 0 0 1 1 1 1 0] /GCS << /Type /GEOGCS /EPSG 4326 /WKT (GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]) >> /GPTS ['+g.map(p=>p[1].toFixed(7)+' '+p[0].toFixed(7)).join(' ')+'] /LPTS [0 0 0 1 1 1 1 0] /PDU [/M /SQM /DEG] >> >>]';
- // assemblage avec compression
- const cs=ops.join('\n');
- const raw=new Uint8Array(cs.length);for(let i=0;i<cs.length;i++)raw[i]=cs.charCodeAt(i)&255;
- let data=raw,filt='';
- if(typeof CompressionStream!=='undefined'){try{data=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate'))).arrayBuffer());filt=' /Filter /FlateDecode';}catch(e){data=raw;filt='';}}
- const parts=[],offs=[];let len=0;const push=x=>{const u=typeof x==='string'?(()=>{const a=new Uint8Array(x.length);for(let i=0;i<x.length;i++)a[i]=x.charCodeAt(i)&255;return a;})():x;parts.push(u);len+=u.length;};
- const gsd='<< '+[...gs].map(([a,n])=>n+' << /ca '+a+' /CA '+a+' >>').join(' ')+' >>';
- const objs=['<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Count 1 /Kids [3 0 R] >>',
-  '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> /ExtGState '+gsd+' >> /Contents 4 0 R '+vp+' >>',
-  null,'<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>',
-  '<< /Title (Paris-graphie, extrait géoréférencé) /Producer (Paris-graphie) >>'];
- push('%PDF-1.7\n%\xe2\xe3\xcf\xd3\n');
- objs.forEach((o,i)=>{offs.push(len);if(i===3){push('4 0 obj\n<< /Length '+data.length+filt+' >>\nstream\n');push(data);push('\nendstream\nendobj\n');}else push((i+1)+' 0 obj\n'+o+'\nendobj\n');});
- const xr=len;push('xref\n0 '+(objs.length+1)+'\n0000000000 65535 f \n'+offs.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+'trailer\n<< /Size '+(objs.length+1)+' /Root 1 0 R /Info 7 0 R >>\nstartxref\n'+xr+'\n%%EOF');
- return new Blob(parts,{type:'application/pdf'});
+  const col=shapeCol[s],hid=col===CTX||col===GHOST,ci=c.k[s];
+  const L_=hid?lay('BATI_HORS_FILTRE','#555555'):neu?lay('BATI','#8b98a4'):lay('BATI_'+c.lab[ci],c.grad&&ci===0?'#e6a23c':(c.col[ci]||'#8b98a4'));
+  let ring=[],prev=-1;
+  for(let e=edgS[s];e<edgS[s+1];e+=2){const a=edg[e],b=edg[e+1];if(a!==prev){if(ring.length)pl(L_,ring,true);ring=[[pos[2*a],pos[2*a+1]]];}else ring.push([pos[2*a],pos[2*a+1]]);prev=b;}
+  if(ring.length)pl(L_,ring,true);nb++;}
+ // calques superposés actifs (dont trottoirs et terre-pleins si affichés)
+ let no=0;
+ for(const o of OVO){if(!o.on||!o.raw)continue;const j=o.raw,base=o.atlas?'ATLAS_'+o.n:o.n;
+  if(j.bg&&o.atlas){const b=j.bg.map(v=>v/10);pl(lay(base+'_EMPRISE','#f2ecdd'),[[b[0],b[1]],[b[2],b[3]],[b[4],b[5]],[b[6],b[7]]],true);}
+  for(const ft of j.f){const ci=Math.min(ft[0],o.cols.length-1),lab=o.atlas?'':(o.lab&&o.lab[ci]&&o.lab.length>1?'_'+o.lab[ci]:'');
+   if(j.k==='pt'){const x=ft[2]/10,y=ft[3]/10;if(x<X0||x>X1||y<Y0||y>Y1)continue;const L_=lay(base+lab,o.cols[ci]),r=2;pl(L_,[[x-r,y-r],[x+r,y-r],[x+r,y+r],[x-r,y+r]],true);if(ft[1])tx(lay(base+'_TEXTE',o.cols[ci]),x+3,y,1.5,String(ft[1]).slice(0,120));no++;continue;}
+   const rings=ft[2].map(decPath);let b=[1e18,1e18,-1e18,-1e18];for(const a of rings)for(let i=0;i<a.length;i+=2){if(a[i]<b[0])b[0]=a[i];if(a[i]>b[2])b[2]=a[i];if(a[i+1]<b[1])b[1]=a[i+1];if(a[i+1]>b[3])b[3]=a[i+1];}
+   if(!inB(b))continue;const L_=o.atlas?lay(base+'_'+o.cols[ci].slice(1),o.cols[ci]):lay(base+lab,o.cols[ci]);
+   for(const a of rings){const p=[];for(let i=0;i<a.length;i+=2)p.push([a[i],a[i+1]]);pl(L_,p,j.k==='poly');}no++;}
+  if(j.L)for(const l of j.L){const x=l[0]/10,y=l[1]/10;if(x<X0||x>X1||y<Y0||y>Y1)continue;tx(lay(base+'_TEXTE','#3a2c1c'),x,y,o.atlas?2.5:1.5,l[2]+(o.lsuf??' m'));}}
+ // limites et noms
+ if(BASE&&showArr){const LA=lay('LIMITES_ARRONDISSEMENTS','#cccccc'),LQ=lay('LIMITES_QUARTIERS','#999999'),LT=lay('NOMS_QUARTIERS','#ffd27f');
+  for(const a of BASE.a)for(const r of a.rings)pl(LA,r,true);for(const q of BASE.q){for(const r of q.rings)pl(LQ,r,true);const [x,y]=q.c;if(x>=X0&&x<=X1&&y>=Y0&&y<=Y1)tx(LT,x,y,6,q.n.toUpperCase());}}
+ // noms de rues et numéros
+ if(showLbl&&LBL){const LR=lay('NOMS_DE_RUES','#ffffff'),LN=lay('NUMEROS','#e8c06a');
+  for(const l of LBL.s||[]){const [x,y,ang,nm]=l;if(x<X0||x>X1||y<Y0||y>Y1)continue;tx(LR,x,y,3,nm,ang);}
+  for(const q of LBL.n||[]){const x=q[0]/2,y=q[1]/2;if(x<X0||x>X1||y<Y0||y>Y1)continue;tx(LN,x,y,1.6,q[2]);}}
+ // cartouche
+ const [la0,lo0]=[H.lat0+Y0/110574,H.lon0+X0/kx],now=new Date();
+ const LI=lay('INFO','#ffffff');
+ tx(LI,X0,Y0-12,3,'Paris-graphie, extrait du '+now.toLocaleDateString('fr-FR')+' - Lambert 93 (RGF93, EPSG:2154), unites en metres');
+ tx(LI,X0,Y0-17,2,'Calque des batiments : '+(neu?'plan neutre':c.name)+'. Sources : Apur, Ville de Paris, BAN, CSTB, DGFiP/IGN, Michel Huard (atlas). Donnees ouvertes (ODbL, Licence Ouverte).');
+ // en-tête et tables
+ const [ex0,ey0]=toL(X0,Y0-20),[ex1,ey1]=toL(X1,Y1);
+ const hd=['0\nSECTION\n2\nHEADER','9\n$ACADVER\n1\nAC1009','9\n$DWGCODEPAGE\n3\nANSI_1252','9\n$INSBASE\n10\n0\n20\n0\n30\n0','9\n$EXTMIN\n10\n'+f(ex0)+'\n20\n'+f(ey0)+'\n30\n0','9\n$EXTMAX\n10\n'+f(ex1)+'\n20\n'+f(ey1)+'\n30\n0','0\nENDSEC',
+  '0\nSECTION\n2\nTABLES','0\nTABLE\n2\nLTYPE\n70\n1','0\nLTYPE\n2\nCONTINUOUS\n70\n0\n3\nSolid line\n72\n65\n73\n0\n40\n0.0','0\nENDTAB',
+  '0\nTABLE\n2\nLAYER\n70\n'+(LY.size+1),'0\nLAYER\n2\n0\n70\n0\n62\n7\n6\nCONTINUOUS',...[...LY].map(([nm,ci])=>'0\nLAYER\n2\n'+nm+'\n70\n0\n62\n'+ci+'\n6\nCONTINUOUS'),'0\nENDTAB','0\nENDSEC',
+  '0\nSECTION\n2\nENTITIES'];
+ const txt=hd.concat(ENT,['0\nENDSEC','0\nEOF']).join('\n')+'\n';
+ const u8=new Uint8Array(txt.length);for(let i=0;i<txt.length;i++){const k=txt.charCodeAt(i);u8[i]=k<256?k:63;}
+ return {blob:new Blob([u8],{type:'application/dxf'}),nb,no,nl:LY.size};
 }
+
 /* ---------- recherche d'adresse ---------- */
 let ADDR=null;
 const nz=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[’'\-]/g,' ').replace(/\s+/g,' ').trim();
@@ -1260,6 +1383,8 @@ cv.addEventListener('pointerleave',()=>{tip.hidden=true;});
 
 /* ---------- fiche PDF et ressources externes ---------- */
 const SRC={
+ quart:['Ville de Paris, « Quartiers administratifs », Open Data','https://opendata.paris.fr/explore/dataset/quartier_paris/'],
+ voir:['Ville de Paris, « Plan de voirie » (trottoirs, terre-pleins, passages piétons), Open Data','https://opendata.paris.fr/explore/?q=plan-de-voirie'],
  cad:['DGFiP, plan cadastral, diffusé par l\'IGN (Parcellaire Express, Licence Ouverte)','https://geoservices.ign.fr/parcellaire-express-pci'],
  atl:['Michel Huard, Atlas historique de Paris (cartes calées automatiquement sur le plan actuel, précision indicative)','https://paris-atlas-historique.fr/'],
  apur:['Apur, « Emprise bâtie Paris », Open Data (licence ODbL)','https://www.apur.org/en/open-data-maps/open-data/built-areas-paris-and-metropolis-reading-urban-fabric'],
@@ -1276,11 +1401,19 @@ const SRC={
  mer:['Ministère de la Culture, base Mérimée, « Immeubles protégés au titre des monuments historiques » (Licence Ouverte)','https://www.data.gouv.fr/datasets/immeubles-proteges-au-titre-des-monuments-historiques-2'],
  typ:['Apur, « Besoin théorique de chauffage et typologie au bâti », Open Data (licence ODbL)','https://opendata.apur.org/'],
  com:['Apur, « BDCOM 2017 », base des commerces et services en rez-de-chaussée, Open Data (licence ODbL)','https://opendata.apur.org/'],
- bdnb:['CSTB, Base de données nationale des bâtiments (BDNB open), millésime 2026-02 (Licence Ouverte)','https://bdnb.io/'],
+ bdnb:['CSTB, Base de données nationale des bâtiments (BDNB open), dernier millésime publié (Licence Ouverte)','https://bdnb.io/'],
  dpe:['Ademe, diagnostics de performance énergétique, via la BDNB (Licence Ouverte)','https://data.ademe.fr/'],
  co2:['Calcul de l\'outil : surface de plancher estimée × seuil RE2020 « IC construction » 2025 des logements collectifs (650 kg CO₂e/m²) ; ordre de grandeur indicatif, pas une analyse de cycle de vie','https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000043936914'],
  sir:['Insee, base Sirene (stock du 01/11/2026)','https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/']
 };
+
+const PUB=false;
+let SRCD={};
+const fd10=d=>d?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):'';
+function srcLabel(k){const d=SRCD[k];return SRC[k][0]+(d?', données extraites le '+fd10(d):'');}
+function srcList(){return Object.keys(SRC).filter(k=>SRC[k][1]&&!(PUB&&(k==='dvf'||k==='sir'))).map(k=>[srcLabel(k),SRC[k][1]]);}
+function renderSrc(){const b=$('#srct');if(!b)return;b.innerHTML='<div style="margin-bottom:6px">Données ouvertes (licence ODbL ou Licence Ouverte selon le producteur). Date d\'extraction indiquée pour chaque source'+(SRCD._maj?' ; dernière mise à jour du site : '+fd10(SRCD._maj):'')+'.</div>'+srcList().map(x=>'<div style="margin:3px 0"><a href="'+esc(x[1])+'" target="_blank" rel="noopener">'+esc(x[0])+'</a></div>').join('');}
+getJson('sources.json').then(j=>{SRCD=j||{};renderSrc();}).catch(()=>renderSrc());
 function bldCenter(s){const wx=(bbox[4*s]+bbox[4*s+2])/2,wy=(bbox[4*s+1]+bbox[4*s+3])/2;return [H.lon0+wx/(H.q*111320*Math.cos(H.lat0*Math.PI/180))*H.q,H.lat0+wy/(H.q*110574)*H.q];}
 function bldLonLat(s){const wx=(bbox[4*s]+bbox[4*s+2])/2,wy=(bbox[4*s+1]+bbox[4*s+3])/2;return [H.lon0+wx/(111320*Math.cos(H.lat0*Math.PI/180)),H.lat0+wy/110574];}
 const OPD='https://opendata.paris.fr/explore/dataset/',
@@ -1320,54 +1453,10 @@ function extHtml(s,A,U){
   +'<div style="margin:12px 0 2px"><button id="pdfb" type="button" class="pdfb">Exporter la fiche en PDF, avec sources</button> <span id="pdfm" class="k"></span></div>';
 }
 function docModel(s,c){
- const {A,P,D,C,SR,V}=c,U=D&&D.u&&D.u[s],ad=A&&A[s]||[],sec=[];
- const dm=v=>(v/10).toFixed(1).replace('.',',');
- const add=(h,items)=>{if(items.length)sec.push({h,items});};
- const it=(t,k,u)=>({t,s:SRC[k][0],u:u||SRC[k][1]});
- const pl=P&&P[s]||[];
- const niv=nivOf(s);
- add('Identification',[
-  it('Adresse'+(ad.length>1?'s':'')+' : '+(ad.length?ad.join(' ; '):'aucune adresse rattachée'),'ban',ad.length?banUrl(ad[0],ARR[s]):''),
-  it('Arrondissement : '+(ARR[s]?ARR[s]+'e':'—'),'apur'),
-  ...(pl.length?[it('Parcelle'+(pl.length>1?'s':'')+' cadastrale'+(pl.length>1?'s':'')+' : '+pl.slice(0,8).map(x=>x.slice(8,10)+' '+x.slice(10).replace(/^0+/,'')).join(', '),'dvf')]:[])]);
- add('Caractéristiques du bâtiment',[
-  it('Année de construction : '+(AN[s]||'inconnue')+' (dates parfois approximatives)','apur'),
-  it('Période : '+PER_LAB[PMAP[PE[s]]??11],'apur'),
-  it('Réhabilitation : '+(RE[s]>=1900?RE[s]:'—')+' ; surélévation : '+(SU[s]||'—'),'apur'),
-  it('Hauteur médiane / maximale : '+dm(HM[s])+' m / '+dm(HX[s])+' m','apur'),
-  it('Emprise au sol : '+nf.format(Math.round(area[s]))+' m²','apur'),
-  it('Niveaux : '+niv+(BN[s]>0?' (fichiers fonciers, via la BDNB)':' (estimé : hauteur médiane ÷ 3 m)')+' ; surface de plancher estimée : '+nf.format(SPL(s))+' m² (emprise × niveaux)','calc'),
-  ...(TYP[s]?[it('Typologie : '+TY_LAB[TYP[s]],'typ')]:[]),
-  it('Toiture : '+(SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'autre ou inconnue')+(IG[s]?' ; immeuble de grande hauteur':''),'apur')]);
- const ur=[];
- if(ZO[s]){const [lo,la]=bldLonLat(s);ur.push(it('Zone du PLU : '+ZL[ZO[s]],'plu',OPD+'plub_zonage/'));ur.push(it('Règlement du PLU bioclimatique (texte)','reg',REGL));ur.push(it('Plan de zonage sur le Géoportail de l\'urbanisme, centré sur le bâtiment','gpu',gpuUrl(lo,la)));ur.push(it('Cartographie des règles à l\'adresse : saisir l\'adresse ou la parcelle','reg',CARTO));}
- if(HP[s])ur.push(it('Plafond de hauteur du PLU : '+HP[s]+' m (hauteur maximale existante '+dm(HX[s])+' m ; comparaison indicative)','plu',OPD+'plub_hauteur/'));
- if(U){
-  for(const m of mhUniq(U.mh)){const D=m[2]?mhDetail(m[2]):null,mu=m[2]?'https://www.pop.culture.gouv.fr/notice/merimee/'+encodeURIComponent(m[2]):'';
-   ur.push(it((m[3]==='MH'?'Monument historique':'Immeuble protégé')+' : '+(D&&D.titre||m[0])+(D&&D.typ?' ('+D.typ+')':m[1]?', protégé en '+m[1]:'')+(m[2]?', Mérimée '+m[2]:''),'pat',mu));
-   if(D&&D.prec)ur.push(it('Motif de protection : '+D.prec,'mer',mu));
-   if(D&&D.date)ur.push(it('Arrêtés : '+D.date+(D.statut?' ; '+D.statut:''),'mer',mu));
-   if(D&&D.hist)ur.push(it('Historique : '+D.hist,'mer',mu));}
-  for(const m of U.pl||[])ur.push(it(m[0]+' (PLU)'+(m[2]?' : '+m[2]:'')+(m[1]?'. Motif de protection : '+m[1]:''),'plu',OPD+'plub_pvp/'));
-  if(U.pp)ur.push(it('Périmètres : '+U.pp.join(' ; '),'pat','https://www.apur.org/en/open-data-maps/open-data/protected-heritage-paris-and-inner-suburbs-protected-areas-and-listed'));
-  for(const x of U.fl||[])ur.push(it(x,'plu'));
- }
- if(RS[s]&&!(U&&U.fl))ur.push(it('Secteur de risque : '+['','carrières','gypse','zone inondable (PPRI)'][RS[s]],'plu',OPD+['','plub_carriere/','plub_gypse/','plub_pprizone/'][RS[s]]));
- add('Urbanisme et patrimoine',ur);
- if(U&&U.ar)add('Fouilles archéologiques à moins de 40 m',U.ar.map(a=>it((a[2]||'Opération')+', '+a[1]+', à '+a[5]+' m : '+a[0]+(a[4].length?' ('+a[4].join(', ')+')':'')+(a[3]?'. '+a[3]:''),'arch')));
- if(D&&D.b&&D.b[s])add('Dossiers d\'urbanisme ('+nf.format(NT[s])+')',D.b[s].slice(0,60).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';return it(TNAME[D.t[e[2]]]+', '+fdate(e[1])+', '+dec+(e[4]?' : '+e[4]:'')+' (dossier '+e[0]+(e[5]?', '+e[5]:'')+')','urb',dossUrl(e[0]));}));
- if(C&&C.b&&C.b[s])add('Commission du Vieux Paris ('+CN[s]+')',C.b[s].slice(0,20).map(e=>it(fdate(e[0])+', '+(e[1]||'sans résolution')+(e[2]?', '+e[2]:'')+(e[3]&&e[3]!=='Aucune'?', '+e[3]:'')+(e[4]?' : '+e[4]:''),'cvp',e[5]||'')));
- {const Cc=D&&D.c&&D.c[s];if(Cc&&Cc.length)add('Cadastre',Cc.map(c=>it('Parcelle '+cadTxt(c),'cad',cadUrl(c[0]))));}
- {const M=atlasOf(s,c.atl).filter(m=>!m.g);if(M.length)add('Atlas historique de Paris, cartes du quartier (Michel Huard)',M.map(m=>it((m.y?(m.y<1000?'vers '+m.y:m.y)+' : ':'')+atlName(m)+' (page « '+m.p[0][0]+' »)','atl',m.p[0][1])));}
- {const B=D&&D.n&&D.n[s],R=bdnbRows(s,B);add('Usages, énergie et carbone',[...R.map(r=>it(r[0]+' : '+r[1],r[2])),it('Carbone d\'une reconstruction à neuf (ordre de grandeur) : '+co2Txt(s),'co2')]);}
- {const K=D&&D.k&&D.k[s];if(K&&K.length)add('Commerces en rez-de-chaussée ('+K.length+')',K.slice(0,60).map(e=>it(e[1]+(e[5]?', '+e[5]:'')+(e[2]?', '+e[2]:'')+(e[3]?', '+e[3]:'')+(e[4]?', '+e[4]:''),'com')));}
- if(V)add('Ventes DVF 2021-2025 ('+DN[s]+')'+(PM[s]?', médiane '+eur(PM[s])+'/m²':''),V.slice(0,30).map(e=>{const [mid,dt,nat,v,parts,nr,how]=e;return it(nat+', '+fdate(dt)+' : '+(v>0?eur(v):'valeur non renseignée')+(nr>1?' (transaction de '+nr+' biens, valeur pour l\'ensemble)':'')+' ; '+parts.map(p=>p[0]+(p[1]>0?' '+p[1]+' m² bâtis':'')+(p[3]>0?', Carrez '+nf.format(p[3])+' m²':'')+(p[2]>0?', '+p[2]+' p.':'')).join(' ; ')+(how>1?' ; rattachement approximatif':'')+' (mutation '+mid+')','dvf');}));
- const R=SR&&SR.b&&SR.b[s];
- if(R)add('Occupants, Sirene ('+nf.format(SNE[s])+' établissements actifs)',[it('Effectif salarié estimé : '+(R[1]>0?'≈ '+nf.format(R[1]):'non renseigné')+' ; établissements fermés depuis 2024 : '+(R[2]||0)+(SNE[s]>=30?' ; domiciliation probable (nombreuses entreprises déclarées)':''),'sir'),...R[4].slice(0,30).map(e=>it(e[0]+' : '+(NAFD[(e[1]||'').slice(0,2)]||'activité inconnue')+(e[1]?' ('+e[1]+')':'')+(e[2]?', créé en '+e[2]:'')+', '+(TRN[e[3]]||'effectif non renseigné'),'sir',/^\d{14}$/.test(e[5]||'')?'https://annuaire-entreprises.data.gouv.fr/etablissement/'+e[5]:''))]);
- const ex=extLinks(s,A,U);
- sec.push({h:'Pour aller plus loin (liens externes)',items:ex.map(l=>({t:l[0]+(l[2]?' ('+l[2]+')':''),s:'',u:l[1]}))});
- const BYN={};for(const k in SRC)BYN[SRC[k][0]]=SRC[k][1];const us=new Map();for(const S_ of sec)for(const i of S_.items)if(i.s&&!us.has(i.s))us.set(i.s,BYN[i.s]||i.u);
- sec.push({h:'Sources et licences',items:[{t:'Toutes les données proviennent de jeux de données ouverts (licence ODbL ou Licence Ouverte, selon le producteur), extraits le 15/11/2026. Les dossiers d\'urbanisme, ventes et établissements sont rattachés au bâtiment par leur adresse, par la parcelle ou par leur localisation : le rattachement est approximatif et ne remplace ni un extrait cadastral, ni une note de renseignements d\'urbanisme, ni la consultation des documents d\'origine. Les hauteurs, niveaux et surfaces de plancher sont des estimations. Jeux de données utilisés dans cette fiche :',s:'',u:''},...[...us].map(([s,u])=>({t:s+(u?' - '+u:''),s:'',u:u||null}))]});
+ const ad=c.A&&c.A[s]||[],M=c.M||cardModel(s,{A:c.A,P:c.P,D:c.D,C:c.C,SR:c.SR,AT:c.atl});
+ const sec=M.filter(x=>x.items.length).map(x=>({id:x.id,h:x.h+(x.n?' ('+nf.format(x.n)+')':''),items:x.items}));
+ sec.push({id:'src',h:'Sources et licences',items:[{t:'Toutes les données proviennent de jeux de données ouverts (licence ODbL ou Licence Ouverte, selon le producteur). Les dossiers d\'urbanisme sont rattachés au bâtiment par leur adresse ou leur localisation : le rattachement est approximatif et ne remplace ni un extrait cadastral, ni une note de renseignements d\'urbanisme.',s:'',u:''},
+  ...srcList().map(x=>({t:x[0],s:'',u:x[1]}))]});
  return {title:ad[0]||'Bâtiment sans adresse rattachée',sub:'Paris '+(ARR[s]?ARR[s]+'e':'')+(ad.length>1?' · '+(ad.length-1)+' autre'+(ad.length>2?'s':'')+' adresse'+(ad.length>2?'s':''):''),sec};
 }
 
@@ -1398,13 +1487,14 @@ async function histCaptures(s,AT){
   if(!o.atlas||!cov.has(o.src))continue;
   let d;try{d=await loadOv(o);}catch(e){continue;}
   const cvs=document.createElement('canvas');cvs.width=W_;cvs.height=H_;const c=cvs.getContext('2d');
-  c.fillStyle='#efe9d8';c.fillRect(0,0,W_,H_);
+  c.fillStyle='#d9d6cf';c.fillRect(0,0,W_,H_);
   c.setTransform(k,0,0,-k,W_/2-cx*k,H_/2+cy*k);
+  if(d.bg){const b=d.bg;c.beginPath();c.moveTo(b[0],b[1]);for(let i=2;i<8;i+=2)c.lineTo(b[i],b[i+1]);c.closePath();c.fillStyle=ATLBG;c.fill();}
   let nf_=0;for(let i=0;i<d.nc;i++)for(const C of d.cells.values())if(C.P[i]&&C.b[2]>=X0&&C.b[0]<=X1&&C.b[3]>=Y0&&C.b[1]<=Y1){c.fillStyle=o.cols[i];c.fill(C.P[i],'evenodd');nf_++;}
   if(!nf_){out.empty=(out.empty||[]).concat(o.n);continue;}
   c.setTransform(1,0,0,1,0,0);const X=x=>(x-cx)*k+W_/2,Y=y=>H_/2-(y-cy)*k;
-  if(d.L){c.font='600 11px Arial, Helvetica, sans-serif';c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';
-   for(const l of d.L){const x=X(l[0]),y=Y(l[1]);if(x<-40||x>W_+40||y<-10||y>H_+10)continue;c.lineWidth=3;c.strokeStyle='rgba(255,255,255,.85)';c.strokeText(l[2],x,y);c.fillStyle='#2b2b2b';c.fillText(l[2],x,y);}}
+  if(d.L){c.font='italic 12px '+ATLFONT;c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';
+   for(const l of d.L){const x=X(l[0]),y=Y(l[1]);if(x<-40||x>W_+40||y<-10||y>H_+10)continue;c.lineWidth=3;c.strokeStyle='rgba(242,236,221,.9)';c.strokeText(l[2],x,y);c.fillStyle='#3a2c1c';c.fillText(l[2],x,y);}}
   c.beginPath();for(let e=edgS[s];e<edgS[s+1];e+=2){const a=edg[e],b=edg[e+1];c.moveTo(X(pos[2*a]),Y(pos[2*a+1]));c.lineTo(X(pos[2*b]),Y(pos[2*b+1]));}
   c.lineCap='round';c.strokeStyle='#fff';c.lineWidth=6;c.stroke();c.strokeStyle='#d0021b';c.lineWidth=3;c.stroke();
   c.beginPath();c.arc(W_/2,H_/2,Math.max(26,Math.hypot(bbox[4*s+2]-bbox[4*s],bbox[4*s+3]-bbox[4*s+1])*k/2+12),0,6.2832);c.strokeStyle='rgba(208,2,27,.85)';c.lineWidth=2;c.setLineDash([6,4]);c.stroke();c.setLineDash([]);
@@ -1431,7 +1521,7 @@ function makePdf(M_,IMG,HIST){
  newPage();
  put(M_.title,24,true,'0.10 0.28 0.41',0,null,4,1.25);
  put(M_.sub,12,false,'0.32 0.46 0.56',0,null,8);
- put('Fiche générée le '+new Date().toLocaleDateString('fr-FR')+' avec Paris-graphie. Données ouvertes ; rattachements des dossiers, ventes et établissements au bâtiment par adresse ou localisation, donc approximatifs.',8.5,false,'0.45 0.45 0.45',0,null,18);
+ put('Fiche exportée le '+new Date().toLocaleDateString('fr-FR')+' à '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+' avec Paris-graphie'+(SRCD._maj?' (données mises à jour le '+fd10(SRCD._maj)+', date d\'extraction de chaque source en fin de document)':'')+'. Données ouvertes ; rattachements des dossiers, ventes et établissements au bâtiment par adresse ou localisation, donc approximatifs.',8.5,false,'0.45 0.45 0.45',0,null,18);
  let imgH=0;
  if(IMG){const w=LW,h=w*IMG.h/IMG.w;if(y-h<MG+40)newPage();y-=h;cur.ops.push('q '+w.toFixed(2)+' 0 0 '+h.toFixed(2)+' '+MG+' '+y.toFixed(2)+' cm /Im1 Do Q');
   y-=14;put('Capture de la carte Paris-graphie, largeur d\'environ '+Math.round(IMG.wm/10)*10+' m. Bâtiment sélectionné entouré de blanc'+(IMG.layer?', couleurs selon le calque « '+IMG.layer+' »':', plan neutre (aucun calque thématique)')+'. Fond : emprise bâtie Apur ; Seine et arrondissements : Ville de Paris ; numéros : Base Adresse Nationale.',7.5,false,'0.45 0.45 0.45',0,null,8);
@@ -1442,28 +1532,26 @@ function makePdf(M_,IMG,HIST){
    it.forEach((e,i)=>{const cx=MG+Math.floor(i/rows)*cw,cy=y0-(i%rows+1)*rh;cur.ops.push(hx(e[0])+' rg '+cx.toFixed(2)+' '+(cy-1).toFixed(2)+' 9 9 re f'+(e[2]?' 0.10 0.28 0.41 RG 1.4 w '+(cx-1.5).toFixed(2)+' '+(cy-2.5).toFixed(2)+' 12 12 re S':''));cur.ops.push('BT /F'+(e[2]?2:1)+' 8.5 Tf '+(e[2]?'0.10 0.28 0.41':'0.30 0.30 0.30')+' rg '+(cx+15).toFixed(2)+' '+(cy+0.5).toFixed(2)+' Td ('+enc(e[1])+') Tj ET');});
    y=y0-rows*rh-10;}
  }
- if(HIST&&HIST.length){
-  if(y<MG+260)newPage();
-  y-=24;put('LE SITE DANS L\'ATLAS HISTORIQUE DE PARIS',12,true,'0.10 0.28 0.41',0,null,0,1.2);
-  y-=3;cur.ops.push('0.75 0.81 0.85 RG 0.7 w '+MG+' '+y.toFixed(2)+' m '+(PW-MG)+' '+y.toFixed(2)+' l S');y-=8;
-  put('Extraits des plans de Michel Huard (paris-atlas-historique.fr), calés automatiquement sur le plan actuel : l\'immeuble est cerclé et entouré de rouge. Précision indicative, de l\'ordre de 5 à 15 m. Chaque titre renvoie à la page de la carte.',8,false,'0.45 0.45 0.45',0,null,8)
+ const hist=()=>{if(!(HIST&&HIST.length))return;
+  y-=10;put('Extraits des plans de Michel Huard (paris-atlas-historique.fr), calés automatiquement sur le plan actuel : l\'immeuble est cerclé et entouré de rouge. Précision indicative, de l\'ordre de 5 à 15 m. Chaque titre renvoie à la page de la carte.',8,false,'0.45 0.45 0.45',0,null,8);
   if(HIST.empty)put('Rien de dessiné autour de l\'immeuble sur : '+HIST.empty.join(', ')+' (site encore hors de la ville ou non renseigné).',8,false,'0.45 0.45 0.45',0,null,8);
   const gw=(LW-12)/2,gh=gw*HIST[0].h/HIST[0].w;
   HIST.forEach((im,i)=>{const col=i%2;if(col===0){if(y-gh-22<MG+20)newPage();}const x=MG+col*(gw+12),yt=y;
    cur.ops.push('q '+gw.toFixed(2)+' 0 0 '+gh.toFixed(2)+' '+x.toFixed(2)+' '+(yt-gh).toFixed(2)+' cm /Ih'+i+' Do Q');
    const ty=yt-gh-11;cur.ops.push('BT /F2 8.5 Tf 0.10 0.28 0.41 rg '+x.toFixed(2)+' '+ty.toFixed(2)+' Td ('+enc(im.cap)+') Tj ET');if(im.u)cur.ln.push([x,ty-2,x+wid(im.cap,8.5,true),ty+9,im.u]);
-   if(col===1||i===HIST.length-1)y=yt-gh-24;});
- }
+   if(col===1||i===HIST.length-1)y=yt-gh-24;});};
  for(const S_ of M_.sec){
-  if(y<MG+110)newPage();
-  y-=24;put(S_.h.toUpperCase(),12,true,'0.10 0.28 0.41',0,null,0,1.2);
-  y-=3;cur.ops.push('0.75 0.81 0.85 RG 0.7 w '+MG+' '+y.toFixed(2)+' m '+(PW-MG)+' '+y.toFixed(2)+' l S');y-=10;
+  newPage();
+  put(S_.h.toUpperCase(),13,true,'0.10 0.28 0.41',0,null,0,1.2);
+  y-=4;cur.ops.push('0.75 0.81 0.85 RG 0.7 w '+MG+' '+y.toFixed(2)+' m '+(PW-MG)+' '+y.toFixed(2)+' l S');y-=12;
+  if(S_.id==='hist')hist();
   for(const i of S_.items){
-   put(i.t,9.5,false,'0.1 0.1 0.1',0,(!i.s&&i.u)?i.u:null,0,1.5);
+   put(i.t,9.5,false,i.s?'0.1 0.1 0.1':(i.u?'0.10 0.28 0.41':'0.1 0.1 0.1'),0,(!i.s&&i.u)?i.u:null,0,1.5);
    if(i.s){y-=2;put('Source : '+i.s+(i.u?' - '+i.u:''),7.5,false,'0.35 0.5 0.62',10,i.u||null,9,1.4);}else y-=9;
   }
  }
- pages.forEach((p,i)=>{p.ops.push('BT /F1 7.5 Tf 0.5 0.5 0.5 rg '+(PW-MG-44).toFixed(2)+' 26 Td (Page '+(i+1)+' / '+pages.length+') Tj ET');});
+ const dexp=new Date().toLocaleDateString('fr-FR')+' à '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+ pages.forEach((p,i)=>{p.ops.push('BT /F1 7.5 Tf 0.5 0.5 0.5 rg '+(PW-MG-44).toFixed(2)+' 26 Td (Page '+(i+1)+' / '+pages.length+') Tj ET');p.ops.push('BT /F1 7.5 Tf 0.5 0.5 0.5 rg '+MG+' 26 Td ('+enc('Paris-graphie · fiche exportée le '+dexp+' · '+M_.title)+') Tj ET');});
  const objs=[];const add=s=>{objs.push(s);return objs.length;};
  add('<< /Type /Catalog /Pages 2 0 R >>');add('');add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
  let imObj=0;
@@ -1495,7 +1583,7 @@ cb.addEventListener('click',async e=>{if(e.target&&e.target.id==='pdfb'&&PCTX&&(
  }catch(err){m.textContent='Échec de la génération du PDF ('+err.message+').';}
 });
 
-function fiche(s){if(sel<0)showCard(s,false);}
+function fiche(s){}
 new ResizeObserver(()=>{const first=W===1;resize();if(first)fit();draw();}).observe(cv);
 resize();fit();
 setCrit(CRIT[0]);ready=true;

@@ -14,8 +14,7 @@ def html():
         nonlocal t
         assert t.count(a) == 1, a[:60]; t = t.replace(a, b)
     rep("function loadSir(a){if(!SIRD[a])", "function loadSir(a){return Promise.resolve(null);if(!SIRD[a])")
-    rep(" ; DGFiP, « Demandes de valeurs foncières » géolocalisées par Etalab (ventes 2021-2025) ; Insee, base Sirene (stock du 01/11/2026)", "")
-    rep("Les dossiers d\\'urbanisme, ventes et établissements sont rattachés", "Les dossiers d\\'urbanisme sont rattachés")
+    rep("const PUB=false;", "const PUB=true;")
     rep("rattachements des dossiers, ventes et établissements au bâtiment", "rattachements des dossiers au bâtiment")
     t = re.sub(r"const DV='\d+';", "const DV='%s';" % time.strftime('%Y%m%d%H%M'), t, count=1)
     return t
@@ -23,7 +22,8 @@ def html():
 def run(st, out):
     os.makedirs(out, exist_ok=True)
     st.save(out)
-    for f in glob.glob(os.path.join(STATIC, '*.json')): shutil.copy(f, out)
+    for f in glob.glob(os.path.join(STATIC, '*.json')):
+        if not os.path.basename(f).startswith('sources_'): shutil.copy(f, out)
     open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(html())
     open(os.path.join(out, '.nojekyll'), 'w').write('')
     open(os.path.join(out, 'maj.json'), 'w').write(json.dumps({'date': time.strftime('%Y-%m-%d %H:%M UTC', time.gmtime()), 'batiments': st.N}))
