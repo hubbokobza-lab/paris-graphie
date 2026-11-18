@@ -60,4 +60,13 @@ def main():
     step_site.run(st, a.out)
 
 if __name__ == '__main__':
-    main()
+    import traceback
+    try:
+        main()
+    except Exception as e:
+        tb = traceback.format_exc().strip().splitlines()
+        where = [l.strip() for l in tb if l.strip().startswith('File ') and '/pipeline/' in l]
+        msg = '%s: %s' % (type(e).__name__, str(e)[:400])
+        print('::error title=Échec de la mise à jour::' + msg.replace('\n', ' ') + ' | ' + (where[-1] if where else ''), flush=True)
+        traceback.print_exc()
+        sys.exit(1)

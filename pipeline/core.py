@@ -36,16 +36,20 @@ def fetch(url, name, max_age_h=20, min_size=200):
     p = os.path.join(RAW, name)
     if os.path.exists(p) and os.path.getsize(p) >= min_size and time.time() - os.path.getmtime(p) < max_age_h * 3600:
         return p
-    tmp = p + '.part'
+    tmp = p + '.part'; err = ''
     for i in range(5):
-        r = subprocess.run(['curl', '-sSL', '--fail', '-m', '1800', '-A', UA['User-Agent'], '-o', tmp, url])
-        if r.returncode == 0 and os.path.getsize(tmp) >= min_size: break
-        log('  nouvel essai', i + 1, name); time.sleep(10 * (i + 1))
+        r = subprocess.run(['curl', '-sSL', '--fail', '-m', '1800', '-A', UA['User-Agent'], '-o', tmp, url], capture_output=True, text=True)
+        if r.returncode == 0 and os.path.exists(tmp):
+            with open(tmp, 'rb') as f: head = f.read(2)
+            if head == b'\x1f\x8b':   # fichier ou réponse compressés : on décompresse avant de contrôler la taille
+                data = gzip.decompress(open(tmp, 'rb').read()); open(tmp, 'wb').write(data)
+            if os.path.getsize(tmp) >= min_size: break
+            err = 'fichier trop petit (%d octets)' % os.path.getsize(tmp)
+        else:
+            err = 'curl %d %s' % (r.returncode, (r.stderr or '').strip()[:200])
+        log('  nouvel essai', i + 1, name, err); time.sleep(10 * (i + 1))
     else:
-        raise RuntimeError('téléchargement impossible : ' + url)
-    with open(tmp, 'rb') as f: head = f.read(2)
-    if head == b'\x1f\x8b':   # certaines API renvoient du gzip
-        data = gzip.decompress(open(tmp, 'rb').read()); open(tmp, 'wb').write(data)
+        raise RuntimeError('téléchargement impossible : %s (%s)' % (url, err))
     os.replace(tmp, p); log('  ', name, '%.1f Mo' % (os.path.getsize(p) / 1e6))
     return p
 
