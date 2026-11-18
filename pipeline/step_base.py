@@ -15,7 +15,10 @@ def run(st):
             d = np.diff(a, axis=0); m = np.r_[True, np.any(d != 0, axis=1)]; a = a[m]
             if len(a) >= 3: rings.append(a)
         if not rings: continue
-        rings.sort(key=lambda a: -abs(np.sum(a[:-1, 0] * a[1:, 1] - a[1:, 0] * a[:-1, 1])))   # extérieur d'abord
+        def area2(a):   # double aire (formule du lacet, anneau fermé, coordonnées recentrées)
+            b = (a - a[0]).astype(np.float64); c = np.roll(b, -1, axis=0)
+            return abs(float(np.sum(b[:, 0] * c[:, 1] - c[:, 0] * b[:, 1])))
+        rings.sort(key=lambda a: -area2(a))   # contour extérieur d'abord, puis les cours
         keep.append(f['attributes']); nr.append(min(255, len(rings)))
         for a in rings[:255]:
             rl.append(len(a)); ab += [int(a[0, 0]), int(a[0, 1])]
