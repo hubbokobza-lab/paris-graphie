@@ -1,10 +1,10 @@
 """Îlots de fraîcheur de la Ville de Paris (espaces verts frais et équipements frais). Les calques îlots de chaleur (LCZ Cerema) et canopée (Apur) sont statiques."""
 from core import *
 
-CAPGEO = 'https://capgeo2.paris.fr/opendata/rest/services/DEVE/%s/MapServer/0/query'
+CAPGEO = 'https://capgeo2.paris.fr/opendata/rest/services/%s/%s/MapServer/0/query'
 
-def capgeo(service, page=1000):
-    b = CAPGEO % service
+def capgeo(service, page=1000, folder='DEVE'):
+    b = CAPGEO % (folder, service)
     n = get_json(b + '?where=1%3D1&returnCountOnly=true&f=json')['count']
     feats = []; off = 0
     while off < n:
