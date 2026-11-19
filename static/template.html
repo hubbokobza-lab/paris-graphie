@@ -759,7 +759,8 @@ cv.addEventListener('pointermove',e=>{
   const dx=e.clientX-o[0],dy=e.clientY-o[1];if(Math.abs(dx)+Math.abs(dy)>0){moved=true;view.cx-=dx/view.k;view.cy+=dy/view.k;draw();}
  }else if(e.pointerType==='mouse'){hover(e.clientX,e.clientY);ovTip(e.clientX,e.clientY);}
 });
-function end(e){const was=pts.size===1&&!moved;pts.delete(e.pointerId);if(was){ovTip(e.clientX,e.clientY);const [wx,wy]=s2w(e.clientX,e.clientY);const s=pick(wx,wy);if(s>=0&&s!==sel){sel=s;showCard(s,true);}else{sel=-1;hov=-1;showCard(e.pointerType==='mouse'?pick(wx,wy):-1,false);}draw();}}
+function p70Click(wx,wy){const o=OVO.find(o=>o.id==='p70');if(!o||!o.on)return false;const q=p70Of(H.lon0+wx/(111320*Math.cos(H.lat0*Math.PI/180)),H.lat0+wy/110574);if(!q)return false;window.open('https://paris1970.fr/carre/'+q[0],'_blank','noopener');return true;}
+function end(e){const was=pts.size===1&&!moved;pts.delete(e.pointerId);if(was){if(p70Click(...s2w(e.clientX,e.clientY)))return;ovTip(e.clientX,e.clientY);const [wx,wy]=s2w(e.clientX,e.clientY);const s=pick(wx,wy);if(s>=0&&s!==sel){sel=s;showCard(s,true);}else{sel=-1;hov=-1;showCard(e.pointerType==='mouse'?pick(wx,wy):-1,false);}draw();}}
 cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',e=>pts.delete(e.pointerId));
 cv.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.clientX,e.clientY,Math.exp(-e.deltaY*(e.ctrlKey?.01:.0015)));},{passive:false});
 cv.addEventListener('dblclick',e=>zoomAt(e.clientX,e.clientY,2));
@@ -986,8 +987,8 @@ function cardModel(s,c){
   if(vn.length)for(const d of vn){const t='Photographie ancienne (Vergue) : '+vergTitle(d[1][3])+(d[1][2]>=1800?', '+d[1][2]:'')+', prise à '+Math.round(d[0])+' m',u='https://vergue.com/post/'+d[1][3]+'.html';h+=lk(u,t);items.push(L_(t,u));}
   else{h+=lk('https://vergue.com/carto-vergue-paris/','Photographies du Paris du XIXe siècle (Vergue), carte','aucune photographie à moins de 80 m du bâtiment');}
   {const q=p70Of(lo,la);if(q){const n=q[0],c=q[3],u='https://paris1970.jeantho.eu/carres/'+n+'.html',t='C\'était Paris en 1970 : carré '+n+(c?', '+c+' photographie'+(c>1?'s':'')+' numérisée'+(c>1?'s':''):', pas de photographie numérisée');
-   h+=lk(u,t,'concours photo amateur de 1970 (Bibliothèque historique de la Ville de Paris) ; carroyage approché à ± 50 m, vérifier sur le plan du carré');items.push(L_(t,u));
-   if(q[4]===13||q[4]===19){const u2='https://paris1970.dhlab.mit.edu/map_square/'+n+'/',t2='This was Paris in 1970 (MIT) : diapositives couleur du carré '+n;h+=lk(u2,t2);items.push(L_(t2,u2));}}}
+   const u0='https://paris1970.fr/carre/'+n;h+=lk(u0,t,'concours photo amateur de 1970 (Bibliothèque historique de la Ville de Paris) ; carroyage approché à ± 50 m, vérifier sur le plan du carré');items.push(L_(t,u0));
+   const t2='Même carré sur paris1970.jeantho.eu (planche du plan de 1970)';h+=lk(u,t2);items.push(L_(t2,u));}}
   const voie=ad[0]?ad[0].replace(/^\d+\s*(bis|ter|quater|[a-z])?\s+/i,''):'';
   if(voie){const u=archPhoto(voie);h+=lk(u,'Archives de Paris, photographies de la voie « '+voie+' »');items.push(L_('Archives de Paris, photographies de la voie « '+voie+' »',u));}
   const P2=[['Remonter le temps (IGN) : cartes et photos aériennes anciennes','https://remonterletemps.ign.fr/comparer?lon='+f5(lo)+'&lat='+f5(la)+'&z=18'],
@@ -1086,7 +1087,7 @@ const OVL=[
  {id:'vec',n:'Volumétrie existante à conserver',k:'poly',a:.6,cols:['#f72585'],lab:['VEC']},
  {id:'gdmag',n:'Grands magasins',k:'poly',a:.6,cols:['#b5179e'],lab:['Grand magasin']}]},
 {g:'Paris en 1970',items:[
- {id:'p70',n:'C\'était Paris en 1970 : carrés du concours photo',k:'poly',a:.28,lsuf:'',lcol:'#e8eef4',cols:['#5b6770','#9ecae1','#4292c6','#08519c'],lab:['Pas de photographie numérisée','1 à 9 photographies','10 à 49 photographies','50 photographies et plus']}]},
+ {id:'p70',n:'C\'était Paris en 1970 : carrés du concours photo (clic : photos du carré)',k:'poly',a:.28,lsuf:'',lcol:'#e8eef4',cols:['#5b6770','#9ecae1','#4292c6','#08519c'],lab:['Pas de photographie numérisée','1 à 9 photographies','10 à 49 photographies','50 photographies et plus']}]},
 {g:'Îlots de chaleur',items:[
  {id:'lcz',n:'Zones climatiques locales (sensibilité à la chaleur)',k:'poly',a:.42,cols:['#8c0000','#d10000','#ff0000','#bf4d00','#ff6600','#ff9955','#bcbcbc','#ffccaa','#006a00','#00aa00','#648525','#b9db79','#4a4a4a','#fbf7ae','#6a6aff'],lab:['LCZ 1 : compact, grande hauteur','LCZ 2 : compact, hauteur moyenne','LCZ 3 : compact, faible hauteur','LCZ 4 : ouvert, grande hauteur','LCZ 5 : ouvert, hauteur moyenne','LCZ 6 : ouvert, faible hauteur','LCZ 8 : grands bâtiments bas','LCZ 9 : bâti épars','LCZ A : arbres denses','LCZ B : arbres épars','LCZ C : arbustes','LCZ D : végétation basse','LCZ E : sol minéral, imperméable','LCZ F : sol nu','LCZ G : eau']},
  {id:'frais',n:'Îlots de fraîcheur : espaces verts',k:'poly',a:.5,cols:['#1a9e77','#8fd19e','#e9e29b'],lab:['Très ombragé, frais (plus de 50 % de végétation haute)','Partiellement ombragé (25 à 50 %)','Peu ombragé (moins de 25 %, frais la nuit seulement)']},
@@ -1415,7 +1416,7 @@ const SRC={
  bdnb:['CSTB, Base de données nationale des bâtiments (BDNB open), dernier millésime publié (Licence Ouverte)','https://bdnb.io/'],
  dpe:['Ademe, diagnostics de performance énergétique, via la BDNB (Licence Ouverte)','https://data.ademe.fr/'],
  co2:['Calcul de l\'outil : surface de plancher estimée × seuil RE2020 « IC construction » 2025 des logements collectifs (650 kg CO₂e/m²) ; ordre de grandeur indicatif, pas une analyse de cycle de vie','https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000043936914'],
- p70:['Bibliothèque historique de la Ville de Paris, fonds « C\'était Paris en 1970 » ; carroyage d\'après le projet This was Paris in 1970 (MIT) ; index des photographies paris1970.jeantho.eu','https://paris1970.jeantho.eu/'],
+ p70:['Bibliothèque historique de la Ville de Paris, fonds « C\'était Paris en 1970 » ; carroyage d\'après le projet This was Paris in 1970 (MIT) ; sites paris1970.fr et paris1970.jeantho.eu','https://paris1970.fr/'],
  lcz:['Cerema, « Cartographie des zones climatiques locales (LCZ) », aire urbaine de Paris, images SPOT 2022 (Licence Ouverte)','https://www.data.gouv.fr/datasets/cartographie-des-zones-climatiques-locales-lcz-des-93-territoires-de-plus-de-50-000-habitants-en-france'],
  veg:['Apur, « Hauteur de la végétation 2021 », Open Data (licence ODbL)','https://opendata.apur.org/'],
  frais:['Ville de Paris, « Îlots de fraîcheur » (espaces verts frais, équipements et activités), Open Data','https://opendata.paris.fr/explore/dataset/ilots-de-fraicheur-espaces-verts-frais/'],
