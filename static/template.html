@@ -359,7 +359,7 @@ function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n
 const PC_LAB=["Avant 1990","1990–1999","2000–2009","2010–2014","2015–2019","2020 et après","Aucun connu"];
 const lastCls=A=>s=>{const y=A[s];if(!y)return 6;return y<1990?0:y<2000?1:y<2010?2:y<2015?3:y<2020?4:5;};
 const ORG={per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
-mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
+mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',hot:'Atout France',cu:'Ville de Paris',abnb:'Inside Airbnb',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
 const orgOf=id=>ORG[id]||(/^at[m0-9]/.test(id)?'Michel Huard, Atlas historique de Paris':'Ville de Paris'),orgHtml=id=>'<small class="org">'+orgOf(id)+'</small>';
 const CRIT=[
  {id:'neu',g:'Plan',name:'Plan neutre (aucun calque)',lab:['Bâtiment'],col:['#8b98a4'],cls:s=>0},
@@ -927,6 +927,7 @@ function cardModel(s,c){
   const items=[...R.map(r=>it(r[0]+' : '+r[1],r[2])),it('Carbone d\'une reconstruction à neuf (ordre de grandeur) : '+co2Txt(s),'co2')];
   if(K&&K.length){h+=sub('Commerces en rez-de-chaussée ('+K.length+')')+'<div class="k" style="margin:-2px 0 6px">Base des commerces de l\'Apur (BDCOM), relevé de 2017</div>'+K.slice(0,40).map(e=>'<div class="dm" style="margin:3px 0"><i class="sw2" style="display:inline-block;vertical-align:-1px;margin-right:6px;background:'+COM_COL[Math.max(0,(e[0]||7)-1)]+'"></i><b>'+esc(e[1])+'</b><span class="k">'+(e[5]?' · '+esc(e[5]):'')+(e[2]?' · '+esc(e[2]):'')+(e[4]?' · '+esc(e[4]):'')+'</span></div>').join('')+(K.length>40?'<div class="k">… et '+(K.length-40)+' autres</div>':'');
    items.push(...K.slice(0,60).map(e=>it('Commerce : '+e[1]+(e[5]?', '+e[5]:'')+(e[2]?', '+e[2]:'')+(e[3]?', '+e[3]:'')+(e[4]?', '+e[4]:''),'com')));}
+  {const T=TOUR&&TOUR[s];if(T&&T.length){h+=sub('Hébergement touristique');for(const [k,l] of T){h+='<div class="dm">'+esc(l)+'</div>';items.push(it(l,k));}}}
   sec('usage','Usages, énergie et carbone',h,items);}
  // 4. Autorisations d'urbanisme
  {const L=D&&D.b&&D.b[s];let h='',items=[];
@@ -1089,6 +1090,10 @@ const OVL=[
  {id:'batmod',n:'Bâtiments modernes',k:'poly',a:.6,cols:['#4cc9f0'],lab:['Bâtiment moderne']},
  {id:'vec',n:'Volumétrie existante à conserver',k:'poly',a:.6,cols:['#f72585'],lab:['VEC']},
  {id:'gdmag',n:'Grands magasins',k:'poly',a:.6,cols:['#b5179e'],lab:['Grand magasin']}]},
+{g:'Hébergement touristique',items:[
+ {id:'abnb',n:'Annonces Airbnb (densité par carré de 250 m)',k:'poly',a:.45,cols:['#fde0c5','#facba6','#f59e72','#e8604c','#b5223c'],lab:['3 à 9 annonces','10 à 29','30 à 59','60 à 99','100 et plus']},
+ {id:'hot',n:'Hôtels et hébergements classés',k:'pt',cols:['#9ecae1','#4292c6','#08519c','#08306b','#c51b8a','#41ab5d'],lab:['Hôtels 1 et 2 étoiles ou non précisé','Hôtels 3 étoiles','Hôtels 4 étoiles','Hôtels 5 étoiles et palaces','Résidences de tourisme','Auberges collectives et autres']},
+ {id:'cu',n:'Meublés touristiques autorisés (changement d\'usage)',k:'pt',cols:['#e6550d'],lab:['Autorisation de changement d\'usage']}]},
 {g:'Femmes illustres',items:[
  {id:'fem',n:'Femmes illustres à Paris : lieux de vie et de travail',k:'pt',cols:['#e7298a','#7570b3','#d95f02','#e6ab02','#1b9e77','#66a61e','#1f78b4','#a6761d'],lab:['77 illustres Parisiennes','Femmes de lettres','Artistes','Comédiennes','Scientifiques','Politiques','Sportives','Cheffes']},
  {id:'femp',n:'Parcours « Paris célèbre les femmes » (2019)',k:'line',cols:['#e7298a'],lab:['Parcours']}]},
@@ -1211,7 +1216,7 @@ function ovTip(x,y){
  const w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.min(innerWidth-w-8,x+14)+'px';tip.style.top=Math.min(innerHeight-h-8,y+14)+'px';
 }
 {
- const DEST={'PLU : gabarit':['Volume','Gabarit du PLU'],'Protections patrimoniales':['Patrimoine','Protections patrimoniales'],'PLU : végétal et paysage':['Urbanisme (PLU)','Végétal et paysage'],'PLU : secteurs et réserves':['Urbanisme (PLU)','Secteurs et réserves'],'Sous-sol et risques':['Sous-sol et fouilles','Sous-sol et risques'],'Archéologie':['Sous-sol et fouilles','Archéologie'],'Mobilité':['Urbanisme (PLU)','Mobilité'],'Commerces':['Usages','Commerces (BDCOM 2017)'],'Femmes illustres':['Histoire','Femmes illustres'],'Paris en 1970':['Histoire','C\'était Paris en 1970'],'Îlots de chaleur':['Ensoleillement','Îlots de chaleur et de fraîcheur'],'Atlas historique de Paris':['Histoire','Atlas historique de Paris (de l\'Antiquité à 1900)'],'Cadastre':['Urbanisme (PLU)','Cadastre'],'Voirie':['Urbanisme (PLU)','Voirie (plan de voirie de la Ville)'],'Relief':['Sous-sol et fouilles','Relief et nivellement']};
+ const DEST={'PLU : gabarit':['Volume','Gabarit du PLU'],'Protections patrimoniales':['Patrimoine','Protections patrimoniales'],'PLU : végétal et paysage':['Urbanisme (PLU)','Végétal et paysage'],'PLU : secteurs et réserves':['Urbanisme (PLU)','Secteurs et réserves'],'Sous-sol et risques':['Sous-sol et fouilles','Sous-sol et risques'],'Archéologie':['Sous-sol et fouilles','Archéologie'],'Mobilité':['Urbanisme (PLU)','Mobilité'],'Commerces':['Usages','Commerces (BDCOM 2017)'],'Hébergement touristique':['Usages','Hébergement touristique'],'Femmes illustres':['Histoire','Femmes illustres'],'Paris en 1970':['Histoire','C\'était Paris en 1970'],'Îlots de chaleur':['Ensoleillement','Îlots de chaleur et de fraîcheur'],'Atlas historique de Paris':['Histoire','Atlas historique de Paris (de l\'Antiquité à 1900)'],'Cadastre':['Urbanisme (PLU)','Cadastre'],'Voirie':['Urbanisme (PLU)','Voirie (plan de voirie de la Ville)'],'Relief':['Sous-sol et fouilles','Relief et nivellement']};
  for(const g of OVL){
   const [sec,lab]=DEST[g.g]||['Urbanisme (PLU)',g.g];
   const box=document.querySelector('.ovslot[data-g="'+sec+'"]')||$('#ovl');
@@ -1422,6 +1427,9 @@ const SRC={
  bdnb:['CSTB, Base de données nationale des bâtiments (BDNB open), dernier millésime publié (Licence Ouverte)','https://bdnb.io/'],
  dpe:['Ademe, diagnostics de performance énergétique, via la BDNB (Licence Ouverte)','https://data.ademe.fr/'],
  co2:['Calcul de l\'outil : surface de plancher estimée × seuil RE2020 « IC construction » 2025 des logements collectifs (650 kg CO₂e/m²) ; ordre de grandeur indicatif, pas une analyse de cycle de vie','https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000043936914'],
+ hot:['Atout France, « Hébergements touristiques classés en France », géolocalisés par Paris-graphie à partir de la BAN','https://www.data.gouv.fr/datasets/hebergements-touristiques-classes-en-france'],
+ cu:['Ville de Paris, « Registre des autorisations de changement d\'usage pour les meublés touristiques », Open Data (ODbL)','https://opendata.paris.fr/explore/dataset/registre-des-autorisations-de-changement-dusage-pour-les-meubles/'],
+ abnb:['Inside Airbnb, relevé trimestriel des annonces de Paris (licence CC BY 4.0), agrégé par carré de 250 m : positions brouillées jusqu\'à 150 m par Airbnb, aucune annonce individuelle affichée','https://insideairbnb.com/paris/'],
  fem:['Ville de Paris, « Femmes illustres à Paris » (portraits et parcours, 2019), Open Data (ODbL)','https://opendata.paris.fr/explore/dataset/femmes-illustres-a-paris-portraits/'],
  p70:['Bibliothèque historique de la Ville de Paris, fonds « C\'était Paris en 1970 » ; carroyage d\'après le projet This was Paris in 1970 (MIT) ; sites paris1970.fr et paris1970.jeantho.eu','https://paris1970.fr/'],
  lcz:['Cerema, « Cartographie des zones climatiques locales (LCZ) », aire urbaine de Paris, images SPOT 2022 (Licence Ouverte)','https://www.data.gouv.fr/datasets/cartographie-des-zones-climatiques-locales-lcz-des-93-territoires-de-plus-de-50-000-habitants-en-france'],
@@ -1442,6 +1450,7 @@ function bldLonLat(s){const wx=(bbox[4*s]+bbox[4*s+2])/2,wy=(bbox[4*s+1]+bbox[4*
 const OPD='https://opendata.paris.fr/explore/dataset/',
  dossUrl=n=>{const y=+(n.split(' ')[3]||0),rec=y>=24&&y<=40;return OPD+(rec?'dossiers-recents-durbanisme':'autorisations-durbanisme-h')+'/table/?q='+encodeURIComponent('"'+n+'"');},
  banUrl=(a,arr)=>'https://api-adresse.data.gouv.fr/search/?limit=1&q='+encodeURIComponent(a+' 750'+String(arr||0).padStart(2,'0')+' Paris');
+let TOUR=null;getJson('tour.json').then(v=>{TOUR=v;}).catch(()=>{});
 let FEM=null;getJson('fem.json').then(v=>{FEM=v;}).catch(()=>{});
 let P70=null;getJson('p70.json').then(v=>{P70=v;}).catch(()=>{});
 function p70Of(lo,la){if(!P70)return null;const [a,b]=P70.d;for(const q of P70.s)if(la<=q[1]&&la>q[1]-a&&lo<=q[2]&&lo>q[2]-b)return q;return null;}
