@@ -4,31 +4,28 @@ from core import *
 from shapely.geometry import LineString, Point
 
 BB = '48.80,2.21,48.91,2.48'
-Q = """[out:json][timeout:240];
-(way["railway"="subway"](%(b)s);
- way["disused:railway"="subway"](%(b)s); way["abandoned:railway"="subway"](%(b)s); way["construction:railway"="subway"](%(b)s);
- way["railway"~"^(disused|abandoned|construction)$"]["tunnel"](%(b)s);
- way["railway"="rail"]["tunnel"="yes"](%(b)s);
- way["railway"="light_rail"]["tunnel"="yes"](%(b)s););
-out tags geom;
-(node["station"="subway"]["disused:railway"="station"](%(b)s); node["station"="subway"]["abandoned:railway"="station"](%(b)s);
- node["railway"="station"]["station"="subway"]["disused"="yes"](%(b)s); node["railway"~"^(disused|abandoned)$"]["station"="subway"](%(b)s);
- node["disused:railway"="station"]["subway"="yes"](%(b)s); node["railway"="station"]["station"="subway"]["ghost"="yes"](%(b)s););
-out body;""" % {'b': BB}
-EP = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter']
+QS = [
+ '[out:json][timeout:150];way["railway"="subway"](%(b)s);out tags geom;',
+ '[out:json][timeout:150];(way["disused:railway"="subway"](%(b)s);way["abandoned:railway"="subway"](%(b)s);way["construction:railway"="subway"](%(b)s);way["railway"~"^(disused|abandoned|construction)$"]["tunnel"](%(b)s);way["railway"~"^(rail|light_rail)$"]["tunnel"="yes"](%(b)s););out tags geom;',
+ '[out:json][timeout:90];(node["station"="subway"]["disused:railway"="station"](%(b)s);node["station"="subway"]["abandoned:railway"="station"](%(b)s);node["railway"="station"]["station"="subway"]["disused"="yes"](%(b)s);node["railway"~"^(disused|abandoned)$"]["station"="subway"](%(b)s);node["disused:railway"="station"]["subway"="yes"](%(b)s););out body;']
+QS = [q % {'b': BB} for q in QS]
+EP = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.private.coffee/api/interpreter']
 
-def overpass():
+def overpass_one(q, mini):
     err = None
-    for k in range(6):
+    for k in range(10):
         u = EP[k % len(EP)]
         try:
-            req = urllib.request.Request(u, data=urllib.parse.urlencode({'data': Q}).encode(), headers=dict(UA, **{'Content-Type': 'application/x-www-form-urlencoded'}))
-            with urllib.request.urlopen(req, timeout=300) as r: d = json.loads(r.read())
-            if len(d.get('elements', [])) > 500: return d['elements']
+            req = urllib.request.Request(u, data=urllib.parse.urlencode({'data': q}).encode(), headers=dict(UA, **{'Content-Type': 'application/x-www-form-urlencoded'}))
+            with urllib.request.urlopen(req, timeout=200) as r: d = json.loads(r.read())
+            if len(d.get('elements', [])) >= mini: return d['elements']
             err = 'réponse trop courte (%d éléments)' % len(d.get('elements', []))
         except Exception as e: err = str(e)
-        log('  Overpass', u, 'échec :', err[:120]); time.sleep(20)
+        log('  Overpass', u, 'échec :', err[:120]); time.sleep(30)
     raise RuntimeError('Overpass indisponible : %s' % err)
+
+def overpass():
+    return overpass_one(QS[0], 500) + overpass_one(QS[1], 10) + overpass_one(QS[2], 0)
 
 LAB = ['Métro : voie principale', 'Métro : voie de service, garage ou raccordement', 'RER et train en tunnel', 'Voie désaffectée ou abandonnée', 'Voie en construction']
 

@@ -16,6 +16,7 @@ canvas{display:block;width:100%;height:100%}
 h1{margin:0;font-size:17px;font-weight:600;letter-spacing:.1px;color:var(--ink)}
 .sub{margin:3px 0 0;font-size:12px;color:var(--ink2);line-height:1.35}
 #scroll{overflow-y:auto;padding:4px 16px 14px;flex:1}
+#lqw{position:sticky;top:-4px;z-index:3;background:var(--bg,#fff);margin:0 0 6px;padding:4px 0 2px}#lq{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;background:var(--bg2,#f4f6f8);color:inherit}#lqn{margin:3px 2px 0;min-height:0}#lqn:empty{display:none}.lqh{display:none!important}
 h2{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2);margin:16px 0 6px;font-weight:600}
 .crit{display:flex;flex-direction:column;gap:2px}
 .crit button{all:unset;cursor:pointer;display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:4px;font-size:13.5px;color:var(--ink)}
@@ -183,6 +184,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
  </header>
  <div id="scroll">
   <h2>Calque</h2>
+  <div id="lqw"><input id="lq" type="search" placeholder="Chercher un calque (ex. métro, hauteur, histoire)" autocomplete="off" spellcheck="false"><div id="lqn" class="hint"></div></div>
   <div class="hint" style="margin:-2px 4px 8px">Un clic affiche un calque, un second clic le retire.</div>
   <div class="crit" id="crit"></div>
   <div id="legWrap" style="margin:4px 0 6px 8px;padding-left:8px;border-left:3px solid var(--bg2)"><div id="legend"></div><div class="hint" id="legHint">Clic : masquer ou afficher une classe. Double-clic : isoler la classe.<a class="lk" id="reset">tout réafficher</a></div></div>
@@ -1262,6 +1264,48 @@ function ovTip(x,y){
   if(cur)cur.appendChild(k);}
  for(const d of document.querySelectorAll('#scroll > details.lsec'))d.addEventListener('toggle',save);
  for(const d of document.querySelectorAll('#scroll > details.lsec'))if(LS.includes(d.dataset.g))d.open=true;
+}
+/* recherche de calques, avec tolérance (accents, fautes de frappe, synonymes) */
+{const nz=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+ const SYN=[['histoire','historique','patrimoine','ancien','anciens','atlas','monument','memoire','1970','femmes','illustres','photo','photos','mh','merimee','vieux'],
+  ['patrimoine','protection','monument','historique','abf','unesco','pvp','inscrit'],
+  ['age','construction','periode','annee','date','epoque','ancien'],
+  ['hauteur','gabarit','niveaux','etages','volume','igh','surelevation','plafond'],
+  ['metro','transport','transports','rer','gare','gares','station','stations','tram','bus','mobilite','tunnel','idfm','acces'],
+  ['velo','mobilite','trafic','comptage','circulation','voirie'],
+  ['chaleur','ilot','ilots','fraicheur','canicule','climat','lcz','ensoleillement','soleil','temperature'],
+  ['vegetation','vegetal','arbre','arbres','canopee','vert','verts','espaces','jardin','jardins','ebc','paysage','nature'],
+  ['eau','inondation','crue','seine','ppri','risque','risques'],
+  ['sol','sous','carriere','carrieres','gypse','dissolution','fouilles','archeologie','geologie','relief','altitude','courbes','risques'],
+  ['energie','dpe','carbone','co2','bdnb','chauffage','thermique','renovation','ges'],
+  ['usage','usages','commerce','commerces','bureau','bureaux','logement','logements','activite','bdcom','typologie'],
+  ['tourisme','touristique','hotel','hotels','airbnb','meuble','meubles','hebergement','location'],
+  ['permis','autorisation','autorisations','dossier','dossiers','instruction','demolir','cvp','commission'],
+  ['plu','zonage','reglement','secteur','secteurs','reserve','reserves','servitude','alignement','emplacement'],
+  ['cadastre','parcelle','parcelles','foncier','section'],
+  ['trottoir','trottoirs','voirie','rue','rues','chaussee','terre','plein'],
+  ['carte','cartes','plan','plans','fond','affichage']];
+ const lev=(a,b)=>{if(Math.abs(a.length-b.length)>2)return 9;const d=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++){d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])d[i][j]=Math.min(d[i][j],d[i-2][j-2]+1);}return d[a.length][b.length];};
+ const near=(q,w)=>w.startsWith(q)||(q.length>=6&&w.includes(q))||(q.length>=5&&w.length>=4&&lev(q,w.slice(0,Math.min(w.length,q.length+1)))<=(q.length>=10?2:1));
+ const expand=q=>{const out=new Set([q]);for(const g of SYN)if(g.some(w=>near(q,w)))for(const w of g)out.add(w);return [...out];};
+ const tm=(q,words)=>expand(q).some(e=>words.some(w=>near(e,w)));const tm0=(q,words)=>words.some(w=>near(q,w));
+ const scroll=$('#scroll'),inp=$('#lq'),cnt=$('#lqn');let saved=null;
+ const rows=()=>[...scroll.querySelectorAll('#crit button[data-id]')].map(b=>({el:b,t:b.textContent})).concat([...scroll.querySelectorAll('.ovgrp label.ck')].filter(l=>l.querySelector('input[type=checkbox]')).map(l=>({el:l.parentElement,t:l.textContent})));
+ const run=()=>{const q=nz(inp.value),Q=q?q.split(' ').filter(x=>x.length>1):[];const secs=[...scroll.querySelectorAll('details.lsec')],grps=[...scroll.querySelectorAll('details.ovgrp')];
+  scroll.querySelectorAll('.lqh').forEach(e=>e.classList.remove('lqh'));
+  if(!Q.length){if(saved){for(const [d,o] of saved)d.open=o;saved=null;}cnt.textContent='';return;}
+  if(!saved)saved=[...secs,...grps].map(d=>[d,d.open]);
+  const W=t=>nz(t).split(' ');let n=0;
+  const secOk=new Map(secs.map(d=>[d,Q.every(x=>tm(x,W(d.dataset.g+' '+(d.querySelector('summary')||{}).textContent)))]));
+  const grpOk=new Map(grps.map(d=>[d,Q.every(x=>tm0(x,W(d.querySelector('summary').textContent)))]));
+  for(const r of rows()){const sec=r.el.closest('details.lsec'),grp=r.el.closest('details.ovgrp');
+   const ctx=(sec?sec.dataset.g+' ':'')+(grp?grp.querySelector('summary').textContent+' ':'');
+   const ok=(sec&&secOk.get(sec))||(grp&&grpOk.get(grp))||Q.every(x=>tm(x,W(r.t))||tm0(x,W(ctx)));r.el.classList.toggle('lqh',!ok);if(ok)n++;r.ok=ok;}
+  for(const g of grps){const any=[...g.querySelectorAll('label.ck')].some(l=>l.querySelector('input[type=checkbox]')&&!l.parentElement.classList.contains('lqh'));g.classList.toggle('lqh',!any);if(any)g.open=true;}
+  for(const d of secs){const any=secOk.get(d)||d.querySelector('button[data-id]:not(.lqh), details.ovgrp:not(.lqh)');d.classList.toggle('lqh',!any);if(any)d.open=true;}
+  cnt.textContent=n?n+' calque'+(n>1?'s':'')+' trouvé'+(n>1?'s':''):'Aucun calque ne correspond';};
+ let tmr=0;inp.addEventListener('input',()=>{clearTimeout(tmr);tmr=setTimeout(run,120);});
+ inp.addEventListener('keydown',e=>{if(e.key==='Escape'){inp.value='';run();}});
 }
 {const f=setCrit;setCrit=function(c){f(c);openActive();};document.addEventListener('change',e=>{if(e.target.closest&&e.target.closest('.ovgrp'))setTimeout(openActive,0);});}
 function openActive(){const b=document.querySelector('#crit button.on');if(b){const d=b.closest('details.lsec');if(d)d.open=true;}
