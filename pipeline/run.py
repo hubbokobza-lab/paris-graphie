@@ -6,7 +6,7 @@
 import argparse, sys, os, shutil
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core import *
-import step_base, step_ban, step_urba, step_misc, step_plu, step_usage, step_bdnb, step_cad, step_climat, step_femmes, step_tour, step_site
+import step_base, step_ban, step_urba, step_misc, step_plu, step_usage, step_bdnb, step_cad, step_climat, step_femmes, step_tour, step_transport, step_site
 
 def check(st, prev=None):
     """Garde-fous : on refuse de publier un résultat manifestement incomplet."""
@@ -50,6 +50,13 @@ def main():
                 for f in ('ov_cad.json',):
                     if os.path.exists(os.path.join(a.site, f)): st.files[f] = open(os.path.join(a.site, f), 'rb').read()
         step_cad.voirie(st); done('voir')
+        try:
+            step_transport.run(st); done('tcf')
+        except Exception as e:
+            print('::warning title=Transports non mis à jour::%s' % str(e)[:300], flush=True)
+            if a.site:
+                for f in ('ov_tcf.json', 'ov_bus.json', 'ov_gare.json', 'ov_acc.json', 'gares.json'):
+                    if os.path.exists(os.path.join(a.site, f)): st.files[f] = open(os.path.join(a.site, f), 'rb').read()
         for e in step_tour.run(st, ban, done):
             print('::warning title=Hébergement touristique incomplet::%s' % e, flush=True)
         if a.site:
