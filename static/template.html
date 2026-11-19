@@ -359,7 +359,7 @@ function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n
 const PC_LAB=["Avant 1990","1990–1999","2000–2009","2010–2014","2015–2019","2020 et après","Aucun connu"];
 const lastCls=A=>s=>{const y=A[s];if(!y)return 6;return y<1990?0:y<2000?1:y<2010?2:y<2015?3:y<2020?4:5;};
 const ORG={per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
-mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',hot:'Atout France',tcf:'IDFM',bus:'IDFM',gare:'IDFM',acc:'IDFM',cu:'Ville de Paris',abnb:'Inside Airbnb',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
+mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',hot:'Atout France',tcf:'IDFM',osmm:'OpenStreetMap',osms:'OpenStreetMap',bus:'IDFM',gare:'IDFM',acc:'IDFM',cu:'Ville de Paris',abnb:'Inside Airbnb',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
 const orgOf=id=>ORG[id]||(/^at[m0-9]/.test(id)?'Michel Huard, Atlas historique de Paris':'Ville de Paris'),orgHtml=id=>'<small class="org">'+orgOf(id)+'</small>';
 const CRIT=[
  {id:'neu',g:'Plan',name:'Plan neutre (aucun calque)',lab:['Bâtiment'],col:['#8b98a4'],cls:s=>0},
@@ -1136,6 +1136,8 @@ const OVL=[
  {id:'tcf',n:'Lignes de métro, RER, train et tram',k:'line',lwa:2.6,cols:['#888888'],lab:['Lignes à leur couleur officielle']},
  {id:'gare',n:'Gares et stations',k:'pt',cols:['#1d4ed8','#dc2626','#16a34a'],lab:['Métro','RER et train','Tram']},
  {id:'acc',n:'Accès des stations (entrées et sorties)',k:'pt',cols:['#f8fafc'],lab:['Accès']},
+ {id:'osmm',n:'Voies réelles du métro et du RER en tunnel (OpenStreetMap)',k:'line',lw:[2.2,1.4,2.2,1.4,1.4],cols:['#f59e0b','#fb7185','#38bdf8','#a3a3a3','#a3e635'],lab:['Métro : voie principale','Métro : voie de service, garage ou raccordement','RER et train en tunnel','Voie désaffectée ou abandonnée','Voie en construction']},
+ {id:'osms',n:'Stations fermées ou jamais ouvertes (OpenStreetMap)',k:'pt',cols:['#f43f5e'],lab:['Station fermée']},
  {id:'bus',n:'Lignes de bus',k:'line',lwa:1.1,cols:['#7aa6d9'],lab:['Tracé de ligne de bus']}]},
 {g:'Mobilité',items:[
  {id:'mob',n:'Comptages de trafic (vélo, voiture, etc.)',k:'pt',cols:['#7fb2d6','#4cc9f0','#ffd166','#ef476f'],lab:['Moins de 500 vélos par jour ou pas de comptage vélo','500 à 1 500 vélos par jour','1 500 à 4 000 vélos par jour','Plus de 4 000 vélos par jour']}]}
@@ -1434,6 +1436,7 @@ const SRC={
  bdnb:['CSTB, Base de données nationale des bâtiments (BDNB open), dernier millésime publié (Licence Ouverte)','https://bdnb.io/'],
  dpe:['Ademe, diagnostics de performance énergétique, via la BDNB (Licence Ouverte)','https://data.ademe.fr/'],
  co2:['Calcul de l\'outil : surface de plancher estimée × seuil RE2020 « IC construction » 2025 des logements collectifs (650 kg CO₂e/m²) ; ordre de grandeur indicatif, pas une analyse de cycle de vie','https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000043936914'],
+ osmm:['© contributeurs OpenStreetMap, voies ferrées du métro et du RER (licence ODbL) ; tracé indicatif, à vérifier auprès de la RATP et de la SNCF pour tout projet','https://www.openstreetmap.org/copyright'],
  tcf:['Île-de-France Mobilités, tracés du réseau ferré, gares et stations, accès (Licence Ouverte) et tracés des lignes de bus (source GTFS, ODbL)','https://data.iledefrance-mobilites.fr/'],
  hot:['Atout France, « Hébergements touristiques classés en France », géolocalisés par Paris-graphie à partir de la BAN','https://www.data.gouv.fr/datasets/hebergements-touristiques-classes-en-france'],
  cu:['Ville de Paris, « Registre des autorisations de changement d\'usage pour les meublés touristiques », Open Data (ODbL)','https://opendata.paris.fr/explore/dataset/registre-des-autorisations-de-changement-dusage-pour-les-meubles/'],

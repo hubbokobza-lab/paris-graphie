@@ -6,7 +6,7 @@
 import argparse, sys, os, shutil
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core import *
-import step_base, step_ban, step_urba, step_misc, step_plu, step_usage, step_bdnb, step_cad, step_climat, step_femmes, step_tour, step_transport, step_site
+import step_base, step_ban, step_urba, step_misc, step_plu, step_usage, step_bdnb, step_cad, step_climat, step_femmes, step_tour, step_transport, step_osm_metro, step_site
 
 def check(st, prev=None):
     """Garde-fous : on refuse de publier un résultat manifestement incomplet."""
@@ -87,6 +87,13 @@ def main():
             if f.endswith('.json') and not f.startswith(('arr_', 'data')) and not os.path.exists(os.path.join(STATIC, f)):
                 st.files[f] = open(os.path.join(a.site, f), 'rb').read()
         ban = step_ban.run(st); done('ban'); step_urba.run(st, ban); done('urb', 'cvp')
+    try:
+        step_osm_metro.run(st); done('osmm')
+    except Exception as e:
+        print('::warning title=Voies du métro (OSM) non mises à jour::%s' % str(e)[:300], flush=True)
+        if a.site:
+            for f in ('ov_osmm.json', 'ov_osms.json'):
+                if os.path.exists(os.path.join(a.site, f)): st.files[f] = open(os.path.join(a.site, f), 'rb').read()
     SD['_maj'] = today
     st.files['sources.json'] = json.dumps(SD, ensure_ascii=False).encode()
     check(st, prev)
