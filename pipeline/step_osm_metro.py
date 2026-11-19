@@ -14,7 +14,7 @@ out tags geom;
 (node["station"="subway"]["disused:railway"="station"](%(b)s); node["station"="subway"]["abandoned:railway"="station"](%(b)s);
  node["railway"="station"]["station"="subway"]["disused"="yes"](%(b)s); node["railway"~"^(disused|abandoned)$"]["station"="subway"](%(b)s);
  node["disused:railway"="station"]["subway"="yes"](%(b)s); node["railway"="station"]["station"="subway"]["ghost"="yes"](%(b)s););
-out tags;""" % {'b': BB}
+out body;""" % {'b': BB}
 EP = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter']
 
 def overpass():
@@ -48,7 +48,7 @@ def run(st):
             if t.get('service'): nm = (nm + ' ' if nm else '') + {'siding': '(voie de garage)', 'yard': '(faisceau)', 'spur': '(embranchement)', 'crossover': '(communication)'}.get(t['service'], '')
             g = LineString([(p['lon'], p['lat']) for p in e['geometry']])
             W.append((proj(g), {'c': c, 'l': '%s, %s%s' % (LAB[c], pos, (' : ' + nm) if nm else '')}))
-        elif e['type'] == 'node':
+        elif e['type'] == 'node' and 'lon' in e:
             S.append((proj(Point(e['lon'], e['lat'])), {'l': 'Station fermée ou jamais ouverte : %s' % (t.get('name') or t.get('old_name') or '?')}))
     log('  OSM métro : %d tronçons, %d stations fermées' % (len(W), len(S)))
     if len(W) < 500: raise RuntimeError('trop peu de voies OSM')
