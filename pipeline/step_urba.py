@@ -24,6 +24,32 @@ def parse_num(v):
     if not m: return None, ''
     return int(m.group(1)), SUF.get(m.group(2).lower(), m.group(2).lower())
 
+LEGAL = re.compile(r"\b(SCI|SAS|SASU|SA|SARL|SNC|SCCV|SCPI|OPCI|EURL|SEM|SPL|SELARL|SCP|GIE|SCA|SCS|ASSOCIATION|ASSOC|SYNDICAT|SDC|COPROPRIETE|COPRO|VILLE|PARIS|MAIRIE|ETAT|MINISTERE|REGION|DEPARTEMENT|HABITAT|LOGEMENT|LOGEMENTS|IMMOBILIER|IMMOBILIERE|IMMO|FONCIERE|FONCIER|GROUPE|SOCIETE|STE|CIE|COMPAGNIE|BANQUE|HOTEL|HOTELS|RESIDENCE|INVEST|INVESTISSEMENT|INVESTISSEMENTS|HOLDING|PROMOTION|RATP|SNCF|APHP|UNIVERSITE|ECOLE|LYCEE|COLLEGE|EGLISE|PAROISSE|DIOCESE|FONDATION|FONDS|CABINET|AGENCE|ARCHITECTES|ARCHITECTURE|PARTNERS|GESTION|DEVELOPPEMENT|CAPITAL|REIM|ASSET|ASSETS|MANAGEMENT|PROPERTY|PROPERTIES|REAL|ESTATE|FRANCE|INTERNATIONAL|SERVICES|CENTRE|CLINIQUE|HOPITAL|MUSEE|THEATRE|OFFICE|PUBLIC|RESTAURANT|CAFE|BOULANGERIE|PHARMACIE|BANK|MAISON|ETABLISSEMENT|ETABLISSEMENTS|ELOGIE|SIEMP|RIVP|3F|CDC|ICADE|GECINA|NEXITY|BOUYGUES|VINCI|EIFFAGE|KAUFMAN|COGEDIM|ALTAREA|EMERIGE|SOGEPROM|COVIVIO|KLEPIERRE|UNIBAIL)\b")
+def moa_public(d):
+    """Site public : on n'affiche que les personnes morales ; les particuliers deviennent « particulier »."""
+    d = d.strip()
+    if not d: return ''
+    u = norm(d).upper()
+    if re.search(r'\b(M|MME|MR|MLLE|MONSIEUR|MADAME|MADEMOISELLE)\b', u): return 'particulier'
+    if LEGAL.search(u) or re.search(r'\d|&', d) or len(d.split()) == 1: return d
+    if any(re.match(r'^[A-ZÀ-Ý][a-zà-ÿ]', w) for w in d.split()): return 'particulier'   # « Prénom NOM »
+    if 2 <= len(u.split()) <= 3: return 'particulier'   # « NOM PRÉNOM » en capitales : prudence
+    return d
+
+SITADEL = ['8b35affb-55fc-4c1f-915b-7750f974446a', 'f8f0700f-806c-40a7-83b1-f21cf507e7c4']
+def sitadel():
+    """Maîtres d'ouvrage personnes morales des permis depuis 2013 (base Sitadel, SDES)."""
+    M = {}
+    for rid in SITADEL:
+        try:
+            u = 'https://data.statistiques.developpement-durable.gouv.fr/dido/api/v1/datafiles/%s/csv?DEP_CODE=eq:75&columns=NUM_DAU,DENOM_DEM&withColumnName=true' % rid
+            df = pd.read_csv(fetch(u, 'sitadel_%s.csv' % rid[:8], min_size=20_000), sep=';', dtype=str)
+            for n, d in zip(df.NUM_DAU, df.DENOM_DEM):
+                if isinstance(d, str) and d.strip() and isinstance(n, str): M[re.sub(r'[^0-9A-Z]', '', n)] = d.strip()
+        except Exception as e: log('  Sitadel', rid[:8], 'indisponible :', str(e)[:120])
+    log("  Sitadel : %d maîtres d'ouvrage (personnes morales)" % len(M))
+    return M
+
 def run(st, ban=None):
     g = st.geo(); N = st.N; ARR = st.s('arr')
     if ban is None: ban = load_ban()
@@ -62,7 +88,11 @@ def run(st, ban=None):
         if nm in rec.index: recs[s] = 1 if recs[s] == 1 else max(recs[s], ETAT.get(rec.at[nm, 'etat'], 0))
     DEC = sorted(h.decision_autorite.dropna().unique().tolist()); DI = {d: i for i, d in enumerate(DEC)}
     TL = ['PC', 'PD', 'PA', 'DP', 'DT', 'RV']; TI = {t: i for i, t in enumerate(TL)}
-    dem = lambda nm: (rec.at[nm, 'demandeur'] if nm in rec.index and isinstance(rec.at[nm, 'demandeur'], str) else '')
+    MOA = sitadel()
+    def dem(nm):
+        d = rec.at[nm, 'demandeur'] if nm in rec.index and isinstance(rec.at[nm, 'demandeur'], str) else ''
+        if d: return moa_public(d)
+        return MOA.get(re.sub(r'[^0-9A-Z]', '', str(nm))[2:], '')
     h = h.sort_values('date_depot', ascending=False)
     det = collections.defaultdict(list)
     for s, nm, dd, t, dc, ds in zip(h.sh.values, h.numero_dossier.values, h.date_depot.values, h.t.values, h.decision_autorite.values, h.description_travaux.values):
@@ -79,7 +109,8 @@ def run(st, ban=None):
         cvp_n[s] = min(255, cvp_n[s] + 1); k = 1 if c.get('resolution') == 'Vœu' else 2
         cvp_k[s] = k if cvp_k[s] == 0 else min(cvp_k[s], k)
         cd[int(s)].append([c.get('date_passage'), c.get('resolution') or '', c.get('type_de_travaux_1') or '', ' ; '.join(c.get('protection') or []),
-                           clip(c.get('voeu'), 380), c.get('url_document_de_seance') or '', c.get('adresse') or ''])
+                           clip(c.get('voeu'), 380), c.get('url_document_de_seance') or '', c.get('adresse') or '',
+                           re.sub(r'\s*;\s*', ', ', (c.get('architecte') or '').strip()), str(c.get('date_de_construction') or c.get('siecle_de_construction') or '').strip()])
     st.put_file('cvp.json', {'b': cd})
     for k, a_ in [('n_tot', n_tot), ('n_pc', n_pc), ('last_pc', last_pc), ('last_pd', last_pd), ('surf', surfc), ('cvp_n', cvp_n), ('cvp_k', cvp_k), ('rec', recs)]:
         st.put(k, a_)
