@@ -388,6 +388,7 @@ const CRIT=[
  {id:'dpe',g:'Énergie et carbone',name:'DPE, étiquette énergie',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:DPE_COL,cls:s=>BD[s]},
  {id:'ges',g:'Énergie et carbone',name:'DPE, étiquette climat (GES)',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:GES_COL,cls:s=>BG[s]},
  {id:'mur',g:'Énergie et carbone',name:'Matériau des murs (fichiers fonciers)',lab:MAT_LAB,col:MAT_COL,cls:s=>BM[s]},
+ {id:'toit',g:'Énergie et carbone',name:'Toitures',lab:["Panneaux solaires","Végétalisée (≥ 10 m²)","Terrasse","Autre ou inconnue"],col:["#ffd166","#66c2a5","#3288bd",GRAY],cls:s=>SO[s]?0:VG[s]>=10?1:TE[s]?2:3},
  {id:'co2',g:'Énergie et carbone',name:'Carbone d\'une reconstruction à neuf (ordre de grandeur)',lab:['Moins de 250 t CO₂e','250 à 500 t','500 à 1 000 t','1 000 à 2 500 t','Plus de 2 500 t'],col:['#ffffcc','#fed976','#fd8d3c','#e31a1c','#800026'],cls:s=>{const c=co2Of(s);return c<250?0:c<500?1:c<1000?2:c<2500?3:4;}},
  {id:'dos',g:'Autorisations',name:"Dossiers d'urbanisme (nombre)",lab:["Aucun rattaché","1","2 à 3","4 à 6","7 à 12","13 et plus"],col:[GRAY,"#3a6a9c","#3288bd","#66c2a5","#fee08b","#f46d43"],cls:s=>{const n=NT[s];return n===0?0:n===1?1:n<=3?2:n<=6?3:n<=12?4:5;}},
  {id:'pc',g:'Autorisations',name:'Dernier permis de construire accordé',lab:PC_LAB,col:REH_COL.slice(0,6).concat([GRAY]),cls:lastCls(LPC)},
@@ -405,10 +406,9 @@ const CRIT=[
  {id:'zo',g:'Urbanisme (PLU)',name:'Zone du PLU',lab:['Hors zone','UG : urbaine générale','UGSU : urbaine générale, services urbains','UV : urbaine verte','N : naturelle','PSMV : secteur sauvegardé','Autre'],col:[GRAY,'#4f8fd6','#7a6bd6','#3fae7a','#7a9a3a','#c9824a','#9a9aa8'],cls:s=>ZO[s]},
  {id:'hp',g:'Urbanisme (PLU)',name:'Plafond de hauteur du PLU',lab:['Pas de plafond renseigné','18 m','25 m','31 m','37 m','Autre'],col:[GRAY,'#6fc3a0','#e3d36b','#f0a24c','#d9544d','#9a9aa8'],cls:s=>{const h=HP[s];return h===0?0:h===18?1:h===25?2:h===31?3:h===37?4:5;}},
  {id:'dh',g:'Urbanisme (PLU)',name:'Marge sous le plafond (indicatif)',lab:['Pas de plafond renseigné','Dépasse le plafond','Moins de 3 m de marge','3 à 9 m de marge','9 m et plus de marge'],col:[GRAY,'#d53e4f','#f46d43','#fee08b','#66c2a5'],cls:s=>{const h=HP[s];if(!h)return 0;const m=h-HX[s]/10;return m<0?1:m<3?2:m<9?3:4;}},
+ {id:'arr',g:'Urbanisme (PLU)',name:'Arrondissement',lab:ARR_LAB,col:ARR_COL,cls:s=>ARR[s]>=1&&ARR[s]<=20?ARR[s]-1:20},
  {id:'rs',g:'Sous-sol et fouilles',name:'Risques du sous-sol',lab:['Aucun secteur','Carrières','Gypse','Zone inondable (PPRI)'],col:[GRAY,'#d4a373','#e5e5e5','#48cae4'],cls:s=>RS[s]},
  {id:'ar',g:'Sous-sol et fouilles',name:'Fouilles à moins de 40 m',lab:['Aucune','1','2 à 3','4 à 9','10 et plus'],col:[GRAY,'#3a6a9c','#66c2a5','#fee08b','#f46d43'],cls:s=>{const n=ARN[s];return n===0?0:n===1?1:n<=3?2:n<=9?3:4;}},
- {id:'toit',g:'Autres',name:'Toitures',lab:["Panneaux solaires","Végétalisée (≥ 10 m²)","Terrasse","Autre ou inconnue"],col:["#ffd166","#66c2a5","#3288bd",GRAY],cls:s=>SO[s]?0:VG[s]>=10?1:TE[s]?2:3},
- {id:'arr',g:'Autres',name:'Arrondissement',lab:ARR_LAB,col:ARR_COL,cls:s=>ARR[s]>=1&&ARR[s]<=20?ARR[s]-1:20}
 ];
 for(const c of CRIT){c.k=new Uint8Array(N);for(let s=0;s<N;s++)c.k[s]=c.cls(s);c.cnt=new Float64Array(c.lab.length);c.ha=new Float64Array(c.lab.length);for(let s=0;s<N;s++){c.cnt[c.k[s]]++;c.ha[c.k[s]]+=area[s]/1e4;}c.pal=c.col.map(h=>h?pack(h):0);}
 
