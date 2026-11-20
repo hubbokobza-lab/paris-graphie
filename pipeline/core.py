@@ -128,6 +128,21 @@ class State:
         if self._geo is None: self._geo = Geo(self)
         return self._geo
 
+def build_poly(rings):
+    """Anneaux triés par aire décroissante : un anneau contenu dans un nombre impair d'anneaux plus grands est une cour,
+    sinon c'est une partie séparée du bâtiment (bâtiments en plusieurs morceaux, comme l'Arc de triomphe)."""
+    from shapely.geometry import Polygon, MultiPolygon, Point
+    from shapely.prepared import prep
+    if len(rings) == 1: return Polygon(rings[0])
+    P = [Polygon(r) for r in rings]; PP = [prep(p) for p in P]; ex = []
+    for i, r in enumerate(rings):
+        pt = Point(r[0]); par = [q for q in range(i) if PP[q].contains(pt)]
+        if len(par) % 2 == 0: ex.append([i, []])
+        else:
+            e = next((e for e in reversed(ex) if e[0] in par), ex[0]); e[1].append(i)
+    if len(ex) == 1: return Polygon(rings[0], [rings[h] for h in ex[0][1]])
+    return MultiPolygon([Polygon(rings[e], [rings[h] for h in hs]) for e, hs in ex])
+
 class Geo:
     def __init__(self, st):
         import shapely
@@ -144,7 +159,7 @@ class Geo:
                 pts = np.vstack([[0, 0], np.cumsum(seg, axis=0)]) + [x0, y0]
                 dp += 2 * (L - 1); ri += 1
                 rings.append(np.c_[pts[:, 0] * kx, pts[:, 1] * ky])
-            polys.append(Polygon(rings[0], rings[1:]) if len(rings[0]) >= 3 else Polygon())
+            polys.append(build_poly(rings) if len(rings[0]) >= 3 else Polygon())
         polys = np.array(polys, dtype=object)
         bad = ~shapely.is_valid(polys); polys[bad] = shapely.make_valid(polys[bad])
         self.polys = polys; self.areas = shapely.area(polys); self.tree = shapely.STRtree(polys)
