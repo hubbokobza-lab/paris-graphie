@@ -55,10 +55,17 @@ def cp_of(ville):
     if not m: return None
     n = int(m.group(1)); return '750%02d' % n if n != 16 else None
 
+# titres trop courts pour être localisés, précisés par l'agence
+ALIAS = {'75 faubourg': '75 Rue du Faubourg Saint-Honoré', '7 petit': '7 Impasse Charles Petit'}
+
 def locate(it):
     """Appartements : un point sur la rue, sans numéro. Autres projets : l'adresse précise (numéro et voie du titre)."""
     t = re.sub(r'\b(19|20)\d\d\b', '', re.sub(r'\s*-\s*Lot\s*\d+', '', it.get('title') or '')).strip()
     ville = (it.get('ville') or '').strip(); cp = cp_of(ville)
+    al = ALIAS.get(re.sub(r'\s+', ' ', (it.get('title') or '').strip().lower()))
+    if al:
+        r = geocode(al + ' Paris', 'housenumber', cp) or geocode(al + ' Paris', 'housenumber')
+        if r: return r[0], r[1], r[2].get('label')
     appart = 'appartement' in str(it.get('programme1') or '').lower()
     m = re.match(r'^(\d+(?:\s*-\s*\d+)?)\s+(.+)$', t)
     if appart or not m:
