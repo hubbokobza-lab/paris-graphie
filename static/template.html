@@ -1105,7 +1105,7 @@ const OVL=[
  {id:'vec',n:'Volumétrie existante à conserver',k:'poly',a:.6,cols:['#f72585'],lab:['VEC']},
  {id:'gdmag',n:'Grands magasins',k:'poly',a:.6,cols:['#b5179e'],lab:['Grand magasin']}]},
 {g:'Projets de l\'agence',items:[
- {id:'boa',def:true,n:'Projets de Bouchaud Architectes à Paris (clic : page du projet)',k:'pt',cols:['#1A486A','#7FA3C0'],lab:['Livré','En cours']}]},
+ {id:'boa',def:true,rr:6.5,n:'Projets à Paris (clic : page du projet)',k:'pt',cols:['#F9FAFB','#C1CED7'],lab:['Livré','En cours']}]},
 {g:'Culture et cultes',items:[
  {id:'cult',n:'Lieux et équipements culturels',k:'pt',cols:['#e11d48','#a855f7','#f59e0b','#0ea5e9','#22c55e','#f472b6'],lab:['Musées et lieux de mémoire','Théâtres, scènes et opéras','Cinémas','Bibliothèques et archives','Librairies','Conservatoires et centres de création']},
  {id:'culte',n:'Lieux de culte',k:'pt',cols:['#fbbf24','#60a5fa','#34d399','#f97316','#cbd5e1','#c4b5fd'],lab:['Catholique','Juif','Musulman','Bouddhiste','Autre ou non précisé','Chrétien non catholique (protestant, orthodoxe…)']}]},
@@ -1223,7 +1223,7 @@ function drawOv(){
    if(!o.on||!o.d||o.d.k!=='pt'||(o.minK&&k<o.minK))continue;
    lx.lineWidth=1.2;lx.strokeStyle='rgba(15,26,36,.9)';
    const lbl=o.lbl&&k>=o.lbl;if(lbl){lx.font='10.5px Inter, system-ui, sans-serif';lx.textAlign='left';lx.textBaseline='middle';}
-   for(const p of o.d.pts){const sx=X(p[0]),sy=Y(p[1]);if(sx<-8||sy<-8||sx>W+8||sy>Hh+8)continue;lx.fillStyle=o.cols[p[2]];lx.beginPath();lx.arc(sx,sy,o.id==='mob'?4+p[2]*1.5:(o.r||4),0,6.2832);lx.fill();if(!o.r)lx.stroke();if(lbl){lx.lineWidth=3;lx.strokeStyle='rgba(15,26,36,.85)';lx.strokeText(p[3],sx+4,sy);lx.fillText(p[3],sx+4,sy);lx.lineWidth=1.2;lx.strokeStyle='rgba(15,26,36,.9)';}}
+   for(const p of o.d.pts){const sx=X(p[0]),sy=Y(p[1]);if(sx<-8||sy<-8||sx>W+8||sy>Hh+8)continue;lx.fillStyle=o.cols[p[2]];lx.beginPath();lx.arc(sx,sy,o.id==='mob'?4+p[2]*1.5:(o.r||o.rr||4),0,6.2832);lx.fill();if(!o.r)lx.stroke();if(lbl){lx.lineWidth=3;lx.strokeStyle='rgba(15,26,36,.85)';lx.strokeText(p[3],sx+4,sy);lx.fillText(p[3],sx+4,sy);lx.lineWidth=1.2;lx.strokeStyle='rgba(15,26,36,.9)';}}
   }
  }
  if(mark){const sx=(mark.x-view.cx)*k+W/2,sy=Hh/2-(mark.y-view.cy)*k;lx.lineWidth=2.5;lx.strokeStyle='#fff';lx.beginPath();lx.arc(sx,sy,16,0,6.2832);lx.stroke();lx.lineWidth=1.2;lx.strokeStyle='#1A486A';lx.beginPath();lx.arc(sx,sy,18.5,0,6.2832);lx.stroke();}
