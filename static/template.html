@@ -186,6 +186,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
   <h2>Calque</h2>
   <div id="lqw"><input id="lq" type="search" placeholder="Chercher un calque (ex. métro, hauteur, histoire)" autocomplete="off" spellcheck="false"><div id="lqn" class="hint"></div></div>
   <div class="hint" style="margin:-2px 4px 8px">Un clic affiche un calque, un second clic le retire.</div>
+  <details class="lsec" data-g="Bouchaud Architectes"><summary><span class="chev"></span>Bouchaud Architectes<span class="lsn"></span></summary><div class="ovslot" data-g="Bouchaud Architectes"></div></details>
   <div class="crit" id="crit"></div>
   <div id="legWrap" style="margin:4px 0 6px 8px;padding-left:8px;border-left:3px solid var(--bg2)"><div id="legend"></div><div class="hint" id="legHint">Clic : masquer ou afficher une classe. Double-clic : isoler la classe.<a class="lk" id="reset">tout réafficher</a></div></div>
   <div id="ovl" hidden></div>
@@ -368,7 +369,7 @@ function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n
 const PC_LAB=["Avant 1990","1990–1999","2000–2009","2010–2014","2015–2019","2020 et après","Aucun connu"];
 const lastCls=A=>s=>{const y=A[s];if(!y)return 6;return y<1990?0:y<2000?1:y<2010?2:y<2015?3:y<2020?4:5;};
 const ORG={per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
-mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',hot:'Atout France',tcf:'IDFM',osmm:'OpenStreetMap',cult:'Ministère de la Culture',culte:'OpenStreetMap',osms:'OpenStreetMap',bus:'IDFM',gare:'IDFM',acc:'IDFM',cu:'Ville de Paris',abnb:'Inside Airbnb',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
+mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',hot:'Atout France',tcf:'IDFM',osmm:'OpenStreetMap',boa:'bouchaudarchitectes.com',cult:'Ministère de la Culture',culte:'OpenStreetMap',osms:'OpenStreetMap',bus:'IDFM',gare:'IDFM',acc:'IDFM',cu:'Ville de Paris',abnb:'Inside Airbnb',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
 const orgOf=id=>ORG[id]||(/^at[m0-9]/.test(id)?'Michel Huard, Atlas historique de Paris':'Ville de Paris'),orgHtml=id=>'<small class="org">'+orgOf(id)+'</small>';
 const CRIT=[
  {id:'neu',g:'Plan',name:'Plan neutre (aucun calque)',lab:['Bâtiment'],col:['#8b98a4'],cls:s=>0},
@@ -768,8 +769,9 @@ cv.addEventListener('pointermove',e=>{
   const dx=e.clientX-o[0],dy=e.clientY-o[1];if(Math.abs(dx)+Math.abs(dy)>0){moved=true;view.cx-=dx/view.k;view.cy+=dy/view.k;draw();}
  }else if(e.pointerType==='mouse'){hover(e.clientX,e.clientY);ovTip(e.clientX,e.clientY);}
 });
+function urlClick(wx,wy){const tol=9/view.k;for(const o of OVO){if(!o.on||!o.d||!o.d.pts||!o.raw||!o.raw.u)continue;let best=null,bd=tol*tol;for(const p of o.d.pts){const dx=p[0]-wx,dy=p[1]-wy,dd=dx*dx+dy*dy;if(dd<bd&&p[4]){bd=dd;best=p;}}if(best){window.open(best[4],'_blank','noopener');return true;}}return false;}
 function p70Click(wx,wy){const o=OVO.find(o=>o.id==='p70');if(!o||!o.on)return false;const q=p70Of(H.lon0+wx/(111320*Math.cos(H.lat0*Math.PI/180)),H.lat0+wy/110574);if(!q)return false;window.open('https://paris1970.fr/carre/'+q[0],'_blank','noopener');return true;}
-function end(e){const was=pts.size===1&&!moved;pts.delete(e.pointerId);if(was){if(p70Click(...s2w(e.clientX,e.clientY)))return;ovTip(e.clientX,e.clientY);const [wx,wy]=s2w(e.clientX,e.clientY);const s=pick(wx,wy);if(s>=0&&s!==sel){sel=s;showCard(s,true);}else{sel=-1;hov=-1;showCard(e.pointerType==='mouse'?pick(wx,wy):-1,false);}draw();}}
+function end(e){const was=pts.size===1&&!moved;pts.delete(e.pointerId);if(was){if(urlClick(...s2w(e.clientX,e.clientY))||p70Click(...s2w(e.clientX,e.clientY)))return;ovTip(e.clientX,e.clientY);const [wx,wy]=s2w(e.clientX,e.clientY);const s=pick(wx,wy);if(s>=0&&s!==sel){sel=s;showCard(s,true);}else{sel=-1;hov=-1;showCard(e.pointerType==='mouse'?pick(wx,wy):-1,false);}draw();}}
 cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',e=>pts.delete(e.pointerId));
 cv.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.clientX,e.clientY,Math.exp(-e.deltaY*(e.ctrlKey?.01:.0015)));},{passive:false});
 cv.addEventListener('dblclick',e=>zoomAt(e.clientX,e.clientY,2));
@@ -1102,6 +1104,8 @@ const OVL=[
  {id:'batmod',n:'Bâtiments modernes',k:'poly',a:.6,cols:['#4cc9f0'],lab:['Bâtiment moderne']},
  {id:'vec',n:'Volumétrie existante à conserver',k:'poly',a:.6,cols:['#f72585'],lab:['VEC']},
  {id:'gdmag',n:'Grands magasins',k:'poly',a:.6,cols:['#b5179e'],lab:['Grand magasin']}]},
+{g:'Projets de l\'agence',items:[
+ {id:'boa',def:true,n:'Projets de Bouchaud Architectes à Paris (clic : page du projet)',k:'pt',cols:['#1A486A','#7FA3C0'],lab:['Livré','En cours']}]},
 {g:'Culture et cultes',items:[
  {id:'cult',n:'Lieux et équipements culturels',k:'pt',cols:['#e11d48','#a855f7','#f59e0b','#0ea5e9','#22c55e','#f472b6'],lab:['Musées et lieux de mémoire','Théâtres, scènes et opéras','Cinémas','Bibliothèques et archives','Librairies','Conservatoires et centres de création']},
  {id:'culte',n:'Lieux de culte',k:'pt',cols:['#fbbf24','#60a5fa','#34d399','#f97316','#cbd5e1','#c4b5fd'],lab:['Catholique','Juif','Musulman','Bouddhiste','Autre ou non précisé','Chrétien non catholique (protestant, orthodoxe…)']}]},
@@ -1173,7 +1177,7 @@ async function loadOv(o){
  const d={k:j.k,nc,cells:new Map(),pts:[],hit:[]};if(j.bg)d.bg=j.bg.map(v=>v/10);
  for(const f of j.f){
   const c=Math.min(f[0],nc-1);
-  if(j.k==='pt'){d.pts.push([f[2]/10,f[3]/10,c,f[1]]);continue;}
+  if(j.k==='pt'){d.pts.push([f[2]/10,f[3]/10,c,f[1],j.u?j.u[d.pts.length]:null]);continue;}
   if(j.L&&!d.L)d.L=j.L.map(l=>[l[0]/10,l[1]/10,l[2],l[3]]);
   const rings=f[2].map(decPath),P=cellPath(d,rings,c);
   for(const a of rings){P.moveTo(a[0],a[1]);for(let i=2;i<a.length;i+=2)P.lineTo(a[i],a[i+1]);if(j.k==='poly')P.closePath();}
@@ -1238,7 +1242,7 @@ function ovTip(x,y){
  const w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.min(innerWidth-w-8,x+14)+'px';tip.style.top=Math.min(innerHeight-h-8,y+14)+'px';
 }
 {
- const DEST={'PLU : gabarit':['Volume','Gabarit du PLU'],'Protections patrimoniales':['Patrimoine','Protections patrimoniales'],'PLU : végétal et paysage':['Urbanisme (PLU)','Végétal et paysage'],'PLU : secteurs et réserves':['Urbanisme (PLU)','Secteurs et réserves'],'Sous-sol et risques':['Sous-sol et fouilles','Sous-sol et risques'],'Archéologie':['Sous-sol et fouilles','Archéologie'],'Mobilité':['Urbanisme (PLU)','Mobilité'],'Transports en commun':['Urbanisme (PLU)','Transports en commun (Île-de-France Mobilités)'],'Commerces':['Usages','Commerces (BDCOM 2017)'],'Hébergement touristique':['Usages','Hébergement touristique'],'Culture et cultes':['Usages','Lieux culturels et de culte'],'Femmes illustres':['Histoire','Femmes illustres'],'Paris en 1970':['Histoire','C\'était Paris en 1970'],'Îlots de chaleur':['Ensoleillement','Îlots de chaleur et de fraîcheur'],'Atlas historique de Paris':['Histoire','Atlas historique de Paris (de l\'Antiquité à 1900)'],'Cadastre':['Urbanisme (PLU)','Cadastre'],'Voirie':['Urbanisme (PLU)','Voirie (plan de voirie de la Ville)'],'Relief':['Sous-sol et fouilles','Relief et nivellement']};
+ const DEST={'PLU : gabarit':['Volume','Gabarit du PLU'],'Protections patrimoniales':['Patrimoine','Protections patrimoniales'],'PLU : végétal et paysage':['Urbanisme (PLU)','Végétal et paysage'],'PLU : secteurs et réserves':['Urbanisme (PLU)','Secteurs et réserves'],'Sous-sol et risques':['Sous-sol et fouilles','Sous-sol et risques'],'Archéologie':['Sous-sol et fouilles','Archéologie'],'Mobilité':['Urbanisme (PLU)','Mobilité'],'Transports en commun':['Urbanisme (PLU)','Transports en commun (Île-de-France Mobilités)'],'Commerces':['Usages','Commerces (BDCOM 2017)'],'Hébergement touristique':['Usages','Hébergement touristique'],'Projets de l\'agence':['Bouchaud Architectes','Projets'],'Culture et cultes':['Usages','Lieux culturels et de culte'],'Femmes illustres':['Histoire','Femmes illustres'],'Paris en 1970':['Histoire','C\'était Paris en 1970'],'Îlots de chaleur':['Ensoleillement','Îlots de chaleur et de fraîcheur'],'Atlas historique de Paris':['Histoire','Atlas historique de Paris (de l\'Antiquité à 1900)'],'Cadastre':['Urbanisme (PLU)','Cadastre'],'Voirie':['Urbanisme (PLU)','Voirie (plan de voirie de la Ville)'],'Relief':['Sous-sol et fouilles','Relief et nivellement']};
  for(const g of OVL){
   const [sec,lab]=DEST[g.g]||['Urbanisme (PLU)',g.g];
   const box=document.querySelector('.ovslot[data-g="'+sec+'"]')||$('#ovl');
@@ -1260,6 +1264,7 @@ function ovTip(x,y){
     if(!o.on)tip.hidden=true;sync();draw();
    };
    w.appendChild(l);w.appendChild(lg);dt.appendChild(w);
+   if(o.def)setTimeout(()=>{const c=l.firstChild;c.checked=true;c.onchange({target:c});dt.open=true;dt.closest('details.lsec')&&(dt.closest('details.lsec').open=true);},0);
   }
   if(g.items.some(o=>o.atlas)){const r=document.createElement('label');r.className='ck';r.style.cssText='display:flex;gap:8px;align-items:center;font-size:12px;margin:6px 0 2px 4px';
    r.innerHTML='Opacité <input type="range" min="15" max="95" value="50" style="flex:1">';const ip=r.querySelector('input');
@@ -1494,6 +1499,7 @@ const SRC={
  moa:['SDES, base Sitadel, « Liste des permis de construire et autres autorisations d\'urbanisme » (maîtres d\'ouvrage personnes morales, depuis 2013, Licence Ouverte) ; sur le site public, les particuliers ne sont pas nommés','https://www.data.gouv.fr/datasets/liste-des-permis-de-construire-et-autres-autorisations-durbanisme'],
  cult:['Ministère de la Culture, « Base des lieux et équipements culturels (Basilic) » (Licence Ouverte)','https://www.data.gouv.fr/datasets/base-des-lieux-et-equipements-culturels-basilic'],
  culte:['© contributeurs OpenStreetMap, lieux de culte (licence ODbL)','https://www.openstreetmap.org/copyright'],
+ boa:['Bouchaud Architectes, projets publiés sur bouchaudarchitectes.com (relevé chaque semaine) ; les appartements sont placés sur leur rue, sans adresse précise','https://www.bouchaudarchitectes.com/'],
  osmm:['© contributeurs OpenStreetMap, voies ferrées du métro et du RER (licence ODbL) ; tracé indicatif, à vérifier auprès de la RATP et de la SNCF pour tout projet','https://www.openstreetmap.org/copyright'],
  tcf:['Île-de-France Mobilités, tracés du réseau ferré, gares et stations, accès (Licence Ouverte) et tracés des lignes de bus (source GTFS, ODbL)','https://data.iledefrance-mobilites.fr/'],
  hot:['Atout France, « Hébergements touristiques classés en France », géolocalisés par Paris-graphie à partir de la BAN','https://www.data.gouv.fr/datasets/hebergements-touristiques-classes-en-france'],

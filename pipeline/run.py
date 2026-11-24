@@ -6,7 +6,7 @@
 import argparse, sys, os, shutil
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core import *
-import step_base, step_ban, step_urba, step_misc, step_plu, step_usage, step_bdnb, step_cad, step_climat, step_femmes, step_tour, step_transport, step_osm_metro, step_culture, step_site
+import step_base, step_ban, step_urba, step_misc, step_plu, step_usage, step_bdnb, step_cad, step_climat, step_femmes, step_tour, step_transport, step_osm_metro, step_culture, step_bouchaud, step_site
 
 def check(st, prev=None):
     """Garde-fous : on refuse de publier un résultat manifestement incomplet."""
@@ -100,6 +100,11 @@ def main():
         if a.site:
             for f in ('ov_cult.json', 'ov_culte.json', 'cult.json', 'culte.json'):
                 if f not in st.files and os.path.exists(os.path.join(a.site, f)): st.files[f] = open(os.path.join(a.site, f), 'rb').read()
+    try:
+        step_bouchaud.run(st); done('boa')
+    except Exception as e:      # chaque semaine ; en cas d'échec on garde la version précédente
+        print('::warning title=Projets Bouchaud non mis à jour::%s' % str(e)[:300], flush=True)
+        if a.site and os.path.exists(os.path.join(a.site, 'ov_boa.json')): st.files['ov_boa.json'] = open(os.path.join(a.site, 'ov_boa.json'), 'rb').read()
     SD['_maj'] = today
     st.files['sources.json'] = json.dumps(SD, ensure_ascii=False).encode()
     check(st, prev)
