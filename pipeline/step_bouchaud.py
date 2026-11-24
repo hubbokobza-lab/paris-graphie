@@ -74,6 +74,8 @@ def cp_of(ville):
 # titres trop courts pour être localisés, précisés par l'agence
 ALIAS = {'75 faubourg': '75 Rue du Faubourg Saint-Honoré', '7 petit': '7 Impasse Charles Petit'}
 
+LIEUX = {'la défense': (2.2384, 48.8919)}   # parvis de La Défense
+
 def locate(it):
     """Appartements : un point sur la rue, sans numéro. Autres projets : l'adresse précise (numéro et voie du titre)."""
     t = re.sub(r'\b(19|20)\d\d\b', '', re.sub(r'\s*-\s*Lot\s*\d+', '', it.get('title') or '')).strip()
@@ -84,6 +86,7 @@ def locate(it):
     r = place(it, t)
     if r and not (1.44 < r[0] < 3.56 and 48.12 < r[1] < 49.24): r = None   # hors Île-de-France
     if r or CTX['paris']: return r
+    if ville.lower() in LIEUX: return LIEUX[ville.lower()] + (ville,)   # lieu-dit qui n'est pas une commune
     m = geocode(ville, 'municipality')                     # hors Paris sans adresse : centre de la commune
     return (m[0], m[1], m[2].get('city')) if m else None
 
