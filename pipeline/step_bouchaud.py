@@ -38,6 +38,18 @@ def item(page, url):
         if found: break
     return found[0] if found else None
 
+def cover(page, it):
+    # image de couverture : og:image de la page, sinon première image Wix de la fiche
+    m = re.search(r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"', page) or re.search(r'<meta[^>]+content="([^"]+)"[^>]+property="og:image"', page)
+    src = m.group(1) if m else ''
+    if not src:
+        k = re.search(r'wix:image://v1/([^/"#]+)', json.dumps(it))
+        src = k.group(1) if k else ''
+    k = re.search(r'(?:media/)?([0-9a-z_]+~mv2\.(?:jpe?g|png|webp))', src, re.I)
+    if not k: return src or None
+    mid = k.group(1)
+    return 'https://static.wixstatic.com/media/%s/v1/fill/w_280,h_170,al_c,q_80,enc_auto/%s' % (mid, mid)
+
 def geocode(q, typ=None, cp=None):
     p = {'q': q, 'limit': 1, 'citycode': None}
     p = {'q': q, 'limit': 1}
@@ -89,7 +101,7 @@ def run(st):
     P = pages(); out = []; nok = []
     an = int(time.strftime('%Y'))
     for u in P:
-        try: it = item(get(u), u)
+        try: page = get(u); it = item(page, u)
         except Exception as e: nok.append(u + ' : ' + str(e)[:60]); continue
         if not it: nok.append(u + ' : fiche introuvable'); continue
         tags = it.get('arraystring') or []
@@ -100,9 +112,9 @@ def run(st):
         liv = str(it.get('livraison') or '').strip()
         enc = liv.isdigit() and int(liv) > an - 1
         prog = re.sub(r'\s+', ' ', str(it.get('programme1') or '')).strip()
-        lab = '%s : %s%s' % (title, prog, (' (livraison %s)' % liv) if liv else '')
-        out.append((proj(Point(g[0], g[1])), {'c': 1 if enc else 0, 'l': lab, 'u': u}))
-    log('  Bouchaud Architectes : %d projets à Paris ; non retenus ou non localisés : %s' % (len(out), '; '.join(nok) or 'aucun'))
+        lab = '%s%s' % (prog, (' (livraison %s)' % liv) if liv else '')
+        out.append((proj(Point(g[0], g[1])), {'c': 1 if enc else 0, 'l': lab or title, 'u': u, 't': title, 'im': cover(page, it)}))
+    log('  Bouchaud Architectes : %d projets à Paris (%d avec image) ; non retenus ou non localisés : %s' % (len(out), sum(1 for _, p in out if p['im']), '; '.join(nok) or 'aucun'))
     if len(out) < 10: raise RuntimeError('trop peu de projets Bouchaud localisés')
     overlay(st, 'boa', out, 'pt', lambda p: p['c'], lambda p: p['l'])
-    o = json.loads(gzip.decompress(st.files['ov_boa.json'])); o['u'] = [p['u'] for _, p in out]; st.put_file('ov_boa.json', o)
+    o = json.loads(gzip.decompress(st.files['ov_boa.json'])); o['u'] = [p['u'] for _, p in out]; o['t'] = [p['t'] for _, p in out]; o['im'] = [p['im'] for _, p in out]; st.put_file('ov_boa.json', o)

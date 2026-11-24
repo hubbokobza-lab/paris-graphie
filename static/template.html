@@ -1177,7 +1177,7 @@ async function loadOv(o){
  const d={k:j.k,nc,cells:new Map(),pts:[],hit:[]};if(j.bg)d.bg=j.bg.map(v=>v/10);
  for(const f of j.f){
   const c=Math.min(f[0],nc-1);
-  if(j.k==='pt'){d.pts.push([f[2]/10,f[3]/10,c,f[1],j.u?j.u[d.pts.length]:null]);continue;}
+  if(j.k==='pt'){{const n=d.pts.length;d.pts.push([f[2]/10,f[3]/10,c,f[1],j.u?j.u[n]:null,j.t?j.t[n]:null,j.im?j.im[n]:null]);}continue;}
   if(j.L&&!d.L)d.L=j.L.map(l=>[l[0]/10,l[1]/10,l[2],l[3]]);
   const rings=f[2].map(decPath),P=cellPath(d,rings,c);
   for(const a of rings){P.moveTo(a[0],a[1]);for(let i=2;i<a.length;i+=2)P.lineTo(a[i],a[i+1]);if(j.k==='poly')P.closePath();}
@@ -1230,15 +1230,16 @@ function drawOv(){
 }
 function inRings(R,x,y){let c=false;for(const a of R){for(let i=0,j=a.length-2;i<a.length;j=i,i+=2){const xi=a[i],yi=a[i+1],xj=a[j],yj=a[j+1];if((yi>y)!==(yj>y)&&x<(xj-xi)*(y-yi)/(yj-yi)+xi)c=!c;}}return c;}
 const tip=$('#tip');
+let tipXY=[0,0];function ovTipFit(){if(tip.hidden)return;const [x,y]=tipXY,w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.min(innerWidth-w-8,x+14)+'px';tip.style.top=Math.min(innerHeight-h-8,y+14)+'px';}
 function ovTip(x,y){
  const [wx,wy]=s2w(x,y),tol=7/view.k,L=[];
  for(const o of OVO){
   if(!o.on||!o.d)continue;const d=o.d;
-  if(d.k==='pt'){let best=null,bd=tol*tol;for(const p of d.pts){const dx=p[0]-wx,dy=p[1]-wy,dd=dx*dx+dy*dy;if(dd<bd){bd=dd;best=p;}}if(best&&best[3])L.push([o.n,best[3]]);}
+  if(d.k==='pt'){let best=null,bd=tol*tol;for(const p of d.pts){const dx=p[0]-wx,dy=p[1]-wy,dd=dx*dx+dy*dy;if(dd<bd){bd=dd;best=p;}}if(best&&best[3])L.push(best[5]?[best[5],best[3],best[6]]:[o.n,best[3]]);}
   else if(d.k==='poly'){for(const h of d.hit){if(wx<h.b[0]||wx>h.b[2]||wy<h.b[1]||wy>h.b[3])continue;if(inRings(h.r,wx,wy)){L.push([o.n,h.p]);break;}}}
  }
  if(!L.length){tip.hidden=true;return;}
- tip.innerHTML=L.slice(0,5).map(e=>'<b>'+esc(e[0])+'</b><br>'+esc(e[1])).join('<hr>');tip.hidden=false;
+ tip.innerHTML=L.slice(0,5).map(e=>(e[2]?'<img src="'+esc(e[2])+'" alt="" style="display:block;width:100%;max-width:280px;aspect-ratio:280/170;object-fit:cover;border-radius:3px;margin-bottom:5px;background:var(--line)" onload="ovTipFit()">':'')+'<b>'+esc(e[0])+'</b><br>'+esc(e[1])).join('<hr>');tipXY=[x,y];tip.hidden=false;
  const w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.min(innerWidth-w-8,x+14)+'px';tip.style.top=Math.min(innerHeight-h-8,y+14)+'px';
 }
 {
