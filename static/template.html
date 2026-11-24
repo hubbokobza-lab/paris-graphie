@@ -1239,7 +1239,7 @@ function ovTip(x,y){
   else if(d.k==='poly'){for(const h of d.hit){if(wx<h.b[0]||wx>h.b[2]||wy<h.b[1]||wy>h.b[3])continue;if(inRings(h.r,wx,wy)){L.push([o.n,h.p]);break;}}}
  }
  if(!L.length){tip.hidden=true;return;}
- tip.innerHTML=L.slice(0,5).map(e=>(e[2]?'<img src="'+esc(e[2])+'" alt="" style="display:block;width:100%;max-width:280px;aspect-ratio:280/170;object-fit:cover;border-radius:3px;margin-bottom:5px;background:var(--line)" onload="ovTipFit()">':'')+'<b>'+esc(e[0])+'</b><br>'+esc(e[1])).join('<hr>');tipXY=[x,y];tip.hidden=false;
+ tip.innerHTML=L.slice(0,5).map(e=>(e[2]?'<img src="'+esc(e[2])+'" alt="" style="display:block;width:200px;aspect-ratio:2/3;object-fit:cover;border-radius:3px;margin-bottom:5px;background:var(--line)" onload="ovTipFit()">':'')+'<b>'+esc(e[0])+'</b><br>'+esc(e[1])).join('<hr>');tipXY=[x,y];tip.hidden=false;
  const w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.min(innerWidth-w-8,x+14)+'px';tip.style.top=Math.min(innerHeight-h-8,y+14)+'px';
 }
 {

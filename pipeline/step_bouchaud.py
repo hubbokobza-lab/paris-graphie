@@ -45,10 +45,10 @@ def cover(page, it):
     if not src:
         k = re.search(r'wix:image://v1/([^/"#]+)', json.dumps(it))
         src = k.group(1) if k else ''
-    k = re.search(r'(?:media/)?([0-9a-z_]+~mv2\.(?:jpe?g|png|webp))', src, re.I)
+    k = re.search(r'(?:media/)?([0-9a-z_]+~mv2(?:_[0-9a-z_]+)?\.(?:jpe?g|png|webp|gif))', src, re.I)
     if not k: return src or None
     mid = k.group(1)
-    return 'https://static.wixstatic.com/media/%s/v1/fill/w_280,h_170,al_c,q_80,enc_auto/%s' % (mid, mid)
+    return 'https://static.wixstatic.com/media/%s/v1/fill/w_200,h_300,al_c,q_80,enc_auto/%s' % (mid, mid)
 
 IDF = ('75', '77', '78', '91', '92', '93', '94', '95')
 CTX = {'paris': True, 'suf': 'Paris'}   # commune du projet en cours de localisation
@@ -135,6 +135,13 @@ def run(st):
         prog = re.sub(r'\s+', ' ', str(it.get('programme1') or '')).strip()
         lab = '%s%s' % (prog, (' (livraison %s)' % liv) if liv else '')
         out.append((proj(Point(g[0], g[1])), {'c': 1 if enc else 0, 'l': lab or title, 'u': u, 't': title, 'im': cover(page, it), 'par': CTX['paris']}))
+    bad = []
+    for _, p in out:                       # vérifie que chaque vignette s'affiche
+        if not p['im']: continue
+        try:
+            if len(get(p['im'])) < 500: raise ValueError
+        except Exception: bad.append(p['t']); p['im'] = None
+    if bad: log('  Bouchaud Architectes : vignettes inaccessibles : ' + '; '.join(bad))
     log('  Bouchaud Architectes : %d projets en Île-de-France dont %d à Paris (%d avec image) ; hors Île-de-France ou commune inconnue : %s ; non localisés : %s' % (len(out), sum(1 for _, p in out if p['par']), sum(1 for _, p in out if p['im']), '; '.join(hors) or 'aucun', '; '.join(nok) or 'aucun'))
     if len(out) < 10: raise RuntimeError('trop peu de projets Bouchaud localisés')
     overlay(st, 'boa', out, 'pt', lambda p: p['c'], lambda p: p['l'])
