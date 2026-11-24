@@ -39,12 +39,15 @@ def item(page, url):
     return found[0] if found else None
 
 def cover(page, it):
-    # image de couverture : og:image de la page, sinon première image Wix de la fiche
-    m = re.search(r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"', page) or re.search(r'<meta[^>]+content="([^"]+)"[^>]+property="og:image"', page)
-    src = m.group(1) if m else ''
+    # image de couverture : champ « couverture » de la fiche CMS, sinon couvertureAi, sinon og:image de la page
+    src = ''
+    for f in ('couverture', 'couvertureAi'):
+        v = it.get(f)
+        if isinstance(v, str) and v.startswith('wix:image://v1/'): src = v; break
     if not src:
-        k = re.search(r'wix:image://v1/([^/"#]+)', json.dumps(it))
-        src = k.group(1) if k else ''
+        m = re.search(r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"', page) or re.search(r'<meta[^>]+content="([^"]+)"[^>]+property="og:image"', page)
+        src = m.group(1) if m else ''
+    if src.startswith('wix:image://v1/'): src = src[15:]
     k = re.search(r'(?:media/)?([0-9a-z_]+~mv2(?:_[0-9a-z_]+)?\.(?:jpe?g|png|webp|gif))', src, re.I)
     if not k: return src or None
     mid = k.group(1)
