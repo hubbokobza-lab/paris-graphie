@@ -148,4 +148,4 @@ def run(st):
     log('  Bouchaud Architectes : %d projets en Île-de-France dont %d à Paris (%d avec image) ; hors Île-de-France ou commune inconnue : %s ; non localisés : %s' % (len(out), sum(1 for _, p in out if p['par']), sum(1 for _, p in out if p['im']), '; '.join(hors) or 'aucun', '; '.join(nok) or 'aucun'))
     if len(out) < 10: raise RuntimeError('trop peu de projets Bouchaud localisés')
     overlay(st, 'boa', out, 'pt', lambda p: p['c'], lambda p: p['l'])
-    o = json.loads(gzip.decompress(st.files['ov_boa.json'])); o['u'] = [p['u'] for _, p in out]; o['cols'] = ['#E3ECF5', '#A3C0DB', '#5A88B5']; o['t'] = [p['t'] for _, p in out]; o['im'] = [p['im'] for _, p in out]; o['po'] = [p['po'] for _, p in out]; st.put_file('ov_boa.json', o)
+    o = json.loads(gzip.decompress(st.files['ov_boa.json'])); o['u'] = [p['u'] for _, p in out]; o['cols'] = ['#5A88B5', '#A3C0DB', '#E3ECF5']; o['t'] = [p['t'] for _, p in out]; o['im'] = [p['im'] for _, p in out]; o['po'] = [p['po'] for _, p in out]; st.put_file('ov_boa.json', o)
