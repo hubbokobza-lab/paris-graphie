@@ -759,7 +759,7 @@ function scaleBar(){
 }
 function w2s(wx,wy){return [(wx-view.cx)*view.k+W/2,(view.cy-wy)*view.k+Hh/2];}
 function s2w(x,y){const r=cv.getBoundingClientRect();return [view.cx+(x-r.left-W/2)/view.k,view.cy-(y-r.top-Hh/2)/view.k];}
-function zoomAt(x,y,f){const [wx,wy]=s2w(x,y);const r=cv.getBoundingClientRect();view.k=Math.max(fitK*.6,Math.min(14,view.k*f));view.cx=wx-(x-r.left-W/2)/view.k;view.cy=wy+(y-r.top-Hh/2)/view.k;draw();}
+function zoomAt(x,y,f){const [wx,wy]=s2w(x,y);const r=cv.getBoundingClientRect();view.k=Math.max(fitK*.12,Math.min(14,view.k*f));view.cx=wx-(x-r.left-W/2)/view.k;view.cy=wy+(y-r.top-Hh/2)/view.k;draw();}
 const pts=new Map();let moved=false,pinch0=0,k0=1;
 cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);moved=false;if(pts.size===2){const [a,b]=[...pts.values()];pinch0=Math.hypot(a[0]-b[0],a[1]-b[1]);k0=view.k;}});
 cv.addEventListener('pointermove',e=>{
@@ -1105,7 +1105,7 @@ const OVL=[
  {id:'vec',n:'Volumétrie existante à conserver',k:'poly',a:.6,cols:['#f72585'],lab:['VEC']},
  {id:'gdmag',n:'Grands magasins',k:'poly',a:.6,cols:['#b5179e'],lab:['Grand magasin']}]},
 {g:'Projets de l\'agence',items:[
- {id:'boa',def:true,rr:6.5,n:'Projets à Paris (clic : page du projet)',k:'pt',cols:['#F9FAFB','#6F9BC0'],lab:['Livré','En cours']}]},
+ {id:'boa',def:true,rr:6.5,n:'Projets à Paris et en Île-de-France (clic : page du projet)',k:'pt',cols:['#F9FAFB','#6F9BC0'],lab:['Livré','En cours']}]},
 {g:'Culture et cultes',items:[
  {id:'cult',n:'Lieux et équipements culturels',k:'pt',cols:['#e11d48','#a855f7','#f59e0b','#0ea5e9','#22c55e','#f472b6'],lab:['Musées et lieux de mémoire','Théâtres, scènes et opéras','Cinémas','Bibliothèques et archives','Librairies','Conservatoires et centres de création']},
  {id:'culte',n:'Lieux de culte',k:'pt',cols:['#fbbf24','#60a5fa','#34d399','#f97316','#cbd5e1','#c4b5fd'],lab:['Catholique','Juif','Musulman','Bouddhiste','Autre ou non précisé','Chrétien non catholique (protestant, orthodoxe…)']}]},
