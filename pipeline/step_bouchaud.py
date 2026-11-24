@@ -137,7 +137,7 @@ def run(st):
         enc = liv.isdigit() and int(liv) > an - 1
         prog = re.sub(r'\s+', ' ', str(it.get('programme1') or '')).strip()
         lab = '%s%s' % (prog, (' (livraison %s)' % liv) if liv else '')
-        out.append((proj(Point(g[0], g[1])), {'c': 2 if enc else (0 if liv.isdigit() and int(liv) < an - 3 else 1), 'l': lab or title, 'u': u, 't': title, 'im': cover(page, it), 'par': CTX['paris']}))
+        out.append((proj(Point(g[0], g[1])), {'c': 2 if enc else (0 if liv.isdigit() and int(liv) < an - 3 else 1), 'l': lab or title, 'u': u, 't': title, 'im': cover(page, it), 'par': CTX['paris'], 'po': ', '.join(x.strip() for x in str(it.get('archiAiPaysageMoex') or '').split('\n') if x.strip())}))
     bad = []
     for _, p in out:                       # vérifie que chaque vignette s'affiche
         if not p['im']: continue
@@ -148,4 +148,4 @@ def run(st):
     log('  Bouchaud Architectes : %d projets en Île-de-France dont %d à Paris (%d avec image) ; hors Île-de-France ou commune inconnue : %s ; non localisés : %s' % (len(out), sum(1 for _, p in out if p['par']), sum(1 for _, p in out if p['im']), '; '.join(hors) or 'aucun', '; '.join(nok) or 'aucun'))
     if len(out) < 10: raise RuntimeError('trop peu de projets Bouchaud localisés')
     overlay(st, 'boa', out, 'pt', lambda p: p['c'], lambda p: p['l'])
-    o = json.loads(gzip.decompress(st.files['ov_boa.json'])); o['u'] = [p['u'] for _, p in out]; o['cols'] = ['#E3ECF5', '#A3C0DB', '#5A88B5']; o['t'] = [p['t'] for _, p in out]; o['im'] = [p['im'] for _, p in out]; st.put_file('ov_boa.json', o)
+    o = json.loads(gzip.decompress(st.files['ov_boa.json'])); o['u'] = [p['u'] for _, p in out]; o['cols'] = ['#E3ECF5', '#A3C0DB', '#5A88B5']; o['t'] = [p['t'] for _, p in out]; o['im'] = [p['im'] for _, p in out]; o['po'] = [p['po'] for _, p in out]; st.put_file('ov_boa.json', o)
