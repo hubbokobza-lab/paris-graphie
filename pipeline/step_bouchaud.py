@@ -72,7 +72,11 @@ def locate(it):
         return (r[0], r[1], r[2].get('street') or r[2].get('name')) if r else None
     num = m.group(1).split('-')[0].strip(); voie = m.group(2)
     r = geocode('%s %s Paris' % (num, voie), 'housenumber', cp) or geocode('%s %s Paris' % (num, voie), 'housenumber')
-    return (r[0], r[1], r[2].get('label')) if r else None
+    if r: return r[0], r[1], r[2].get('label')
+    loc = (it.get('address') or {}).get('location') or {}      # adresse saisie dans le CMS
+    if loc.get('latitude'): return loc['longitude'], loc['latitude'], 'adresse du site'
+    r = geocode('%s Paris' % voie, 'street', cp) or geocode('%s Paris' % voie, 'street')
+    return (r[0], r[1], r[2].get('street') or r[2].get('name')) if r else None
 
 def run(st):
     P = pages(); out = []; nok = []
