@@ -1825,7 +1825,8 @@ async function dumpStreets(i0,i1){   // utilisé par le robot pour publier l'acc
   out.push({voie:s.n,numeros:N,batiments:B});}
  return {total:A.length,out};
 }
-window.parisGraphie={analyse,toCsv,bldRow,dumpStreets,sources:()=>srcList().map(x=>({source:x[0],url:x[1]}))};
+window.parisGraphie={analyse,toCsv,bldRow,dumpStreets,sources:()=>({sources:Object.keys(SRC).filter(k=>SRC[k][1]&&!(PUB&&k==='dvf')).map(k=>({id:k,source:SRC[k][0],url:SRC[k][1],extrait_le:SRCD[k]||null})),
+ producteur_par_champ:Object.fromEntries(CRIT.filter(c=>!['neu','yr','arr','per'].includes(c.id)).map(c=>[strip(c.name),orgOf(c.id)]).concat([['Année de construction','Apur'],['Hauteur médiane (m)','Apur'],['Hauteur maximale (m)','Apur'],['Emprise au sol (m²)','Apur (calcul)'],['Niveaux','CSTB (BDNB), sinon estimé par la hauteur (Apur)'],['Surface de plancher estimée (m²)','Calcul : emprise × niveaux, moins 20 à 40 %'],['Suspicion de vacance (sur 5)','Déduction (Insee Sirene, permis, Apur)'],['Propriétaire principal','DGFiP (locaux des personnes morales)'],['SIREN du propriétaire','DGFiP (locaux des personnes morales)'],['Location (loi Climat)','Loi Climat et résilience, d\'après l\'étiquette DPE (ADEME)']]))})};
 {const box=document.createElement('div');box.id='alst';box.hidden=true;
  box.innerHTML='<div class="alp"><div class="alh"><b>Analyse d\'une liste d\'adresses</b><button id="alx" aria-label="Fermer">✕</button></div>'
   +'<div class="k">Une adresse par ligne (Paris intra-muros). Exemple : 12 rue de Rivoli, 75004 Paris</div>'

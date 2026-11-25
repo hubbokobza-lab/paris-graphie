@@ -22,7 +22,10 @@ def run(site, base='https://hubbokobza-lab.github.io/paris-graphie/'):
         pg = br.new_page(viewport={'width': 1200, 'height': 800})
         pg.goto('http://127.0.0.1:%d/' % port)
         pg.wait_for_function('window.parisGraphie && document.querySelector("#load").style.display==="none"', timeout=180000)
-        SRCS = pg.evaluate('parisGraphie.sources()')
+        for _ in range(30):
+            SRCS = pg.evaluate('parisGraphie.sources()')
+            if any(x['extrait_le'] for x in SRCS['sources']): break
+            time.sleep(1)
         i, step, tot = 0, 400, None
         while tot is None or i < tot:
             r = pg.evaluate('([a,b])=>parisGraphie.dumpStreets(a,b)', [i, i + step]); tot = r['total']
@@ -40,7 +43,7 @@ def run(site, base='https://hubbokobza-lab.github.io/paris-graphie/'):
             i += step
         br.close()
     srv.shutdown()
-    json.dump({'maj': time.strftime('%Y-%m-%d'), 'sources': SRCS}, open(os.path.join(site, 'api', 'sources.json'), 'w'), ensure_ascii=False, indent=1)
+    json.dump(dict({'maj': time.strftime('%Y-%m-%d')}, **SRCS), open(os.path.join(site, 'api', 'sources.json'), 'w'), ensure_ascii=False, indent=1)
     json.dump({'maj': time.strftime('%Y-%m-%d'), 'sources': base + 'api/sources.json', 'voies': idx}, open(os.path.join(site, 'api', 'voies.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
     open(os.path.join(site, 'llms.txt'), 'w').write(LLMS.replace('{B}', base).replace('{N}', str(len(idx))).replace('{D}', time.strftime('%Y-%m-%d')))
     print('accès IA : %d voies, %d bâtiments' % (len(idx), nb), flush=True)
