@@ -368,7 +368,8 @@ const SPL=s=>Math.round(area[s]*nivOf(s)),SDPm=s=>Math.round(SPL(s)*.7),sdpTxt=s
 const DPE_COL=['#3a4652','#009c6d','#52b153','#a5cc74','#f4e70f','#f0b50f','#eb8235','#d7221f'],GES_COL=['#3a4652','#f6edfd','#e4c7f5','#d5a9f0','#cb95ed','#ba72e6','#a74ddd','#8a24c7'];
 const MAT_LAB=['Indéterminé','Pierre','Brique ou meulière (avec ou sans pierre)','Béton','Béton et maçonnerie','Bois','Autres'],MAT_COL=['#3a4652','#e9d8a6','#c8553d','#8d99ae','#adb5bd','#9c6644','#6c757d'];
 const USG_LAB=['Non renseigné','Résidentiel collectif','Résidentiel individuel','Tertiaire','Secondaire ou primaire','Dépendance'];
-const TFO=S.tfo||new Uint8Array(N);
+const TFO=S.tfo||new Uint8Array(N),OWN=S.own||new Uint8Array(N),OWNN=S.own_n||new Uint16Array(N);
+const OWN_LAB=['Aucun propriétaire personne morale connu (particuliers ou inconnu)','État, Ville, établissement public','Bailleur social','Copropriété (syndicat des copropriétaires)','Société civile (SCI, SCPI…)','Société commerciale (foncière, assureur, banque…)','Association, fondation, autre'];
 // Indice de suspicion de vacance des bureaux (0 à 5) et fiabilité (1 à 5), à partir de Sirene, des permis et de la date de construction
 function vacOf(s){
  const off=burOf(s)===1||(BU[s]===3&&nivOf(s)>=2&&BL[s]===0);if(!off)return {c:0,f:0,why:''};
@@ -399,7 +400,7 @@ const ARR_COL=Array.from({length:20},(_,i)=>{const h=i*18,l=(i%2?72:56);return h
 function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return '#'+[f(0),f(8),f(4)].map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('');}
 const PC_LAB=["Avant 1990","1990–1999","2000–2009","2010–2014","2015–2019","2020 et après","Aucun connu"];
 const lastCls=A=>s=>{const y=A[s];if(!y)return 6;return y<1990?0:y<2000?1:y<2010?2:y<2015?3:y<2020?4:5;};
-const ORG={vac:'Déduction (Insee Sirene, permis, Apur)',per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
+const ORG={own:'DGFiP (locaux des personnes morales)',vac:'Déduction (Insee Sirene, permis, Apur)',per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
 mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',hot:'Atout France',tcf:'IDFM',osmm:'OpenStreetMap',boa0:'bouchaudarchitectes.com',boa1:'bouchaudarchitectes.com',boa2:'bouchaudarchitectes.com',cult:'Ministère de la Culture',culte:'OpenStreetMap',osms:'OpenStreetMap',bus:'IDFM',gare:'IDFM',acc:'IDFM',cu:'Ville de Paris',abnb:'Inside Airbnb',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
 const orgOf=id=>ORG[id]||(/^at[m0-9]/.test(id)?'Michel Huard, Atlas historique de Paris':'Ville de Paris'),orgHtml=id=>'<small class="org">'+orgOf(id)+'</small>';
 const CRIT=[
@@ -416,6 +417,7 @@ const CRIT=[
  {id:'usg',g:'Usages',name:'Usage principal (BDNB)',lab:USG_LAB,col:['#3a4652','#66c2a5','#abdda4','#3288bd','#c77dff','#9a9aa8'],cls:s=>BU[s]},
  {id:'log',g:'Usages',name:'Nombre de logements (BDNB)',lab:['Aucun ou inconnu','1 à 5','6 à 15','16 à 40','41 à 100','Plus de 100'],col:['#3a4652','#d9f0d3','#a6dba0','#5aae61','#1b7837','#00441b'],cls:s=>{const n=BL[s];return n===0?0:n<=5?1:n<=15?2:n<=40?3:n<=100?4:5;}},
  {id:'soc',g:'Usages',name:'Logements sociaux (RPLS)',lab:['Aucun ou inconnu','1 à 10','11 à 50','Plus de 50'],col:['#3a4652','#fde0dd','#f768a1','#ae017e'],cls:s=>{const n=BS[s];return n===0?0:n<=10?1:n<=50?2:3;}},
+ {id:'own',g:'Propriété',name:'Propriétaire principal (personnes morales)',lab:OWN_LAB,col:[GRAY,'#d95fa6','#66c2a5','#fee08b','#3288bd','#f46d43','#9c8a54'],cls:s=>OWN[s]},
  {id:'vac',g:'Usages',name:'Suspicion de vacance des bureaux (indice sur 5)',lab:['Pas un immeuble de bureaux','0 à 1 : occupation apparente','2 : départs notables','3 : vacance partielle ou aucune trace d\'occupant','4 : probablement vide','5 : neuf ou restructuré, sans occupant','Transformation en logements engagée'],col:[GRAY,'#2c7bb6','#abd9e9','#ffffbf','#fdae61','#d7191c','#9e6ebd'],cls:s=>vacOf(s).c},
  {id:'bur',g:'Usages',name:'Bureaux probables (déduction)',lab:['Autre usage ou indéterminé','Bureaux probables (tertiaire, sans logement ni équipement, 3 niveaux et plus)','Copropriété avec logements et locaux d\'activité (souvent commerces en rez-de-chaussée)'],col:['#3a4652','#3288bd','#fee08b'],cls:burOf},
  {id:'dpe',g:'Énergie et carbone',name:'DPE, étiquette énergie',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:DPE_COL,cls:s=>BD[s]},
@@ -1084,6 +1086,14 @@ function cardModel(s,c){
  
    sec('sir','Occupants (Sirene)',out,x?x.items:[],SNE[s]);}
  }
+ // propriétaires personnes morales
+ {const O=D&&D.o&&D.o[s];if(O&&O.length){let h='',items=[];
+   for(const o of O){if(!o[4]){h+='<div class="k">'+esc(o[0])+'</div>';continue;}const u=o[2]?'https://annuaire-entreprises.data.gouv.fr/entreprise/'+o[2]:'';
+    const t=o[0]+(o[1]?' ('+o[1]+')':'')+' : '+o[4]+' local'+(o[4]>1?'ux':'')+' ; '+OWN_LAB[o[3]].replace(/ \(.*$/,'');
+    h+='<div class="dm"><b>'+esc(o[0])+'</b>'+(o[1]?' <span class="k">'+esc(o[1])+'</span>':'')+'<div class="k" style="font-size:12px">'+o[4]+' local'+(o[4]>1?'ux':'')+' · '+esc(OWN_LAB[o[3]].replace(/ \(.*$/,''))+(u?' · <a href="'+u+'" target="_blank" rel="noopener">fiche entreprise (siège, dirigeants, SIREN '+esc(o[2])+')</a>':'')+'</div></div>';
+    items.push(it('Propriétaire : '+t+(o[2]?' (SIREN '+o[2]+')':''),'own',u));}
+   h+='<div class="k" style="margin-top:4px">Personnes morales propriétaires au 1er janvier '+(D.oan||'')+' (DGFiP). Les particuliers n\'y figurent pas. Aucune adresse électronique ni téléphone n\'est publié : la fiche entreprise donne le siège et les dirigeants.</div>';
+   sec('own','Propriétaires',h,items,O.filter(o=>o[4]).length);}}
  return S;
 }
 async function showCard(s,pin){
@@ -1557,6 +1567,7 @@ const SRC={
  lcz:['Cerema, « Cartographie des zones climatiques locales (LCZ) », aire urbaine de Paris, images SPOT 2022 (Licence Ouverte)','https://www.data.gouv.fr/datasets/cartographie-des-zones-climatiques-locales-lcz-des-93-territoires-de-plus-de-50-000-habitants-en-france'],
  veg:['Apur, « Hauteur de la végétation 2021 », Open Data (licence ODbL)','https://opendata.apur.org/'],
  frais:['Ville de Paris, « Îlots de fraîcheur » (espaces verts frais, équipements et activités), Open Data','https://opendata.paris.fr/explore/dataset/ilots-de-fraicheur-espaces-verts-frais/'],
+ own:['DGFiP, fichiers des locaux et des parcelles des personnes morales (situation au 1er janvier), open data','https://data.economie.gouv.fr/explore/dataset/fichiers-des-locaux-et-des-parcelles-des-personnes-morales/'],
  sir:['Insee, base Sirene (stock du 01/11/2026)','https://www.data.gouv.fr/fr/datasets/base-sirene-des-entreprises-et-de-leurs-etablissements-siren-siret/']
 };
 
@@ -1792,12 +1803,16 @@ function bldRow(b){
  r['Lien']=location.origin+location.pathname+'?b='+lo.toFixed(6)+','+la.toFixed(6);r['lon']=+lo.toFixed(6);r['lat']=+la.toFixed(6);
  return r;
 }
+async function ownInto(r,b){const D=await loadArr(ARR[b]);const O=D&&D.o&&D.o[b];if(!O||!O.length)return;const P=O.filter(o=>o[4]);
+ if(P[0]){r['Propriétaire principal']=P[0][0]+(P[0][1]?' ('+P[0][1]+')':'');r['SIREN du propriétaire']=P[0][2];r['Fiche entreprise']=P[0][2]?'https://annuaire-entreprises.data.gouv.fr/entreprise/'+P[0][2]:'';}
+ if(P.length>1)r['Autres propriétaires']=P.slice(1).map(o=>o[0]).join(' ; ');}
 async function analyse(list,walk=true){const out=[],B=[];for(const l of list){const t=String(l).trim();if(!t)continue;const a=await locAdr(t);
  out.push(Object.assign({'Adresse saisie':t,'Adresse trouvée':a?a.adr:'','Statut':!a?'adresse introuvable':a.ok?'ok':a.note},a&&a.ok?bldRow(a.b):{}));B.push(a&&a.ok?a.b:-1);}
  if(walk){let i=0;const W=async()=>{while(i<B.length){const k=i++;if(B[k]<0)continue;const w=await walkFor(B[k]).catch(()=>null);if(!w||!w.length)continue;
    const r=out[k];r['Métro ou RER le plus proche']=w[0].n;r['Distance à pied (m)']=w[0].m;r['Temps à pied (min)']=w[0].min;
    if(w[1]){r['Deuxième station']=w[1].n;r['Distance à pied, deuxième station (m)']=w[1].m;}}};
   await Promise.all([W(),W(),W(),W()]);}
+ for(let k=0;k<B.length;k++)if(B[k]>=0)await ownInto(out[k],B[k]);
  return out;}
 function toCsv(rows){const K=[];for(const r of rows)for(const k of Object.keys(r))if(!K.includes(k))K.push(k);
  const q=v=>{v=v==null?'':String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
@@ -1806,11 +1821,11 @@ function bldAt(e){const wx=e[1]/2,wy=e[2]/2;let b=pick(wx,wy);if(b<0)for(const [
 async function dumpStreets(i0,i1){   // utilisé par le robot pour publier l'accès statique api/ (lisible par les IA)
  const A=await loadAddr(),out=[];
  for(const s of A.slice(i0,i1)){const B={},N={};
-  for(const e of s.a){const b=bldAt(e);if(b<0)continue;if(!(b in B)){const r=bldRow(b);delete r['Lien'];B[b]=r;}N[e[0]]=b;}
+  for(const e of s.a){const b=bldAt(e);if(b<0)continue;if(!(b in B)){const r=bldRow(b);delete r['Lien'];await ownInto(r,b);B[b]=r;}N[e[0]]=b;}
   out.push({voie:s.n,numeros:N,batiments:B});}
  return {total:A.length,out};
 }
-window.parisGraphie={analyse,toCsv,bldRow,dumpStreets};
+window.parisGraphie={analyse,toCsv,bldRow,dumpStreets,sources:()=>srcList().map(x=>({source:x[0],url:x[1]}))};
 {const box=document.createElement('div');box.id='alst';box.hidden=true;
  box.innerHTML='<div class="alp"><div class="alh"><b>Analyse d\'une liste d\'adresses</b><button id="alx" aria-label="Fermer">✕</button></div>'
   +'<div class="k">Une adresse par ligne (Paris intra-muros). Exemple : 12 rue de Rivoli, 75004 Paris</div>'

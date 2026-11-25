@@ -22,6 +22,7 @@ def run(site, base='https://hubbokobza-lab.github.io/paris-graphie/'):
         pg = br.new_page(viewport={'width': 1200, 'height': 800})
         pg.goto('http://127.0.0.1:%d/' % port)
         pg.wait_for_function('window.parisGraphie && document.querySelector("#load").style.display==="none"', timeout=180000)
+        SRCS = pg.evaluate('parisGraphie.sources()')
         i, step, tot = 0, 400, None
         while tot is None or i < tot:
             r = pg.evaluate('([a,b])=>parisGraphie.dumpStreets(a,b)', [i, i + step]); tot = r['total']
@@ -33,13 +34,14 @@ def run(site, base='https://hubbokobza-lab.github.io/paris-graphie/'):
                     for k in r:
                         if k not in K and k not in DROP: K.append(k)
                 bat = {b: [r.get(k) for k in K] for b, r in v['batiments'].items()}
-                json.dump({'voie': v['voie'], 'source': base, 'numeros': v['numeros'], 'champs': K, 'batiments': bat},
+                json.dump({'voie': v['voie'], 'carte': base, 'sources': base + 'api/sources.json', 'licence': 'données ouvertes (ODbL ou Licence Ouverte selon le producteur), voir sources', 'numeros': v['numeros'], 'champs': K, 'batiments': bat},
                           open(os.path.join(d, sg + '.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
                 idx.append([v['voie'], sg])
             i += step
         br.close()
     srv.shutdown()
-    json.dump({'maj': time.strftime('%Y-%m-%d'), 'voies': idx}, open(os.path.join(site, 'api', 'voies.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
+    json.dump({'maj': time.strftime('%Y-%m-%d'), 'sources': SRCS}, open(os.path.join(site, 'api', 'sources.json'), 'w'), ensure_ascii=False, indent=1)
+    json.dump({'maj': time.strftime('%Y-%m-%d'), 'sources': base + 'api/sources.json', 'voies': idx}, open(os.path.join(site, 'api', 'voies.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
     open(os.path.join(site, 'llms.txt'), 'w').write(LLMS.replace('{B}', base).replace('{N}', str(len(idx))).replace('{D}', time.strftime('%Y-%m-%d')))
     print('accès IA : %d voies, %d bâtiments' % (len(idx), nb), flush=True)
 
@@ -59,6 +61,10 @@ LLMS = """# Paris-graphie (Bouchaud Architectes)
 - Ouvrir {B}?adresses=12 rue de Rivoli|3 boulevard Haussmann (adresses séparées par |) : le tableau s'affiche et s'exporte en CSV.
 - Ou, dans la page : await window.parisGraphie.analyse(["12 rue de Rivoli", "3 boulevard Haussmann"]) renvoie un tableau d'objets.
 - Un bâtiment précis : {B}?b=<longitude>,<latitude>
+
+## Sources
+
+Toutes les sources (producteur, jeu de données, date d'extraction, lien) : {B}api/sources.json
 
 ## Précautions
 
