@@ -453,6 +453,7 @@ function setCrit(c){
  const pb=document.querySelector('#crit button[aria-pressed=true]');if(pb)pb.after($('#legWrap'));markLegend();
  recolor();
 }
+const NOHIST=new Set(['neu','yr','typ','usg','bur','mur','toit','rc','cvp','pro','sa','zo','arr','rs']);
 function buildLegend(){
  const c=st.crit,L=$('#legend');L.innerHTML='';
  
@@ -462,7 +463,7 @@ function buildLegend(){
   L.appendChild(g);
   const t=document.createElement('div');t.className='ticks';t.innerHTML='<span>1750</span><span>1882</span><span>1953</span><span>1995</span><span>2015</span>';L.appendChild(t);
  }
- if(c.cnt&&c.lab.length>1){            // histogramme : nombre d'immeubles par classe
+ if(c.cnt&&c.lab.length>2&&!NOHIST.has(c.id)){   // histogramme pour les grandeurs ordonnées (âge, hauteur, quantités, prix...) ; pas pour les catégories
   const neu=i=>c.col[i]===GRAY||/^(Aucune|Aucun|Pas de|Inconnu|Non renseign)/.test(c.lab[i]);   // classe « sans donnée » : hors échelle
   const mx=Math.max(1,...c.cnt.filter((_,i)=>!neu(i))),H=document.createElement('div');H.className='hist';
   c.lab.forEach((lab,i)=>{const b=document.createElement('div');b.className='hb';b.dataset.i=i;
