@@ -52,7 +52,13 @@ LLMS = """# Paris-graphie (Bouchaud Architectes)
 
 > Carte des immeubles de Paris intra-muros : âge, hauteur, niveaux, surface de plancher estimée, usages, DPE, patrimoine, PLU, autorisations d'urbanisme, sous-sol. Données ouvertes (Apur, Ville de Paris, BDNB, ADEME, IGN...), mises à jour chaque semaine. Données du {D}.
 
-## Interroger une adresse sans navigateur
+## API (recommandé)
+
+- {B} est la carte. L'API se trouve à https://paris-graphie-api.hub-bokobza.workers.dev/ :
+  /adresse?q=40 rue Laffitte (un immeuble, avec métro et RER à pied), /adresses?q=a|b|c (25 au plus), /voie?nom=rue Laffitte, /sources.
+- Serveur MCP pour assistants IA : https://paris-graphie-api.hub-bokobza.workers.dev/mcp (HTTP, outils immeuble_paris, immeubles_paris, sources_paris_graphie).
+
+## Interroger une adresse sans navigateur (fichiers statiques)
 
 1. Index des voies ({N} voies) : {B}api/voies.json, liste de [nom de la voie, identifiant].
 2. Fichier d'une voie : {B}api/voies/<identifiant>.json, par exemple {B}api/voies/rue-de-rivoli.json
