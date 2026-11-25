@@ -11,5 +11,7 @@ def relief(st):
     st.put('zg', q[iy, ix].astype(np.uint16))
 
 def private_zero(st):
-    """DVF et Sirene ne sont pas publiés sur le site : flux à zéro, format conservé."""
-    for k, t in [('dvf_n', 'B'), ('dvf_last', 'H'), ('pm2', 'H'), ('s_ne', 'H'), ('s_eff', 'H'), ('s_act', 'B'), ('s_cl', 'B')]: st.zero(k, t)
+    """DVF n'est pas publié sur le site : flux à zéro, format conservé (Sirene : step_sirene, comptages seulement)."""
+    for k, t in [('dvf_n', 'B'), ('dvf_last', 'H'), ('pm2', 'H')]: st.zero(k, t)
+    for k, t in [('s_ne', 'H'), ('s_eff', 'H'), ('s_act', 'B'), ('s_cl', 'B')]:
+        if k not in st.S: st.zero(k, t)

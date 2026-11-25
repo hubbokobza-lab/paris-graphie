@@ -6,7 +6,7 @@
 import argparse, sys, os, shutil
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core import *
-import step_base, step_ban, step_urba, step_misc, step_plu, step_usage, step_bdnb, step_cad, step_climat, step_tour, step_transport, step_osm_metro, step_culture, step_bouchaud, step_site
+import step_base, step_ban, step_urba, step_misc, step_plu, step_usage, step_bdnb, step_cad, step_climat, step_tour, step_transport, step_osm_metro, step_culture, step_bouchaud, step_sirene, step_site
 
 def check(st, prev=None):
     """Garde-fous : on refuse de publier un résultat manifestement incomplet."""
@@ -80,6 +80,17 @@ def main():
             if f.endswith('.json') and not f.startswith(('arr_', 'data')) and not os.path.exists(os.path.join(STATIC, f)):
                 st.files[f] = open(os.path.join(a.site, f), 'rb').read()
         ban = step_ban.run(st); done('ban'); step_urba.run(st, ban); done('urb', 'cvp')
+    # Sirene (comptages d'établissements par bâtiment) : fichier mensuel, recalculé si la dernière extraction a plus de 25 jours
+    import datetime
+    age = (datetime.date.today() - datetime.date.fromisoformat(SD.get('sir', '2000-01-01'))).days
+    if a.mode == 'full' or age > 25 or 's_ne' not in st.S or int((st.s('s_ne') > 0).sum()) == 0:
+        try:
+            step_sirene.run(st, ban); done('sir')
+        except Exception as e:
+            print('::warning title=Sirene non mis à jour::%s' % str(e)[:300], flush=True)
+            if prev is not None and 's_ne' in prev.S and len(prev.s('s_ne')) == st.N:
+                for k in ('s_ne', 's_eff', 's_act', 's_cl'): st.put(k, prev.s(k))
+            else: step_misc.private_zero(st)
     if a.mode == 'full':   # OpenStreetMap et Basilic : trimestriel (Overpass est lent et instable)
         try:
             step_osm_metro.run(st); done('osmm')

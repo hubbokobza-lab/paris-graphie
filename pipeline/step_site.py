@@ -1,4 +1,4 @@
-"""Assemblage du site public : page HTML (version publique, sans DVF ni Sirene) et fichiers figés."""
+"""Assemblage du site public : page HTML (version publique, sans DVF ; Sirene en comptages seulement) et fichiers figés."""
 import shutil, glob
 from core import *
 
@@ -7,8 +7,8 @@ def html():
     e = open(os.path.join(STATIC, 'earcut.min.js'), encoding='utf-8').read()
     t = t.replace('<script src="https://cdn.jsdelivr.net/npm/earcut@2.2.4/dist/earcut.min.js"></script>', '<script>' + e + '</script>')
     lines = t.split('\n'); n0 = len(lines)
-    lines = [l for l in lines if not (l.startswith(" {id:'") and ("g:'Marché (DVF" in l or "g:'Occupants (Sirene)'" in l))]
-    assert n0 - len(lines) == 6, n0 - len(lines)
+    lines = [l for l in lines if not (l.startswith(" {id:'") and "g:'Marché (DVF" in l)]   # Sirene : comptages publiés, noms non (loadSir désactivé)
+    assert n0 - len(lines) == 2, n0 - len(lines)
     t = '\n'.join(lines)
     def rep(a, b):
         nonlocal t

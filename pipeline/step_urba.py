@@ -121,6 +121,14 @@ def run(st, ban=None):
                            clip(c.get('voeu'), 380), c.get('url_document_de_seance') or '', c.get('adresse') or '',
                            re.sub(r'\s*;\s*', ', ', (c.get('architecte') or '').strip()), str(c.get('date_de_construction') or c.get('siecle_de_construction') or '').strip()])
     st.put_file('cvp.json', {'b': cd})
-    for k, a_ in [('n_tot', n_tot), ('n_pc', n_pc), ('last_pc', last_pc), ('last_pd', last_pd), ('surf', surfc), ('cvp_n', cvp_n), ('cvp_k', cvp_k), ('rec', recs)]:
+    # transformation de bureaux en logements (permis de construire des 6 dernières années) : 1 accordée, 2 en instruction
+    tfo = np.zeros(N, np.uint8)
+    TF = re.compile(r"bureaux?\s+(?:en|vers)\s+(?:\w+\s+){0,3}?(?:habitation|logements?)|transformation d.(?:un|l.)\s*immeuble de bureaux", re.I)
+    q = h[(h.t == 'PC') & (h.yd >= int(time.strftime('%Y')) - 6) & h.description_travaux.fillna('').str.contains(TF)]
+    for s_, acc, dc in zip(q.sh.values, q.acc.values, q.decision_autorite.values):
+        v = 1 if acc else (2 if not isinstance(dc, str) else 0)
+        if v and (tfo[s_] == 0 or v == 1): tfo[s_] = v
+    log('transformations de bureaux en logements repérées :', int((tfo == 1).sum()), 'accordées,', int((tfo == 2).sum()), 'en instruction')
+    for k, a_ in [('n_tot', n_tot), ('n_pc', n_pc), ('last_pc', last_pc), ('last_pd', last_pd), ('surf', surfc), ('cvp_n', cvp_n), ('cvp_k', cvp_k), ('rec', recs), ('tfo', tfo)]:
         st.put(k, a_)
     log('urbanisme : %d bâtiments avec dossiers, %d avec un passage en CVP' % ((n_tot > 0).sum(), (cvp_n > 0).sum()))
