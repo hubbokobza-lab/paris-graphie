@@ -147,5 +147,11 @@ def run(st):
     if bad: log('  Bouchaud Architectes : vignettes inaccessibles : ' + '; '.join(bad))
     log('  Bouchaud Architectes : %d projets en Île-de-France dont %d à Paris (%d avec image) ; hors Île-de-France ou commune inconnue : %s ; non localisés : %s' % (len(out), sum(1 for _, p in out if p['par']), sum(1 for _, p in out if p['im']), '; '.join(hors) or 'aucun', '; '.join(nok) or 'aucun'))
     if len(out) < 10: raise RuntimeError('trop peu de projets Bouchaud localisés')
-    overlay(st, 'boa', out, 'pt', lambda p: p['c'], lambda p: p['l'])
-    o = json.loads(gzip.decompress(st.files['ov_boa.json'])); o['u'] = [p['u'] for _, p in out]; o['cols'] = ['#5A88B5', '#A3C0DB', '#E3ECF5']; o['t'] = [p['t'] for _, p in out]; o['im'] = [p['im'] for _, p in out]; o['po'] = [p['po'] for _, p in out]; st.put_file('ov_boa.json', o)
+    COLS = ['#5A88B5', '#A3C0DB', '#E3ECF5']   # livré il y a plus de 3 ans, livré, en cours
+    for c in range(3):                         # un calque par catégorie, activable séparément
+        sub = [f for f in out if f[1]['c'] == c]
+        oid = 'boa%d' % c
+        overlay(st, oid, sub, 'pt', lambda p: 0, lambda p: p['l'])
+        o = json.loads(gzip.decompress(st.files['ov_%s.json' % oid])); o['cols'] = [COLS[c]]
+        for k in ('u', 't', 'im', 'po'): o[k] = [p[k] for _, p in sub]
+        st.put_file('ov_%s.json' % oid, o)

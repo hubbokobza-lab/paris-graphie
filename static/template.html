@@ -369,7 +369,7 @@ function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n
 const PC_LAB=["Avant 1990","1990–1999","2000–2009","2010–2014","2015–2019","2020 et après","Aucun connu"];
 const lastCls=A=>s=>{const y=A[s];if(!y)return 6;return y<1990?0:y<2000?1:y<2010?2:y<2015?3:y<2020?4:5;};
 const ORG={per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
-mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',hot:'Atout France',tcf:'IDFM',osmm:'OpenStreetMap',boa:'bouchaudarchitectes.com',cult:'Ministère de la Culture',culte:'OpenStreetMap',osms:'OpenStreetMap',bus:'IDFM',gare:'IDFM',acc:'IDFM',cu:'Ville de Paris',abnb:'Inside Airbnb',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
+mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',hot:'Atout France',tcf:'IDFM',osmm:'OpenStreetMap',boa0:'bouchaudarchitectes.com',boa1:'bouchaudarchitectes.com',boa2:'bouchaudarchitectes.com',cult:'Ministère de la Culture',culte:'OpenStreetMap',osms:'OpenStreetMap',bus:'IDFM',gare:'IDFM',acc:'IDFM',cu:'Ville de Paris',abnb:'Inside Airbnb',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
 const orgOf=id=>ORG[id]||(/^at[m0-9]/.test(id)?'Michel Huard, Atlas historique de Paris':'Ville de Paris'),orgHtml=id=>'<small class="org">'+orgOf(id)+'</small>';
 const CRIT=[
  {id:'neu',g:'Plan',name:'Plan neutre (aucun calque)',lab:['Bâtiment'],col:['#8b98a4'],cls:s=>0},
@@ -1105,7 +1105,9 @@ const OVL=[
  {id:'vec',n:'Volumétrie existante à conserver',k:'poly',a:.6,cols:['#f72585'],lab:['VEC']},
  {id:'gdmag',n:'Grands magasins',k:'poly',a:.6,cols:['#b5179e'],lab:['Grand magasin']}]},
 {g:'Projets de l\'agence',items:[
- {id:'boa',def:true,rr:6.5,n:'Projets à Paris et en Île-de-France (clic : page du projet)',k:'pt',cols:['#5A88B5','#A3C0DB','#E3ECF5'],lab:['Livré il y a plus de 3 ans','Livré','En cours']}]},
+ {id:'boa2',def:true,rr:6.5,n:'Projets en cours (clic : page du projet)',k:'pt',cols:['#E3ECF5'],lab:['En cours']},
+ {id:'boa1',def:true,rr:6.5,n:'Projets livrés depuis moins de 3 ans',k:'pt',cols:['#A3C0DB'],lab:['Livré récemment']},
+ {id:'boa0',def:true,rr:6.5,n:'Projets livrés depuis plus de 3 ans',k:'pt',cols:['#5A88B5'],lab:['Livré il y a plus de 3 ans']}]},
 {g:'Culture et cultes',items:[
  {id:'cult',n:'Lieux et équipements culturels',k:'pt',cols:['#e11d48','#a855f7','#f59e0b','#0ea5e9','#22c55e','#f472b6'],lab:['Musées et lieux de mémoire','Théâtres, scènes et opéras','Cinémas','Bibliothèques et archives','Librairies','Conservatoires et centres de création']},
  {id:'culte',n:'Lieux de culte',k:'pt',cols:['#fbbf24','#60a5fa','#34d399','#f97316','#cbd5e1','#c4b5fd'],lab:['Catholique','Juif','Musulman','Bouddhiste','Autre ou non précisé','Chrétien non catholique (protestant, orthodoxe…)']}]},
@@ -1500,7 +1502,9 @@ const SRC={
  moa:['SDES, base Sitadel, « Liste des permis de construire et autres autorisations d\'urbanisme » (maîtres d\'ouvrage personnes morales, depuis 2013, Licence Ouverte) ; sur le site public, les particuliers ne sont pas nommés','https://www.data.gouv.fr/datasets/liste-des-permis-de-construire-et-autres-autorisations-durbanisme'],
  cult:['Ministère de la Culture, « Base des lieux et équipements culturels (Basilic) » (Licence Ouverte)','https://www.data.gouv.fr/datasets/base-des-lieux-et-equipements-culturels-basilic'],
  culte:['© contributeurs OpenStreetMap, lieux de culte (licence ODbL)','https://www.openstreetmap.org/copyright'],
- boa:['Bouchaud Architectes, projets publiés sur bouchaudarchitectes.com (relevé chaque semaine) ; les appartements sont placés sur leur rue, sans adresse précise','https://www.bouchaudarchitectes.com/'],
+ boa0:['Bouchaud Architectes, projets publiés sur bouchaudarchitectes.com (relevé chaque semaine) ; les appartements sont placés sur leur rue, sans adresse précise','https://www.bouchaudarchitectes.com/'],
+ boa1:['Bouchaud Architectes, projets publiés sur bouchaudarchitectes.com (relevé chaque semaine) ; les appartements sont placés sur leur rue, sans adresse précise','https://www.bouchaudarchitectes.com/'],
+ boa2:['Bouchaud Architectes, projets publiés sur bouchaudarchitectes.com (relevé chaque semaine) ; les appartements sont placés sur leur rue, sans adresse précise','https://www.bouchaudarchitectes.com/'],
  osmm:['© contributeurs OpenStreetMap, voies ferrées du métro et du RER (licence ODbL) ; tracé indicatif, à vérifier auprès de la RATP et de la SNCF pour tout projet','https://www.openstreetmap.org/copyright'],
  tcf:['Île-de-France Mobilités, tracés du réseau ferré, gares et stations, accès (Licence Ouverte) et tracés des lignes de bus (source GTFS, ODbL)','https://data.iledefrance-mobilites.fr/'],
  hot:['Atout France, « Hébergements touristiques classés en France », géolocalisés par Paris-graphie à partir de la BAN','https://www.data.gouv.fr/datasets/hebergements-touristiques-classes-en-france'],

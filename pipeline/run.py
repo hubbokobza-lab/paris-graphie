@@ -101,10 +101,11 @@ def main():
             for f in ('ov_cult.json', 'ov_culte.json', 'cult.json', 'culte.json'):
                 if f not in st.files and os.path.exists(os.path.join(a.site, f)): st.files[f] = open(os.path.join(a.site, f), 'rb').read()
     try:
-        step_bouchaud.run(st); done('boa')
+        step_bouchaud.run(st); [done(k) for k in ('boa0', 'boa1', 'boa2')]
     except Exception as e:      # chaque semaine ; en cas d'échec on garde la version précédente
         print('::warning title=Projets Bouchaud non mis à jour::%s' % str(e)[:300], flush=True)
-        if a.site and os.path.exists(os.path.join(a.site, 'ov_boa.json')): st.files['ov_boa.json'] = open(os.path.join(a.site, 'ov_boa.json'), 'rb').read()
+        for fn in ('ov_boa0.json', 'ov_boa1.json', 'ov_boa2.json'):
+            if a.site and os.path.exists(os.path.join(a.site, fn)): st.files[fn] = open(os.path.join(a.site, fn), 'rb').read()
     SD['_maj'] = today
     st.files['sources.json'] = json.dumps(SD, ensure_ascii=False).encode()
     check(st, prev)
