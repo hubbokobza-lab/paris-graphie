@@ -91,6 +91,7 @@ footer{padding:9px 16px;border-top:1px solid var(--line);font-size:10.5px;color:
 .sw2{display:inline-block;width:11px;height:11px;border-radius:2px;flex:none;border:1px solid rgba(0,0,0,.2)}
 .ovlg{margin:0 0 4px 26px;font-size:11.5px;color:var(--ink2)}.ovlg>div{display:flex;align-items:center;gap:7px;padding:1px 0}
 #card .pdfb{all:unset;cursor:pointer;background:var(--ink);color:#fff;font-size:12.5px;padding:7px 12px;border-radius:4px}#card .pdfb:hover{background:#245d86}
+#legend .hist{display:flex;align-items:flex-end;gap:2px;height:56px;margin:2px 0 6px;padding-bottom:1px;border-bottom:1px solid var(--line)}#legend .hb{flex:1;min-width:3px;border-radius:2px 2px 0 0;cursor:pointer;transition:opacity .15s}#legend .hb.off{opacity:.18}#legend .hb.cut{background-image:linear-gradient(0deg,transparent 78%,var(--bg) 78%,var(--bg) 84%,transparent 84%)!important}
 #tip{position:fixed;z-index:8;max-width:300px;background:var(--bg);border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.4);padding:6px 9px;font-size:12px;line-height:1.35;pointer-events:none;color:var(--ink)}#tip[hidden]{display:none}#tip hr{border:0;border-top:1px solid var(--line);margin:5px 0}
 #card .up{margin:2px 0 4px}#card .bdg{display:inline-block;font-size:11px;border:1px solid;border-radius:3px;padding:0 5px;margin:0 4px 3px 0}
 
@@ -186,7 +187,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
   <h2>Calque</h2>
   <div id="lqw"><input id="lq" type="search" placeholder="Chercher un calque (ex. métro, hauteur, histoire)" autocomplete="off" spellcheck="false"><div id="lqn" class="hint"></div></div>
   <div class="hint" style="margin:-2px 4px 8px">Un clic affiche un calque, un second clic le retire.</div>
-  <details class="lsec" data-g="Bouchaud Architectes"><summary><span class="chev"></span>Bouchaud Architectes<span class="lsn"></span></summary><div class="ovslot" data-g="Bouchaud Architectes"></div></details>
+  <details class="lsec" data-g="Bouchaud Architectes"><summary><span class="chev"></span>Sélection de projets Bouchaud<span class="lsn"></span></summary><div class="ovslot" data-g="Bouchaud Architectes"></div></details>
   <div class="crit" id="crit"></div>
   <div id="legWrap" style="margin:4px 0 6px 8px;padding-left:8px;border-left:3px solid var(--bg2)"><div id="legend"></div><div class="hint" id="legHint">Clic : masquer ou afficher une classe. Double-clic : isoler la classe.<a class="lk" id="reset">tout réafficher</a></div></div>
   <div id="ovl" hidden></div>
@@ -355,7 +356,7 @@ const SUR_COL=["#3288bd","#66c2a5","#fee08b","#f46d43",GRAY];
 const HT_LIM=[60,120,160,200,250,310,500,1000];
 const BN=S.bn||new Uint8Array(N),BU=S.bu||new Uint8Array(N),BL=S.bl||new Uint16Array(N),BS=S.bs||new Uint16Array(N),BT=S.bt||new Uint16Array(N),BM=S.bm||new Uint8Array(N),BD=S.bd||new Uint8Array(N),BG=S.bg||new Uint8Array(N),BE=S.be||new Uint8Array(N);
 const nivEst=s=>Math.max(1,Math.round(HM[s]/30)),nivOf=s=>BN[s]>0?BN[s]:nivEst(s);
-const SPL=s=>Math.round(area[s]*nivOf(s)),CO2R=650,co2Of=s=>SPL(s)*CO2R/1000;
+const SPL=s=>Math.round(area[s]*nivOf(s)),SDPm=s=>Math.round(SPL(s)*.7),sdpTxt=s=>nf.format(Math.round(SPL(s)*.6/10)*10)+' à '+nf.format(Math.round(SPL(s)*.8/10)*10)+' m² (calcul : emprise × niveaux, moins 20 à 40 %)',CO2R=650,co2Of=s=>SDPm(s)*CO2R/1000;
 const DPE_COL=['#3a4652','#009c6d','#52b153','#a5cc74','#f4e70f','#f0b50f','#eb8235','#d7221f'],GES_COL=['#3a4652','#f6edfd','#e4c7f5','#d5a9f0','#cb95ed','#ba72e6','#a74ddd','#8a24c7'];
 const MAT_LAB=['Indéterminé','Pierre','Brique ou meulière (avec ou sans pierre)','Béton','Béton et maçonnerie','Bois','Autres'],MAT_COL=['#3a4652','#e9d8a6','#c8553d','#8d99ae','#adb5bd','#9c6644','#6c757d'];
 const USG_LAB=['Non renseigné','Résidentiel collectif','Résidentiel individuel','Tertiaire','Secondaire ou primaire','Dépendance'];
@@ -461,6 +462,16 @@ function buildLegend(){
   L.appendChild(g);
   const t=document.createElement('div');t.className='ticks';t.innerHTML='<span>1750</span><span>1882</span><span>1953</span><span>1995</span><span>2015</span>';L.appendChild(t);
  }
+ if(c.cnt&&c.lab.length>1){            // histogramme : nombre d'immeubles par classe
+  const neu=i=>c.col[i]===GRAY||/^(Aucune|Aucun|Pas de|Inconnu|Non renseign)/.test(c.lab[i]);   // classe « sans donnée » : hors échelle
+  const mx=Math.max(1,...c.cnt.filter((_,i)=>!neu(i))),H=document.createElement('div');H.className='hist';
+  c.lab.forEach((lab,i)=>{const b=document.createElement('div');b.className='hb';b.dataset.i=i;
+   b.style.height=Math.min(100,Math.max(c.cnt[i]?3:0,c.cnt[i]/mx*100))+'%';if(neu(i)&&c.cnt[i]>mx)b.classList.add('cut');
+   b.style.background=c.grad&&i===0?'linear-gradient(0deg,'+SPEC[0]+','+SPEC[5]+','+SPEC[10]+')':(c.col[i]||'#999');
+   b.title=lab.replace(/<[^>]+>/g,'')+' : '+nf.format(c.cnt[i])+' immeubles';
+   b.addEventListener('click',()=>{st.en[i]=!st.en[i];syncRows();recolor();});H.appendChild(b);});
+  L.appendChild(H);
+ }
  c.lab.forEach((lab,i)=>{
   const r=document.createElement('div');r.className='row';r.dataset.i=i;
   const col=c.col[i]||'#999';
@@ -471,7 +482,7 @@ function buildLegend(){
  });
  syncRows();
 }
-function syncRows(){document.querySelectorAll('#legend .row').forEach(r=>r.classList.toggle('off',!st.en[+r.dataset.i]));}
+function syncRows(){document.querySelectorAll('#legend .row,#legend .hb').forEach(r=>r.classList.toggle('off',!st.en[+r.dataset.i]));}
 $('#reset').onclick=()=>{st.en=st.en.map(()=>true);syncRows();recolor();};
 {const box=$('#crit');let g='';const slot=x=>{if(!x)return;const s=document.createElement('div');s.className='ovslot';s.dataset.g=x;box.appendChild(s);};for(const c of CRIT){if(c.id==='neu')continue;if(c.g!==g){slot(g);g=c.g;const d=document.createElement('div');d.className='g';d.textContent=g;box.appendChild(d);}
  const b=document.createElement('button');b.type='button';b.dataset.id=c.id;b.innerHTML='<span class="dot"></span><span class="cn">'+c.name+'</span>'+orgHtml(c.id);b.onclick=()=>setCrit(st.crit===c?CRIT[0]:c);box.appendChild(b);}slot(g);{const d=document.createElement('div');d.className='g';d.textContent='Histoire';box.appendChild(d);slot('Histoire');}}
@@ -789,6 +800,7 @@ function loadArr(a){if(!ARRD[a])ARRD[a]=getJson('arr_'+String(a).padStart(2,'0')
 function loadCvp(){if(!CVPD)CVPD=getJson('cvp.json').catch(()=>null);return CVPD;}
 const card=$('#card'),cb=$('#cb');let cardFor=-1;
 const eur=v=>nf.format(Math.round(v))+' €';
+const dur=d=>d<60?d+' jours':(Math.round(d/30.44*10)/10).toString().replace('.',',')+' mois';
 const m2f=v=>nf.format(Math.round(v*10)/10)+' m²';
 function baseInfo(s,A,P){
  const per=PER_LAB[PMAP[PE[s]]??11];
@@ -805,7 +817,7 @@ function baseInfo(s,A,P){
   +row('Période APUR',per)+row('Réhabilitation',RE[s]>=1900?RE[s]:'—')+row('Surélévation',SU[s]?SU[s]:'—')
   +row('Hauteur médiane / max',(HM[s]/10).toFixed(1).replace('.',',')+' m / '+(HX[s]/10).toFixed(1).replace('.',',')+' m')
   +row('Niveaux',niv+(BN[s]>0?' (fichiers fonciers)':' (estimé : hauteur médiane ÷ 3 m)'))
-  +row('Emprise au sol',nf.format(Math.round(area[s]))+' m²')+row('Surface plancher estimée',nf.format(shon)+' m² (indicatif)')
+  +row('Emprise au sol',nf.format(Math.round(area[s]))+' m²')+row('Surface de plancher estimée',sdpTxt(s))
   +(TYP[s]?row('Typologie (Apur)',TY_LAB[TYP[s]]):'')+row('Toiture',toit)+(IG[s]?row('Immeuble de grande hauteur','oui'):'')
   +(pl&&pl.length?row('Parcelle'+(pl.length>1?'s':'')+' cadastrale'+(pl.length>1?'s':''),pl.slice(0,4).map(x=>esc(x.slice(8,10)+' '+x.slice(10).replace(/^0+/,''))).join(', ')+(pl.length>4?' …':'')):'')
   +(ad&&ad.length?'<div style="margin-top:5px"><a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(ad[0]+', Paris')+'" target="_blank" rel="noopener">Voir sur Google Maps</a></div>':'');
@@ -842,7 +854,7 @@ function bdnbRows(s,B){
  if(chauf)R.push(['Chauffage (DPE)',chauf,'dpe']);
  if(ng>1)R.push(['Ensemble bâti BDNB',ng+' emprises Apur regroupées ; logements et lots sont comptés pour l\'ensemble','bdnb']);
  return R;}
-function co2Txt(s){const c=co2Of(s);return '≈ '+nf.format(Math.round(c/10)*10)+' t CO₂e pour reconstruire à neuf '+nf.format(SPL(s))+' m² de plancher (à '+CO2R+' kg CO₂e/m², seuil RE2020 2025 des logements collectifs). Réhabiliter en évite une large part.';}
+function co2Txt(s){const c=co2Of(s);return '≈ '+nf.format(Math.round(c/10)*10)+' t CO₂e pour reconstruire à neuf '+nf.format(SDPm(s))+' m² de plancher (milieu de la fourchette) (à '+CO2R+' kg CO₂e/m², seuil RE2020 2025 des logements collectifs). Réhabiliter en évite une large part.';}
 function bdnbHtml(s,B,pin){
  const R=bdnbRows(s,B);if(!R.length&&!pin)return '';
  const row=(k,v)=>'<div><span class="k">'+k+' : </span>'+esc(String(v))+'</div>';
@@ -925,12 +937,12 @@ function cardModel(s,c){
  {const per=PER_LAB[PMAP[PE[s]]??11],toit=SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'—',niv=nivOf(s);
   const h=row('Année de construction',AN[s]||'inconnue')+row('Période (Apur)',per)+row('Réhabilitation',RE[s]>=1900?RE[s]:'—')+row('Surélévation',SU[s]?SU[s]:'—')
    +row('Hauteur médiane / max',dm(HM[s])+' m / '+dm(HX[s])+' m')+row('Niveaux',niv+(BN[s]>0?' (fichiers fonciers)':' (estimé : hauteur médiane ÷ 3 m)'))
-   +row('Emprise au sol',nf.format(Math.round(area[s]))+' m²')+row('Surface de plancher estimée',nf.format(SPL(s))+' m² (indicatif)')
+   +row('Emprise au sol',nf.format(Math.round(area[s]))+' m²')+row('Surface de plancher estimée',sdpTxt(s))
    +(TYP[s]?row('Typologie (Apur)',TY_LAB[TYP[s]]):'')+row('Toiture',toit)+(IG[s]?row('Immeuble de grande hauteur','oui'):'');
   const items=[it('Année de construction : '+(AN[s]||'inconnue')+' (dates parfois approximatives)','apur'),it('Période : '+per,'apur'),
    it('Réhabilitation : '+(RE[s]>=1900?RE[s]:'—')+' ; surélévation : '+(SU[s]||'—'),'apur'),it('Hauteur médiane / maximale : '+dm(HM[s])+' m / '+dm(HX[s])+' m','apur'),
    it('Emprise au sol : '+nf.format(Math.round(area[s]))+' m²','apur'),
-   it('Niveaux : '+niv+(BN[s]>0?' (fichiers fonciers, via la BDNB)':' (estimé : hauteur médiane ÷ 3 m)')+' ; surface de plancher estimée : '+nf.format(SPL(s))+' m² (emprise × niveaux)','calc'),
+   it('Niveaux : '+niv+(BN[s]>0?' (fichiers fonciers, via la BDNB)':' (estimé : hauteur médiane ÷ 3 m)')+' ; surface de plancher estimée : '+sdpTxt(s),'calc'),
    ...(TYP[s]?[it('Typologie : '+TY_LAB[TYP[s]],'typ')]:[]),
    it('Toiture : '+(SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'autre ou inconnue')+(IG[s]?' ; immeuble de grande hauteur':''),'apur')];
   sec('bati','Bâtiment',h,items);}
@@ -945,9 +957,9 @@ function cardModel(s,c){
  // 4. Autorisations d'urbanisme
  {const L=D&&D.b&&D.b[s];let h='',items=[];
   if(NT[s]&&L){h=L.slice(0,60).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';const cl=/^(Favorable|Accord)/.test(dec)?'ok':/^(Défavorable|Rejet|Irrecevable)/.test(dec)?'no':'nt';
-    return '<div class="dsr"><div class="hd"><span class="ty">'+esc(TNAME[D.t[e[2]]])+'</span><span class="dtt">'+fdate(e[1])+'</span><span class="dec '+cl+'">'+esc(dec)+'</span></div>'
+    return '<div class="dsr"><div class="hd"><span class="ty">'+esc(TNAME[D.t[e[2]]])+'</span><span class="dtt">'+fdate(e[1])+'</span><span class="dec '+cl+'">'+esc(dec)+'</span></div>'+(e[6]>0?'<div class="k">Obtenu en '+dur(e[6])+(D.med&&D.med[D.t[e[2]]]?' (médiane à Paris sur 5 ans : '+dur(D.med[D.t[e[2]]])+')':'')+'</div>':'')
      +(e[4]?'<div class="ds">'+esc(e[4])+'</div>':'')+'<div class="dm"><a href="'+esc(dossUrl(e[0]))+'" target="_blank" rel="noopener">'+esc(e[0])+'</a>'+(e[5]?' · maître d\'ouvrage : '+esc(e[5]):'')+'</div></div>';}).join('')+(L.length>60?'<div class="k" style="padding-top:4px">'+nf.format(L.length-60)+' dossiers plus anciens non affichés.</div>':'');
-   items=L.slice(0,60).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';return it(TNAME[D.t[e[2]]]+', '+fdate(e[1])+', '+dec+(e[4]?' : '+e[4]:'')+' (dossier '+e[0]+(e[5]?', maître d\'ouvrage : '+e[5]:'')+')','urb',dossUrl(e[0]));});}
+   items=L.slice(0,60).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';return it(TNAME[D.t[e[2]]]+', '+fdate(e[1])+', '+dec+(e[6]>0?', obtenu en '+dur(e[6]):'')+(e[4]?' : '+e[4]:'')+' (dossier '+e[0]+(e[5]?', maître d\'ouvrage : '+e[5]:'')+')','urb',dossUrl(e[0]));});}
   else h='<div class="k">Aucun dossier rattaché à ce bâtiment depuis 1990.</div>';
   if(ad[0]){const u=archTopo(ad[0]);h+=sub('Dossiers plus anciens')+lk(u,'Archives de Paris, recherche à l\'adresse : permis de construire anciens, casier sanitaire, calepins du cadastre, sommier foncier','résultats à trier, la recherche inclut des adresses voisines');
    items.push(L_('Archives de Paris, recherche à l\'adresse « '+ad[0]+' » : permis de construire anciens, casier sanitaire, calepins du cadastre, sommier foncier',u,'résultats à trier'));}
@@ -1105,9 +1117,9 @@ const OVL=[
  {id:'vec',n:'Volumétrie existante à conserver',k:'poly',a:.6,cols:['#f72585'],lab:['VEC']},
  {id:'gdmag',n:'Grands magasins',k:'poly',a:.6,cols:['#b5179e'],lab:['Grand magasin']}]},
 {g:'Projets de l\'agence',items:[
- {id:'boa2',def:true,rr:6.5,n:'Projets en cours (clic : page du projet)',k:'pt',cols:['#E3ECF5'],lab:['En cours']},
- {id:'boa1',def:true,rr:6.5,n:'Projets livrés depuis moins de 3 ans',k:'pt',cols:['#A3C0DB'],lab:['Livré récemment']},
- {id:'boa0',def:true,rr:6.5,n:'Projets livrés depuis plus de 3 ans',k:'pt',cols:['#5A88B5'],lab:['Livré il y a plus de 3 ans']}]},
+ {id:'boa2',def:true,rr:6.5,n:'Projets en cours (clic : page du projet)',k:'pt',cols:['#D8CFB4'],lab:['En cours']},
+ {id:'boa1',def:true,rr:6.5,n:'Projets livrés depuis moins de 3 ans',k:'pt',cols:['#9B8A5E'],lab:['Livré récemment']},
+ {id:'boa0',def:true,rr:6.5,n:'Projets livrés depuis plus de 3 ans',k:'pt',cols:['#5E5233'],lab:['Livré il y a plus de 3 ans']}]},
 {g:'Culture et cultes',items:[
  {id:'cult',n:'Lieux et équipements culturels',k:'pt',cols:['#e11d48','#a855f7','#f59e0b','#0ea5e9','#22c55e','#f472b6'],lab:['Musées et lieux de mémoire','Théâtres, scènes et opéras','Cinémas','Bibliothèques et archives','Librairies','Conservatoires et centres de création']},
  {id:'culte',n:'Lieux de culte',k:'pt',cols:['#fbbf24','#60a5fa','#34d399','#f97316','#cbd5e1','#c4b5fd'],lab:['Catholique','Juif','Musulman','Bouddhiste','Autre ou non précisé','Chrétien non catholique (protestant, orthodoxe…)']}]},

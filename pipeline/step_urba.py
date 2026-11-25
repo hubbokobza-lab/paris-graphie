@@ -1,4 +1,5 @@
 """Autorisations d'urbanisme (historique + dossiers récents) et Commission du Vieux Paris. Module hebdomadaire."""
+import time
 import numpy as np, pandas as pd
 from core import *
 from step_ban import load_ban
@@ -76,6 +77,14 @@ def run(st, ban=None):
     h = h[h.t.notna()].copy()
     h['yd'] = pd.to_numeric(h.date_depot.str[:4], errors='coerce').fillna(0).astype(int)
     h['sc'] = np.where(h.acc, h.description_travaux.map(surf), 0.0)
+    # délai d'obtention (jours entre dépôt et décision), autorisations accordées uniquement
+    MO = {m: i + 1 for i, m in enumerate(['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'])}
+    ddec = pd.to_datetime(h.annee_decision.fillna('') + '-' + h.mois_decision.map(MO).astype('Int64').astype(str) + '-' + h.jour_decision.fillna(''), errors='coerce')
+    dl = (ddec - pd.to_datetime(h.date_depot, errors='coerce')).dt.days
+    h['dl'] = np.where(h.acc & h.t.isin(['PC', 'DP', 'PD']) & dl.between(1, 3650), dl, 0).astype(int)
+    y0 = int(time.strftime('%Y')) - 5
+    MED = {t: int(h[(h.t == t) & (h.dl > 0) & (h.yd >= y0)].dl.median()) for t in ('PC', 'DP', 'PD') if ((h.t == t) & (h.dl > 0) & (h.yd >= y0)).any()}
+    log('délai médian d\'obtention depuis', y0, ':', MED)
     n_tot = np.zeros(N, np.uint16); n_pc = np.zeros(N, np.uint8); last_pc = np.zeros(N, np.uint16); last_pd = np.zeros(N, np.uint16)
     surfc = np.zeros(N, np.uint32); recs = np.zeros(N, np.uint8)
     gs = h.groupby('sh').size(); n_tot[gs.index] = np.minimum(gs.values, 65535)
@@ -95,10 +104,10 @@ def run(st, ban=None):
         return MOA.get(re.sub(r'[^0-9A-Z]', '', str(nm))[2:], '')
     h = h.sort_values('date_depot', ascending=False)
     det = collections.defaultdict(list)
-    for s, nm, dd, t, dc, ds in zip(h.sh.values, h.numero_dossier.values, h.date_depot.values, h.t.values, h.decision_autorite.values, h.description_travaux.values):
-        det[int(s)].append([nm, dd, TI[t], DI.get(dc, -1), clip(ds, 90 if t in ('RV', 'DT') else 260), dem(nm)])
+    for s, nm, dd, t, dc, ds, dl_ in zip(h.sh.values, h.numero_dossier.values, h.date_depot.values, h.t.values, h.decision_autorite.values, h.description_travaux.values, h.dl.values):
+        det[int(s)].append([nm, dd, TI[t], DI.get(dc, -1), clip(ds, 90 if t in ('RV', 'DT') else 260), dem(nm), int(dl_)])
     st.set_arr('b', det)
-    for a_ in range(21): st.arr[a_]['t'] = TL; st.arr[a_]['d'] = DEC
+    for a_ in range(21): st.arr[a_]['t'] = TL; st.arr[a_]['d'] = DEC; st.arr[a_]['med'] = MED
     # Commission du Vieux Paris
     cv = json.load(open(ods('commission-du-vieux-paris-adresses-instruites', 'json', 'cvp.json', min_size=100_000)))
     cv = [c for c in cv if c.get('geo_point_2d')]
