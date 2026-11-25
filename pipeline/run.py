@@ -6,7 +6,7 @@
 import argparse, sys, os, shutil
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core import *
-import step_base, step_ban, step_urba, step_misc, step_plu, step_usage, step_bdnb, step_cad, step_climat, step_femmes, step_tour, step_transport, step_osm_metro, step_culture, step_bouchaud, step_site
+import step_base, step_ban, step_urba, step_misc, step_plu, step_usage, step_bdnb, step_cad, step_climat, step_tour, step_transport, step_osm_metro, step_culture, step_bouchaud, step_site
 
 def check(st, prev=None):
     """Garde-fous : on refuse de publier un résultat manifestement incomplet."""
@@ -62,13 +62,6 @@ def main():
         if a.site:
             for f in ('ov_hot.json', 'ov_cu.json', 'ov_abnb.json'):
                 if f not in st.files and os.path.exists(os.path.join(a.site, f)): st.files[f] = open(os.path.join(a.site, f), 'rb').read()
-        try:
-            step_femmes.run(st); done('fem')
-        except Exception as e:
-            print('::warning title=Femmes illustres non mises à jour::%s' % str(e)[:300], flush=True)
-            if a.site:
-                for f in ('ov_fem.json', 'ov_femp.json', 'fem.json'):
-                    if os.path.exists(os.path.join(a.site, f)): st.files[f] = open(os.path.join(a.site, f), 'rb').read()
         try:
             step_climat.run(st); done('frais')
         except Exception as e:      # les îlots de fraîcheur ne doivent pas bloquer la mise à jour

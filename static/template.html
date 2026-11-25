@@ -1128,9 +1128,6 @@ const OVL=[
  {id:'abnb',n:'Annonces Airbnb (densité par carré de 250 m)',k:'poly',a:.45,cols:['#fde0c5','#facba6','#f59e72','#e8604c','#b5223c'],lab:['3 à 9 annonces','10 à 29','30 à 59','60 à 99','100 et plus']},
  {id:'hot',n:'Hôtels et hébergements classés',k:'pt',cols:['#9ecae1','#4292c6','#08519c','#08306b','#c51b8a','#41ab5d'],lab:['Hôtels 1 et 2 étoiles ou non précisé','Hôtels 3 étoiles','Hôtels 4 étoiles','Hôtels 5 étoiles et palaces','Résidences de tourisme','Auberges collectives et autres']},
  {id:'cu',n:'Meublés touristiques autorisés (changement d\'usage)',k:'pt',cols:['#e6550d'],lab:['Autorisation de changement d\'usage']}]},
-{g:'Femmes illustres',items:[
- {id:'fem',n:'Femmes illustres à Paris : lieux de vie et de travail',k:'pt',cols:['#e7298a','#7570b3','#d95f02','#e6ab02','#1b9e77','#66a61e','#1f78b4','#a6761d'],lab:['77 illustres Parisiennes','Femmes de lettres','Artistes','Comédiennes','Scientifiques','Politiques','Sportives','Cheffes']},
- {id:'femp',n:'Parcours « Paris célèbre les femmes » (2019)',k:'line',cols:['#e7298a'],lab:['Parcours']}]},
 {g:'Paris en 1970',items:[
  {id:'p70',n:'C\'était Paris en 1970 : carrés du concours photo (clic : photos du carré)',k:'poly',a:.28,lsuf:'',lcol:'#e8eef4',cols:['#5b6770','#9ecae1','#4292c6','#08519c'],lab:['Pas de photographie numérisée','1 à 9 photographies','10 à 49 photographies','50 photographies et plus']}]},
 {g:'Îlots de chaleur',items:[
@@ -1299,7 +1296,7 @@ function ovTip(x,y){
 }
 /* recherche de calques, avec tolérance (accents, fautes de frappe, synonymes) */
 {const nz=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
- const SYN=[['histoire','historique','patrimoine','ancien','anciens','atlas','monument','memoire','1970','femmes','illustres','photo','photos','mh','merimee','vieux'],
+ const SYN=[['histoire','historique','patrimoine','ancien','anciens','atlas','monument','memoire','1970','photo','photos','mh','merimee','vieux'],
   ['patrimoine','protection','monument','historique','abf','unesco','pvp','inscrit'],
   ['age','construction','periode','annee','date','epoque','ancien'],
   ['hauteur','gabarit','niveaux','etages','volume','igh','surelevation','plafond'],
@@ -1523,7 +1520,6 @@ const SRC={
  hot:['Atout France, « Hébergements touristiques classés en France », géolocalisés par Paris-graphie à partir de la BAN','https://www.data.gouv.fr/datasets/hebergements-touristiques-classes-en-france'],
  cu:['Ville de Paris, « Registre des autorisations de changement d\'usage pour les meublés touristiques », Open Data (ODbL)','https://opendata.paris.fr/explore/dataset/registre-des-autorisations-de-changement-dusage-pour-les-meubles/'],
  abnb:['Inside Airbnb, relevé trimestriel des annonces de Paris (licence CC BY 4.0), agrégé par carré de 250 m : positions brouillées jusqu\'à 150 m par Airbnb, aucune annonce individuelle affichée','https://insideairbnb.com/paris/'],
- fem:['Ville de Paris, « Femmes illustres à Paris » (portraits et parcours, 2019), Open Data (ODbL)','https://opendata.paris.fr/explore/dataset/femmes-illustres-a-paris-portraits/'],
  p70:['Bibliothèque historique de la Ville de Paris, fonds « C\'était Paris en 1970 » ; carroyage d\'après le projet This was Paris in 1970 (MIT) ; sites paris1970.fr et paris1970.jeantho.eu','https://paris1970.fr/'],
  lcz:['Cerema, « Cartographie des zones climatiques locales (LCZ) », aire urbaine de Paris, images SPOT 2022 (Licence Ouverte)','https://www.data.gouv.fr/datasets/cartographie-des-zones-climatiques-locales-lcz-des-93-territoires-de-plus-de-50-000-habitants-en-france'],
  veg:['Apur, « Hauteur de la végétation 2021 », Open Data (licence ODbL)','https://opendata.apur.org/'],
@@ -1545,7 +1541,7 @@ const OPD='https://opendata.paris.fr/explore/dataset/',
  banUrl=(a,arr)=>'https://api-adresse.data.gouv.fr/search/?limit=1&q='+encodeURIComponent(a+' 750'+String(arr||0).padStart(2,'0')+' Paris');
 let GARES=null;getJson('gares.json').then(v=>{GARES=v;}).catch(()=>{});
 const XTRA=[['tour.json','Hébergement touristique',null],['cult.json','Lieux culturels',null],['culte.json','Lieux de culte',null]];for(const x of XTRA)getJson(x[0]).then(v=>{x[2]=v;}).catch(()=>{});
-let FEM=null;getJson('fem.json').then(v=>{FEM=v;}).catch(()=>{});
+let FEM=null;   // femmes illustres retirées de la carte (25/11/2026)
 let P70=null;getJson('p70.json').then(v=>{P70=v;}).catch(()=>{});
 function p70Of(lo,la){if(!P70)return null;const [a,b]=P70.d;for(const q of P70.s)if(la<=q[1]&&la>q[1]-a&&lo<=q[2]&&lo>q[2]-b)return q;return null;}
 let VERG=null;getJson('vergue.json').then(v=>{VERG=v;}).catch(()=>{});
