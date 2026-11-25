@@ -91,6 +91,14 @@ footer{padding:9px 16px;border-top:1px solid var(--line);font-size:10.5px;color:
 .sw2{display:inline-block;width:11px;height:11px;border-radius:2px;flex:none;border:1px solid rgba(0,0,0,.2)}
 .ovlg{margin:0 0 4px 26px;font-size:11.5px;color:var(--ink2)}.ovlg>div{display:flex;align-items:center;gap:7px;padding:1px 0}
 #card .pdfb{all:unset;cursor:pointer;background:var(--ink);color:#fff;font-size:12.5px;padding:7px 12px;border-radius:4px}#card .pdfb:hover{background:#245d86}
+#alo{all:unset;cursor:pointer;display:block;margin:6px 0 0;font-size:12px;color:var(--ink2);text-decoration:underline}
+#alst{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:5vh 12px}#alst[hidden]{display:none}
+#alst .alp{background:var(--bg);color:var(--ink);border-radius:6px;max-width:1100px;width:100%;max-height:90vh;overflow:auto;padding:14px 16px;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+#alst .alh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}#alx{all:unset;cursor:pointer;font-size:16px;padding:2px 6px}
+#alt{width:100%;box-sizing:border-box;font:inherit;font-size:13px;margin:8px 0;padding:8px;border:1px solid var(--line);border-radius:4px;background:#fff;color:#111}
+#alst .alb{display:flex;gap:8px;align-items:center;margin-bottom:10px}#alst .alb button{all:unset;cursor:pointer;background:var(--ink);color:#fff;padding:6px 12px;border-radius:4px;font-size:12.5px}#alst .alb button[disabled]{opacity:.4;cursor:default}
+#alr table{border-collapse:collapse;width:100%;font-size:12px}#alr th,#alr td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}#alr th{position:sticky;top:-14px;background:var(--bg)}#alr tr[data-i]:not(.ko){cursor:pointer}#alr tr[data-i]:not(.ko):hover{background:var(--bg2)}#alr tr.ko td{color:#c0392b}
+body:not(.adv):not(.lqon) .advx{display:none!important}#advw{display:flex;gap:7px;align-items:center;font-size:12px;margin:6px 0 2px;cursor:pointer}#advw .k{font-size:11px}
 #legend .hist{display:flex;align-items:flex-end;gap:2px;height:56px;margin:2px 0 6px;padding-bottom:1px;border-bottom:1px solid var(--line)}#legend .hb{flex:1;min-width:3px;border-radius:2px 2px 0 0;cursor:pointer;transition:opacity .15s}#legend .hb.off{opacity:.18}#legend .hb.cut{background-image:linear-gradient(0deg,transparent 78%,var(--bg) 78%,var(--bg) 84%,transparent 84%)!important}
 #tip{position:fixed;z-index:8;max-width:300px;background:var(--bg);border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.4);padding:6px 9px;font-size:12px;line-height:1.35;pointer-events:none;color:var(--ink)}#tip[hidden]{display:none}#tip hr{border:0;border-top:1px solid var(--line);margin:5px 0}
 #card .up{margin:2px 0 4px}#card .bdg{display:inline-block;font-size:11px;border:1px solid;border-radius:3px;padding:0 5px;margin:0 4px 3px 0}
@@ -185,7 +193,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
  </header>
  <div id="scroll">
   <h2>Calque</h2>
-  <div id="lqw"><input id="lq" type="search" placeholder="Chercher un calque (ex. métro, hauteur, histoire)" autocomplete="off" spellcheck="false"><div id="lqn" class="hint"></div></div>
+  <div id="lqw"><input id="lq" type="search" placeholder="Chercher un calque (ex. métro, hauteur, histoire)" autocomplete="off" spellcheck="false"><div id="lqn" class="hint"></div><label id="advw" class="ck"><input type="checkbox" id="adv"><span>Mode avancé</span><span class="k" id="advn"></span></label></div>
   <div class="hint" style="margin:-2px 4px 8px">Un clic affiche un calque, un second clic le retire.</div>
   <details class="lsec" data-g="Bouchaud Architectes"><summary><span class="chev"></span>Sélection de projets Bouchaud<span class="lsn"></span></summary><div class="ovslot" data-g="Bouchaud Architectes"></div></details>
   <div class="crit" id="crit"></div>
@@ -355,7 +363,7 @@ const SUR_LAB=["2000–2009","2010–2014","2015–2019","2020 et après","Aucun
 const SUR_COL=["#3288bd","#66c2a5","#fee08b","#f46d43",GRAY];
 const HT_LIM=[60,120,160,200,250,310,500,1000];
 const BN=S.bn||new Uint8Array(N),BU=S.bu||new Uint8Array(N),BL=S.bl||new Uint16Array(N),BS=S.bs||new Uint16Array(N),BT=S.bt||new Uint16Array(N),BM=S.bm||new Uint8Array(N),BD=S.bd||new Uint8Array(N),BG=S.bg||new Uint8Array(N),BE=S.be||new Uint8Array(N);
-const nivEst=s=>Math.max(1,Math.round(HM[s]/30)),nivOf=s=>BN[s]>0?BN[s]:nivEst(s);
+const nivEst=s=>Math.max(1,Math.round(HM[s]/30)),nivFF=s=>BN[s]>0&&HM[s]/10/BN[s]<=5.5,nivOf=s=>nivFF(s)?BN[s]:nivEst(s);   // niveaux des fichiers fonciers, sauf s'ils sont incohérents avec la hauteur
 const SPL=s=>Math.round(area[s]*nivOf(s)),SDPm=s=>Math.round(SPL(s)*.7),sdpTxt=s=>nf.format(Math.round(SPL(s)*.6/10)*10)+' à '+nf.format(Math.round(SPL(s)*.8/10)*10)+' m² (calcul : emprise × niveaux, moins 20 à 40 %)',CO2R=650,co2Of=s=>SDPm(s)*CO2R/1000;
 const DPE_COL=['#3a4652','#009c6d','#52b153','#a5cc74','#f4e70f','#f0b50f','#eb8235','#d7221f'],GES_COL=['#3a4652','#f6edfd','#e4c7f5','#d5a9f0','#cb95ed','#ba72e6','#a74ddd','#8a24c7'];
 const MAT_LAB=['Indéterminé','Pierre','Brique ou meulière (avec ou sans pierre)','Béton','Béton et maçonnerie','Bois','Autres'],MAT_COL=['#3a4652','#e9d8a6','#c8553d','#8d99ae','#adb5bd','#9c6644','#6c757d'];
@@ -817,7 +825,7 @@ function baseInfo(s,A,P){
  return head+'<div class="sb">'+(AN[s]?'Construit en '+AN[s]:'Date de construction inconnue')+' · Paris '+(ARR[s]?ARR[s]+'e':'')+'</div>'+legendHtml(s)
   +row('Période APUR',per)+row('Réhabilitation',RE[s]>=1900?RE[s]:'—')+row('Surélévation',SU[s]?SU[s]:'—')
   +row('Hauteur médiane / max',(HM[s]/10).toFixed(1).replace('.',',')+' m / '+(HX[s]/10).toFixed(1).replace('.',',')+' m')
-  +row('Niveaux',niv+(BN[s]>0?' (fichiers fonciers)':' (estimé : hauteur médiane ÷ 3 m)'))
+  +row('Niveaux',niv+(nivFF(s)?' (fichiers fonciers)':' (estimé : hauteur médiane ÷ 3 m)'))
   +row('Emprise au sol',nf.format(Math.round(area[s]))+' m²')+row('Surface de plancher estimée',sdpTxt(s))
   +(TYP[s]?row('Typologie (Apur)',TY_LAB[TYP[s]]):'')+row('Toiture',toit)+(IG[s]?row('Immeuble de grande hauteur','oui'):'')
   +(pl&&pl.length?row('Parcelle'+(pl.length>1?'s':'')+' cadastrale'+(pl.length>1?'s':''),pl.slice(0,4).map(x=>esc(x.slice(8,10)+' '+x.slice(10).replace(/^0+/,''))).join(', ')+(pl.length>4?' …':'')):'')
@@ -850,6 +858,7 @@ function bdnbRows(s,B){
  if(ntot)R.push(['Copropriété',ntot+' lots'+(nter?', dont '+nter+' lots d\'activité':''),'bdnb']);
  if(mur&&!/^INDET/.test(mur))R.push(['Murs (déclaration fiscale)',mur.toLowerCase(),'bdnb']);
  if(toit&&!/^INDET/.test(toit))R.push(['Toiture (déclaration fiscale)',toit.toLowerCase(),'bdnb']);
+ if(dpe&&LOC_BAN[dpe])R.push(['Location (loi Climat et résilience)',LOC_BAN[dpe],'dpe']);
  if(dpe)R.push(['DPE logement représentatif',dpe+' énergie, '+(ges||'?')+' climat'+(gesm2?' ('+Math.round(+gesm2)+' kg CO₂e/m²/an)':'')+(dpedt?', établi le '+dpedt.split('/').reverse().join('/'):'')+(a21==='0'?' (ancienne méthode)':''),'dpe']);
  if(dpet)R.push(['DPE tertiaire',dpet+' énergie, '+(gest||'?')+' climat'+(gestm2?' ('+Math.round(+gestm2)+' kg CO₂e/m²/an)':'')+(dptdt?', '+dptdt.split('/').reverse().join('/'):''),'dpe']);
  if(chauf)R.push(['Chauffage (DPE)',chauf,'dpe']);
@@ -937,13 +946,13 @@ function cardModel(s,c){
  // 2. Bâtiment
  {const per=PER_LAB[PMAP[PE[s]]??11],toit=SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'—',niv=nivOf(s);
   const h=row('Année de construction',AN[s]||'inconnue')+row('Période (Apur)',per)+row('Réhabilitation',RE[s]>=1900?RE[s]:'—')+row('Surélévation',SU[s]?SU[s]:'—')
-   +row('Hauteur médiane / max',dm(HM[s])+' m / '+dm(HX[s])+' m')+row('Niveaux',niv+(BN[s]>0?' (fichiers fonciers)':' (estimé : hauteur médiane ÷ 3 m)'))
+   +row('Hauteur médiane / max',dm(HM[s])+' m / '+dm(HX[s])+' m')+row('Niveaux',niv+(nivFF(s)?' (fichiers fonciers)':' (estimé : hauteur médiane ÷ 3 m)'))
    +row('Emprise au sol',nf.format(Math.round(area[s]))+' m²')+row('Surface de plancher estimée',sdpTxt(s))
    +(TYP[s]?row('Typologie (Apur)',TY_LAB[TYP[s]]):'')+row('Toiture',toit)+(IG[s]?row('Immeuble de grande hauteur','oui'):'');
   const items=[it('Année de construction : '+(AN[s]||'inconnue')+' (dates parfois approximatives)','apur'),it('Période : '+per,'apur'),
    it('Réhabilitation : '+(RE[s]>=1900?RE[s]:'—')+' ; surélévation : '+(SU[s]||'—'),'apur'),it('Hauteur médiane / maximale : '+dm(HM[s])+' m / '+dm(HX[s])+' m','apur'),
    it('Emprise au sol : '+nf.format(Math.round(area[s]))+' m²','apur'),
-   it('Niveaux : '+niv+(BN[s]>0?' (fichiers fonciers, via la BDNB)':' (estimé : hauteur médiane ÷ 3 m)')+' ; surface de plancher estimée : '+sdpTxt(s),'calc'),
+   it('Niveaux : '+niv+(nivFF(s)?' (fichiers fonciers, via la BDNB)':' (estimé : hauteur médiane ÷ 3 m)')+' ; surface de plancher estimée : '+sdpTxt(s),'calc'),
    ...(TYP[s]?[it('Typologie : '+TY_LAB[TYP[s]],'typ')]:[]),
    it('Toiture : '+(SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'autre ou inconnue')+(IG[s]?' ; immeuble de grande hauteur':''),'apur')];
   sec('bati','Bâtiment',h,items);}
@@ -1259,7 +1268,7 @@ function ovTip(x,y){
  for(const g of OVL){
   const [sec,lab]=DEST[g.g]||['Urbanisme (PLU)',g.g];
   const box=document.querySelector('.ovslot[data-g="'+sec+'"]')||$('#ovl');
-  const dt=document.createElement('details');dt.className='ovgrp';
+  const dt=document.createElement('details');dt.className='ovgrp';dt.dataset.g=g.g;
   dt.innerHTML='<summary title="Clic : afficher ou masquer toutes les couches du groupe. Flèche : déplier"><span class="chev"></span><input type="checkbox" class="gck" tabindex="-1"><span class="gl">'+lab+'</span><span class="gn">'+g.items.length+'</span></summary>';
   const sm=dt.firstChild,gck=sm.querySelector('.gck'),boxes=[];
   const sync=()=>{const n=g.items.filter(o=>o.on).length;gck.checked=n===g.items.length;gck.indeterminate=n>0&&n<g.items.length;};
@@ -1320,7 +1329,7 @@ function ovTip(x,y){
  const tm=(q,words)=>expand(q).some(e=>words.some(w=>near(e,w)));const tm0=(q,words)=>words.some(w=>near(q,w));
  const scroll=$('#scroll'),inp=$('#lq'),cnt=$('#lqn');let saved=null;
  const rows=()=>[...scroll.querySelectorAll('#crit button[data-id]')].map(b=>({el:b,t:b.textContent})).concat([...scroll.querySelectorAll('.ovgrp label.ck')].filter(l=>l.querySelector('input[type=checkbox]')).map(l=>({el:l.parentElement,t:l.textContent})));
- const run=()=>{const q=nz(inp.value),Q=q?q.split(' ').filter(x=>x.length>1):[];const secs=[...scroll.querySelectorAll('details.lsec')],grps=[...scroll.querySelectorAll('details.ovgrp')];
+ const run=()=>{const q=nz(inp.value),Q=q?q.split(' ').filter(x=>x.length>1):[];document.body.classList.toggle('lqon',Q.length>0);const secs=[...scroll.querySelectorAll('details.lsec')],grps=[...scroll.querySelectorAll('details.ovgrp')];
   scroll.querySelectorAll('.lqh').forEach(e=>e.classList.remove('lqh'));
   if(!Q.length){if(saved){for(const [d,o] of saved)d.open=o;saved=null;}cnt.textContent='';return;}
   if(!saved)saved=[...secs,...grps].map(d=>[d,d.open]);
@@ -1535,6 +1544,7 @@ function srcList(){return Object.keys(SRC).filter(k=>SRC[k][1]&&!(PUB&&(k==='dvf
 function renderSrc(){const b=$('#srct');if(!b)return;b.innerHTML='<div style="margin-bottom:6px">Données ouvertes (licence ODbL ou Licence Ouverte selon le producteur). Date d\'extraction indiquée pour chaque source'+(SRCD._maj?' ; dernière mise à jour du site : '+fd10(SRCD._maj):'')+'.</div>'+srcList().map(x=>'<div style="margin:3px 0"><a href="'+esc(x[1])+'" target="_blank" rel="noopener">'+esc(x[0])+'</a></div>').join('');}
 getJson('sources.json').then(j=>{SRCD=j||{};renderSrc();}).catch(()=>renderSrc());
 function bldCenter(s){const wx=(bbox[4*s]+bbox[4*s+2])/2,wy=(bbox[4*s+1]+bbox[4*s+3])/2;return [H.lon0+wx/(H.q*111320*Math.cos(H.lat0*Math.PI/180))*H.q,H.lat0+wy/(H.q*110574)*H.q];}
+function llToW(lo,la){return [(lo-H.lon0)*111320*Math.cos(H.lat0*Math.PI/180),(la-H.lat0)*110574];}
 function bldLonLat(s){const wx=(bbox[4*s]+bbox[4*s+2])/2,wy=(bbox[4*s+1]+bbox[4*s+3])/2;return [H.lon0+wx/(111320*Math.cos(H.lat0*Math.PI/180)),H.lat0+wy/110574];}
 const OPD='https://opendata.paris.fr/explore/dataset/',
  dossUrl=n=>{const y=+(n.split(' ')[3]||0),rec=y>=24&&y<=40;return OPD+(rec?'dossiers-recents-durbanisme':'autorisations-durbanisme-h')+'/table/?q='+encodeURIComponent('"'+n+'"');},
@@ -1709,9 +1719,94 @@ cb.addEventListener('click',async e=>{if(e.target&&e.target.id==='pdfb'&&PCTX&&(
 });
 
 function fiche(s){}
+// ---------- Analyse d'une liste d'adresses (aussi utilisable par une IA : ?adresses=a|b|c, ou window.parisGraphie.analyse([...])) ----------
+const ABRV={bd:'boulevard',bld:'boulevard',boul:'boulevard',av:'avenue',ave:'avenue',r:'rue',pl:'place',fg:'faubourg',fbg:'faubourg',st:'saint',ste:'sainte',sq:'square',imp:'impasse',pass:'passage',qu:'quai',all:'allee',cr:'cours',che:'chemin',vla:'villa',cite:'cite',gal:'galerie',rte:'route',pont:'pont',prom:'promenade',sent:'sentier',carr:'carrefour',rpt:'rond point'};
+function parseAdr(l){
+ let x=nz(String(l).replace(/\b(75|92|93|94)\d{3}\b.*$/,'').replace(/,?\s*paris\s*(\d{1,2}\s*(e|er|eme|ème))?\s*$/i,'').replace(/[,;]/g,' '));
+ const m=x.match(/^(\d+)\s*(?:(bis|ter|quater|b|t|q)\b)?(?:\s*(?:a|à|et|-)\s*\d+\s*(?:bis|ter)?)?\s+(.*)$/);
+ let num=null,suf='',voie=x;if(m){num=m[1];suf=m[2]||'';voie=m[3];}
+ suf={b:'bis',t:'ter',q:'quater'}[suf]||suf;
+ voie=voie.split(' ').map(w=>ABRV[w]||w).join(' ').replace(/\bsaint (\w)/g,'saint $1');
+ return {num,suf,voie};
+}
+async function locAdr(l){
+ const A=await loadAddr();if(!A)return null;const p=parseAdr(l);if(!p.voie)return null;
+ const ws=p.voie.split(' ').filter(w=>!['de','du','des','la','le','les','l','d'].includes(w));
+ const hasW=(z,w)=>(' '+z+' ').includes(' '+w+' ')||(w.length>=4&&(' '+z).includes(' '+w));   // mot entier (ou début de mot)
+ let c=A.filter(s=>ws.every(w=>hasW(s.z,w)));
+ if(!c.length&&ws.length>2)c=A.filter(s=>ws.filter(w=>hasW(s.z,w)).length>=ws.length-1);
+ if(!c.length)return null;
+ c.sort((a,b)=>(a.z===p.voie?0:a.z.endsWith(p.voie)?1:2)-(b.z===p.voie?0:b.z.endsWith(p.voie)?1:2)||a.n.length-b.n.length);
+ const s=c[0];let e=null;
+ if(p.num){const want=nz(p.num+(p.suf?' '+p.suf:''));e=s.a.find(q=>nz(q[0])===want)||s.a.find(q=>nz(q[0]).split(' ')[0]===p.num);
+  if(!e){let bd=1e9;for(const q of s.a){const d=Math.abs(parseInt(q[0])-+p.num);if(d<bd&&(parseInt(q[0])-+p.num)%2===0){bd=d;e=q;}}if(e&&bd>6)e=null;}}
+ if(!e)return {q:l,adr:s.n,ok:false,note:p.num?'numéro introuvable sur cette voie':'pas de numéro'};
+ const wx=e[1]/2,wy=e[2]/2;let b=pick(wx,wy);
+ if(b<0)for(const [dx,dy] of [[2,0],[-2,0],[0,2],[0,-2],[4,4],[-4,4],[4,-4],[-4,-4],[8,0],[-8,0],[0,8],[0,-8],[12,0],[-12,0],[0,12],[0,-12],[16,16],[-16,16],[16,-16],[-16,-16],[20,0],[-20,0],[0,20],[0,-20]]){b=pick(wx+dx,wy+dy);if(b>=0)break;}
+ return {q:l,adr:e[0]+' '+s.n,ok:b>=0,b,x:wx,y:wy,note:b<0?'aucun bâtiment à cette adresse':''};
+}
+const LOC_BAN={G:'interdit à la location depuis le 1er janvier 2025',F:'interdit à la location à partir du 1er janvier 2028',E:'interdit à la location à partir du 1er janvier 2034'};
+const strip=x=>String(x).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+function bldRow(b){
+ const [lo,la]=bldLonLat(b),r={'Arrondissement':ARR[b]?ARR[b]+(ARR[b]===1?'er':'e'):'','Année de construction':AN[b]||'','Hauteur médiane (m)':HM[b]?(HM[b]/10).toFixed(1).replace('.',','):'','Hauteur maximale (m)':HX[b]?(HX[b]/10).toFixed(1).replace('.',','):'','Niveaux':nivOf(b),'Emprise au sol (m²)':Math.round(area[b]),'Surface de plancher estimée (m²)':nf.format(Math.round(SPL(b)*.6/10)*10)+' à '+nf.format(Math.round(SPL(b)*.8/10)*10)};
+ for(const c of CRIT){if(['neu','yr','arr','per'].includes(c.id))continue;let i;try{i=c.cls(b);}catch(e){continue;}if(i==null||c.lab[i]==null)continue;r[strip(c.name)]=strip(c.lab[i]);}
+ const d=r['DPE, étiquette énergie'];if(d&&LOC_BAN[d])r['Location (loi Climat)']=LOC_BAN[d];
+ r['Lien']=location.origin+location.pathname+'?b='+lo.toFixed(6)+','+la.toFixed(6);r['lon']=+lo.toFixed(6);r['lat']=+la.toFixed(6);
+ return r;
+}
+async function analyse(list){const out=[];for(const l of list){const t=String(l).trim();if(!t)continue;const a=await locAdr(t);
+ out.push(Object.assign({'Adresse saisie':t,'Adresse trouvée':a?a.adr:'','Statut':!a?'adresse introuvable':a.ok?'ok':a.note},a&&a.ok?bldRow(a.b):{}));}return out;}
+function toCsv(rows){const K=[];for(const r of rows)for(const k of Object.keys(r))if(!K.includes(k))K.push(k);
+ const q=v=>{v=v==null?'':String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;};
+ return '\ufeff'+[K.map(q).join(';')].concat(rows.map(r=>K.map(k=>q(r[k])).join(';'))).join('\r\n');}
+function bldAt(e){const wx=e[1]/2,wy=e[2]/2;let b=pick(wx,wy);if(b<0)for(const [dx,dy] of [[2,0],[-2,0],[0,2],[0,-2],[4,4],[-4,4],[4,-4],[-4,-4],[8,0],[-8,0],[0,8],[0,-8]]){b=pick(wx+dx,wy+dy);if(b>=0)break;}return b;}
+async function dumpStreets(i0,i1){   // utilisé par le robot pour publier l'accès statique api/ (lisible par les IA)
+ const A=await loadAddr(),out=[];
+ for(const s of A.slice(i0,i1)){const B={},N={};
+  for(const e of s.a){const b=bldAt(e);if(b<0)continue;if(!(b in B)){const r=bldRow(b);delete r['Lien'];B[b]=r;}N[e[0]]=b;}
+  out.push({voie:s.n,numeros:N,batiments:B});}
+ return {total:A.length,out};
+}
+window.parisGraphie={analyse,toCsv,bldRow,dumpStreets};
+{const box=document.createElement('div');box.id='alst';box.hidden=true;
+ box.innerHTML='<div class="alp"><div class="alh"><b>Analyse d\'une liste d\'adresses</b><button id="alx" aria-label="Fermer">✕</button></div>'
+  +'<div class="k">Une adresse par ligne (Paris intra-muros). Exemple : 12 rue de Rivoli, 75004 Paris</div>'
+  +'<textarea id="alt" rows="7" spellcheck="false" placeholder="12 rue de Rivoli\n3 bd Haussmann\n27 rue La Fayette"></textarea>'
+  +'<div class="alb"><button id="alg">Analyser</button><button id="alc" disabled>Exporter (Excel, CSV)</button><span class="k" id="als"></span></div><div id="alr"></div></div>';
+ document.body.appendChild(box);
+ const sb=document.createElement('button');sb.id='alo';sb.type='button';sb.textContent='Analyser une liste d\'adresses';$('#srch').after(sb);
+ let ROWS=[];
+ const run=async()=>{const L=$('#alt').value.split(/\n+/).map(s=>s.trim()).filter(Boolean).slice(0,500);$('#als').textContent='Analyse de '+L.length+' adresses…';
+  ROWS=await analyse(L);const ok=ROWS.filter(r=>r.Statut==='ok').length;$('#als').textContent=ok+' sur '+ROWS.length+' adresses localisées';$('#alc').disabled=!ROWS.length;
+  const K=['Adresse trouvée','Statut','Arrondissement','Année de construction','Niveaux','Surface de plancher estimée (m²)','DPE, étiquette énergie','Protection patrimoniale','Zone du PLU','Marge sous le plafond (indicatif)','Dernier permis de construire accordé'];
+  $('#alr').innerHTML='<table><tr><th>Saisie</th>'+K.map(k=>'<th>'+esc(k)+'</th>').join('')+'</tr>'+ROWS.map((r,i)=>'<tr data-i="'+i+'"'+(r.Statut==='ok'?'':' class="ko"')+'><td>'+esc(r['Adresse saisie'])+'</td>'+K.map(k=>'<td>'+esc(r[k]??'')+'</td>').join('')+'</tr>').join('')+'</table>';
+  $('#alr').querySelectorAll('tr[data-i]').forEach(tr=>tr.onclick=()=>{const r=ROWS[+tr.dataset.i];if(r.Statut!=='ok')return;box.hidden=true;goTo(Object.assign({t:r['Adresse trouvée'],k:7},xyOf(r)));});};
+ const xyOf=r=>{const [x,y]=llToW(r.lon,r.lat);return {x:x*2,y:y*2};};
+ $('#alg').onclick=run;$('#alx').onclick=()=>box.hidden=true;sb.onclick=()=>{box.hidden=false;$('#alt').focus();};
+ $('#alc').onclick=()=>{const u=URL.createObjectURL(new Blob([toCsv(ROWS)],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='paris-graphie-adresses.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),2000);};
+ const P=new URLSearchParams(location.search);
+ if(P.get('adresses')){$('#alt').value=P.get('adresses').split('|').join('\n');box.hidden=false;run();}
+ if(P.get('b')){const [lo,la]=P.get('b').split(',').map(Number);if(isFinite(lo)&&isFinite(la)){const [x,y]=llToW(lo,la);setTimeout(()=>goTo({t:'',x:x*2,y:y*2,k:7}),300);}}
+}
 new ResizeObserver(()=>{const first=W===1;resize();if(first)fit();draw();}).observe(cv);
 resize();fit();
 setCrit(CRIT[0]);ready=true;
+/* mode avancé : critères et calques spécialisés masqués par défaut (toujours trouvables par la recherche de calques) */
+{const AC=new Set(['reh','sur','ncm','soc','bur','ges','mur','toit','co2','pd','sf','rc','pm','dv','sa','ne','se','cl','arr','rs','ar','dh']);
+ const AG=new Set(['Hébergement touristique','Culture et cultes','Commerces','Cadastre','Voirie','Relief','Archéologie','Îlots de chaleur','PLU : secteurs et réserves','Sous-sol et risques','Mobilité']);
+ const AS=new Set(['Ensoleillement','Filtres','Marché (DVF 2021-2025)','Occupants (Sirene)','Sous-sol et fouilles']);
+ const cb_=$('#adv');let on=false;try{on=localStorage.getItem('pg_adv')==='1';}catch(e){}
+ const mark=()=>{const act=b=>b.getAttribute('aria-pressed')==='true'||b.classList.contains('on');
+  document.querySelectorAll('#crit button[data-id]').forEach(b=>b.classList.toggle('advx',AC.has(b.dataset.id)&&!act(b)));
+  document.querySelectorAll('details.ovgrp').forEach(d=>d.classList.toggle('advx',AG.has(d.dataset.g)&&![...d.querySelectorAll('input[type=checkbox]')].some(c=>c.checked)));
+  document.querySelectorAll('details.lsec').forEach(d=>{const items=[...d.querySelectorAll('button[data-id], details.ovgrp')];
+   const hideAll=AS.has(d.dataset.g)||(items.length&&items.every(x=>x.classList.contains('advx')));
+   const busy=d.dataset.g!=='Filtres'&&d.querySelector('button[aria-pressed=true]')||d.dataset.g!=='Filtres'&&[...d.querySelectorAll('input[type=checkbox]:not(#adv)')].some(c=>c.checked);
+   d.classList.toggle('advx',!!hideAll&&!busy);});
+  const n=document.querySelectorAll('.advx').length;$('#advn').textContent=on?'':'('+n+' éléments masqués)';};
+ const set=v=>{on=v;cb_.checked=v;document.body.classList.toggle('adv',v);try{localStorage.setItem('pg_adv',v?'1':'0');}catch(e){}mark();};
+ cb_.onchange=()=>set(cb_.checked);setTimeout(()=>set(on),50);
+}
 $('#load').style.display='none';
 })();
 </script>
