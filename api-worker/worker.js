@@ -58,12 +58,16 @@ async function adresse(q, opts = {}) {
   const out = { saisie: q, statut: approx ? 'ok (numéro voisin)' : 'ok', adresse: g.label, batiment: Number(k), carte: SITE + '?b=' + row.lon + ',' + row.lat, indicateurs: row };
   if (opts.walk !== false && row.lon) out.metro_rer_a_pied = await walk(row.lon, row.lat);
   out.sources = 'https://' + opts.host + '/sources';
+  out.editeur = 'Paris-graphie, Bouchaud Architectes (https://www.bouchaudarchitectes.com/hors-piste/paris-graphie)';
   out.avertissement = 'Données ouvertes, rattachements approximatifs ; surface de plancher et indice de vacance sont des estimations. Vérifier sur les sources.';
   return out;
 }
 
 const DOC = host => ({
   nom: 'API Paris-graphie (Bouchaud Architectes)',
+  editeur: 'Bouchaud Architectes, Paris',
+  presentation: 'https://www.bouchaudarchitectes.com/hors-piste/paris-graphie',
+  contact: 'h.bokobza@bouchaudarchitectes.com (anomalie, réclamation, question)',
   description: 'Indicateurs des immeubles de Paris intra-muros (âge, hauteur, niveaux, surface de plancher estimée, usages, DPE, patrimoine, PLU, autorisations d\'urbanisme, occupants, propriétaires personnes morales, suspicion de vacance des bureaux), mis à jour chaque semaine à partir de données ouvertes.',
   carte: SITE,
   points_d_acces: {
@@ -87,7 +91,7 @@ async function mcp(req, host) {
   const one = async r => {
     if (!r || r.id === undefined) return null;   // notification
     const ok = result => ({ jsonrpc: '2.0', id: r.id, result });
-    if (r.method === 'initialize') return ok({ protocolVersion: (r.params && r.params.protocolVersion) || '2025-03-26', capabilities: { tools: {} }, serverInfo: { name: 'paris-graphie', version: '1.0' }, instructions: 'Données ouvertes sur les immeubles de Paris intra-muros. Toujours citer les sources renvoyées.' });
+    if (r.method === 'initialize') return ok({ protocolVersion: (r.params && r.params.protocolVersion) || '2025-03-26', capabilities: { tools: {} }, serverInfo: { name: 'paris-graphie', version: '1.0' }, instructions: 'Paris-graphie, outil de Bouchaud Architectes : données ouvertes sur les immeubles de Paris intra-muros. Toujours citer les sources renvoyées. Contact : h.bokobza@bouchaudarchitectes.com' });
     if (r.method === 'ping') return ok({});
     if (r.method === 'tools/list') return ok({ tools: TOOLS });
     if (r.method === 'tools/call') {

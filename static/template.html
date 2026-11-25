@@ -99,6 +99,7 @@ footer{padding:9px 16px;border-top:1px solid var(--line);font-size:10.5px;color:
 #alst .alb{display:flex;gap:8px;align-items:center;margin-bottom:10px}#alst .alb button{all:unset;cursor:pointer;background:var(--ink);color:#fff;padding:6px 12px;border-radius:4px;font-size:12.5px}#alst .alb button[disabled]{opacity:.4;cursor:default}
 #alr table{border-collapse:collapse;width:100%;font-size:12px}#alr th,#alr td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}#alr th{position:sticky;top:-14px;background:var(--bg)}#alr tr[data-i]:not(.ko){cursor:pointer}#alr tr[data-i]:not(.ko):hover{background:var(--bg2)}#alr tr.ko td{color:#c0392b}
 body:not(.adv):not(.lqon) .advx{display:none!important}#advw{display:flex;gap:7px;align-items:center;font-size:12px;margin:6px 0 2px;cursor:pointer}#advw .k{font-size:11px}
+#ftr{font-size:11px;color:var(--ink2);margin-top:6px;line-height:1.5}#ftr a{color:inherit}
 #legend .hist{display:flex;align-items:flex-end;gap:2px;height:56px;margin:2px 0 6px;padding-bottom:1px;border-bottom:1px solid var(--line)}#legend .hb{flex:1;min-width:3px;border-radius:2px 2px 0 0;cursor:pointer;transition:opacity .15s}#legend .hb.off{opacity:.18}#legend .hb.cut{background-image:linear-gradient(0deg,transparent 78%,var(--bg) 78%,var(--bg) 84%,transparent 84%)!important}
 #tip{position:fixed;z-index:8;max-width:300px;background:var(--bg);border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.4);padding:6px 9px;font-size:12px;line-height:1.35;pointer-events:none;color:var(--ink)}#tip[hidden]{display:none}#tip hr{border:0;border-top:1px solid var(--line);margin:5px 0}
 #card .up{margin:2px 0 4px}#card .bdg{display:inline-block;font-size:11px;border:1px solid;border-radius:3px;padding:0 5px;margin:0 4px 3px 0}
@@ -231,7 +232,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
   <label class="ck"><input type="checkbox" id="fTrot" checked>Trottoirs et terre-pleins (à l'échelle de la rue)</label>
   </details>
  </div>
- <footer><button id="srcb" type="button" aria-expanded="false">Sources et licences</button><div id="srct" hidden></div></footer>
+ <footer><button id="srcb" type="button" aria-expanded="false">Sources et licences</button><div id="srct" hidden></div><div id="ftr">© Bouchaud Architectes · <a href="https://www.bouchaudarchitectes.com/hors-piste/paris-graphie" target="_blank" rel="noopener">Présentation</a> · <a href="https://paris-graphie-api.hub-bokobza.workers.dev/" target="_blank" rel="noopener">API</a> · <a href="mailto:h.bokobza@bouchaudarchitectes.com?subject=Paris-graphie">Signaler un problème</a></div></footer>
 </aside>
 <div id="tip" hidden></div>
 <div id="card" hidden><button id="cx" type="button" aria-label="Fermer">×</button><div id="cb"></div></div>
@@ -1704,7 +1705,7 @@ function makePdf(M_,IMG,HIST){
  newPage();
  put(M_.title,24,true,'0.10 0.28 0.41',0,null,4,1.25);
  put(M_.sub,12,false,'0.32 0.46 0.56',0,null,8);
- put('Fiche exportée le '+new Date().toLocaleDateString('fr-FR')+' à '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+' avec Paris-graphie'+(SRCD._maj?' (données mises à jour le '+fd10(SRCD._maj)+', date d\'extraction de chaque source en fin de document)':'')+'. Données ouvertes ; rattachements des dossiers, ventes et établissements au bâtiment par adresse ou localisation, donc approximatifs.',8.5,false,'0.45 0.45 0.45',0,null,18);
+ put('Fiche exportée le '+new Date().toLocaleDateString('fr-FR')+' à '+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+' avec Paris-graphie (Bouchaud Architectes, https://www.bouchaudarchitectes.com/hors-piste/paris-graphie ; API : https://paris-graphie-api.hub-bokobza.workers.dev/)'+(SRCD._maj?' (données mises à jour le '+fd10(SRCD._maj)+', date d\'extraction de chaque source en fin de document)':'')+'. Données ouvertes ; rattachements des dossiers, ventes et établissements au bâtiment par adresse ou localisation, donc approximatifs.',8.5,false,'0.45 0.45 0.45',0,null,18);
  let imgH=0;
  if(IMG){const w=LW,h=w*IMG.h/IMG.w;if(y-h<MG+40)newPage();y-=h;cur.ops.push('q '+w.toFixed(2)+' 0 0 '+h.toFixed(2)+' '+MG+' '+y.toFixed(2)+' cm /Im1 Do Q');
   y-=14;put('Capture de la carte Paris-graphie, largeur d\'environ '+Math.round(IMG.wm/10)*10+' m. Bâtiment sélectionné entouré de blanc'+(IMG.layer?', couleurs selon le calque « '+IMG.layer+' »':', plan neutre (aucun calque thématique)')+'. Fond : emprise bâtie Apur ; Seine et arrondissements : Ville de Paris ; numéros : Base Adresse Nationale.',7.5,false,'0.45 0.45 0.45',0,null,8);
