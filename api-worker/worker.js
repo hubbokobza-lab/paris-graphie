@@ -2,7 +2,7 @@
 const SITE = 'https://hubbokobza-lab.github.io/paris-graphie/';
 const LON0 = 2.2255, LAT0 = 48.8162, KX = 111320 * Math.cos(LAT0 * Math.PI / 180), KY = 110574;
 const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET, POST, OPTIONS', 'access-control-allow-headers': 'content-type, mcp-session-id, mcp-protocol-version' };
-const J = (o, st = 200) => new Response(JSON.stringify(o, null, 1), { status: st, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=600', ...CORS } });
+const J = (o, st = 200, cache = true) => new Response(JSON.stringify(o, null, 1), { status: st, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': cache ? 'public, max-age=600' : 'no-store', ...CORS } });
 
 async function site(path, ttl = 3600) {          // fichier publié (parfois compressé en gzip sans en-tête)
   const r = await fetch(SITE + path, { cf: { cacheTtl: ttl, cacheEverything: true } });
@@ -72,7 +72,7 @@ const DOC = host => ({
   carte: SITE,
   points_d_acces: {
     ['https://' + host + '/adresse?q=40 rue Laffitte']: 'un immeuble, avec distances à pied au métro et RER (ajouter &marche=0 pour les omettre)',
-    ['https://' + host + '/adresses?q=12 rue de Rivoli|3 boulevard Haussmann']: 'jusqu\'à 25 adresses séparées par | (sans distances à pied)',
+    ['https://' + host + '/adresses?q=12 rue de Rivoli|3 boulevard Haussmann']: 'jusqu\'à 15 adresses séparées par | (sans distances à pied)',
     ['https://' + host + '/voie?nom=rue Laffitte']: 'tous les bâtiments d\'une voie',
     ['https://' + host + '/sources']: 'sources, producteur de chaque indicateur et dates d\'extraction',
     ['https://' + host + '/mcp']: 'serveur MCP (outils pour assistants IA, transport HTTP)'
@@ -83,7 +83,7 @@ const DOC = host => ({
 // ---------- serveur MCP minimal (JSON-RPC sur HTTP, sans état)
 const TOOLS = [
   { name: 'immeuble_paris', description: 'Indicateurs d\'un immeuble de Paris à partir de son adresse : année, hauteur, niveaux, surface de plancher estimée, usages, DPE, patrimoine, PLU, permis, occupants, propriétaires personnes morales, suspicion de vacance, métro et RER à pied. Avec les sources.', inputSchema: { type: 'object', properties: { adresse: { type: 'string', description: 'Adresse à Paris, ex. 40 rue Laffitte' } }, required: ['adresse'] } },
-  { name: 'immeubles_paris', description: 'Mêmes indicateurs pour une liste d\'adresses à Paris (25 au plus), sans distances à pied.', inputSchema: { type: 'object', properties: { adresses: { type: 'array', items: { type: 'string' } } }, required: ['adresses'] } },
+  { name: 'immeubles_paris', description: 'Mêmes indicateurs pour une liste d\'adresses à Paris (15 au plus par appel), sans distances à pied.', inputSchema: { type: 'object', properties: { adresses: { type: 'array', items: { type: 'string' } } }, required: ['adresses'] } },
   { name: 'sources_paris_graphie', description: 'Liste des sources de données, producteur de chaque indicateur et dates d\'extraction.', inputSchema: { type: 'object', properties: {} } }
 ];
 async function mcp(req, host) {
@@ -93,20 +93,25 @@ async function mcp(req, host) {
     const ok = result => ({ jsonrpc: '2.0', id: r.id, result });
     if (r.method === 'initialize') return ok({ protocolVersion: (r.params && r.params.protocolVersion) || '2025-03-26', capabilities: { tools: {} }, serverInfo: { name: 'paris-graphie', version: '1.0' }, instructions: 'Paris-graphie, outil de Bouchaud Architectes : données ouvertes sur les immeubles de Paris intra-muros. Toujours citer les sources renvoyées. Contact : h.bokobza@bouchaudarchitectes.com' });
     if (r.method === 'ping') return ok({});
+    if (r.method === 'resources/list') return ok({ resources: [] });
+    if (r.method === 'resources/templates/list') return ok({ resourceTemplates: [] });
+    if (r.method === 'prompts/list') return ok({ prompts: [] });
     if (r.method === 'tools/list') return ok({ tools: TOOLS });
     if (r.method === 'tools/call') {
-      const a = r.params.arguments || {}; let res;
+      const a = (r.params && r.params.arguments) || {}; let res;
+      try {
       if (r.params.name === 'immeuble_paris') res = await adresse(String(a.adresse || ''), { host });
-      else if (r.params.name === 'immeubles_paris') res = await Promise.all((a.adresses || []).slice(0, 25).map(q => adresse(String(q), { host, walk: false })));
+      else if (r.params.name === 'immeubles_paris') res = await Promise.all((a.adresses || []).slice(0, 15).map(q => adresse(String(q), { host, walk: false })));
       else if (r.params.name === 'sources_paris_graphie') res = await site('api/sources.json');
       else return { jsonrpc: '2.0', id: r.id, error: { code: -32602, message: 'outil inconnu' } };
+      } catch (e) { return ok({ content: [{ type: 'text', text: 'Erreur : ' + String(e && e.message || e) }], isError: true }); }
       return ok({ content: [{ type: 'text', text: JSON.stringify(res) }] });
     }
     return { jsonrpc: '2.0', id: r.id, error: { code: -32601, message: 'méthode non prise en charge' } };
   };
   const out = Array.isArray(m) ? (await Promise.all(m.map(one))).filter(Boolean) : await one(m);
   if (!out || (Array.isArray(out) && !out.length)) return new Response(null, { status: 202, headers: CORS });
-  return J(out);
+  return J(out, 200, false);
 }
 
 export default {
@@ -114,11 +119,12 @@ export default {
     const u = new URL(req.url), host = u.host, p = u.pathname.replace(/\/+$/, '') || '/';
     if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
     try {
-      if (p === '/mcp') return req.method === 'POST' ? mcp(req, host) : J({ erreur: 'serveur MCP : utiliser POST (JSON-RPC)' }, 405);
+      if (req.method === 'POST' && (p === '/mcp' || p === '/' || p === '/sse')) return mcp(req, host);   // MCP, y compris si l'adresse saisie est la racine
+      if (p === '/mcp') return new Response(null, { status: 405, headers: { allow: 'POST', ...CORS } });
       if (p === '/') return J(DOC(host));
       if (p === '/sources') return J(await site('api/sources.json'));
       if (p === '/adresse') { const q = u.searchParams.get('q'); if (!q) return J({ erreur: 'paramètre q manquant' }, 400); return J(await adresse(q, { host, walk: u.searchParams.get('marche') !== '0' })); }
-      if (p === '/adresses') { const L = (u.searchParams.get('q') || '').split('|').map(s => s.trim()).filter(Boolean).slice(0, 25); return J({ resultats: await Promise.all(L.map(q => adresse(q, { host, walk: false }))), sources: 'https://' + host + '/sources' }); }
+      if (p === '/adresses') { const L = (u.searchParams.get('q') || '').split('|').map(s => s.trim()).filter(Boolean).slice(0, 15); return J({ resultats: await Promise.all(L.map(q => adresse(q, { host, walk: false }))), sources: 'https://' + host + '/sources' }); }
       if (p === '/voie') { const n = u.searchParams.get('nom'); if (!n) return J({ erreur: 'paramètre nom manquant' }, 400); const V = await site('api/voies/' + await voieSlug(n) + '.json'); return V ? J(V) : J({ erreur: 'voie introuvable' }, 404); }
       return J({ erreur: 'point d\'accès inconnu', aide: 'https://' + host + '/' }, 404);
     } catch (e) { return J({ erreur: String(e && e.message || e) }, 500); }
