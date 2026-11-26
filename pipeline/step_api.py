@@ -52,6 +52,7 @@ LLMS = """# Paris-graphie (Bouchaud Architectes)
 
 Outil conçu et édité par Bouchaud Architectes (Paris). Présentation : https://www.bouchaudarchitectes.com/hors-piste/paris-graphie
 Contact (anomalie, réclamation, question) : h.bokobza@bouchaudarchitectes.com
+API : https://paris-graphie-api.hub-bokobza.workers.dev/ · Code source : https://github.com/hubbokobza-lab/paris-graphie
 
 > Carte des immeubles de Paris intra-muros : âge, hauteur, niveaux, surface de plancher estimée, usages, DPE, patrimoine, PLU, autorisations d'urbanisme, sous-sol. Données ouvertes (Apur, Ville de Paris, BDNB, ADEME, IGN...), mises à jour chaque semaine. Données du {D}.
 
