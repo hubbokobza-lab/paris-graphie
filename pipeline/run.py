@@ -83,13 +83,14 @@ def main():
     # Sirene (comptages d'établissements par bâtiment) : fichier mensuel, recalculé si la dernière extraction a plus de 25 jours
     import datetime
     age = (datetime.date.today() - datetime.date.fromisoformat(SD.get('sir', '2000-01-01'))).days
-    if a.mode == 'full' or age > 25 or 's_ne' not in st.S or int((st.s('s_ne') > 0).sum()) == 0:
+    if a.mode == 'full' or age > 25 or 's_nek' not in st.S or int((st.s('s_ne') > 0).sum()) == 0:
         try:
             step_sirene.run(st, ban); done('sir')
         except Exception as e:
             print('::warning title=Sirene non mis à jour::%s' % str(e)[:300], flush=True)
             if prev is not None and 's_ne' in prev.S and len(prev.s('s_ne')) == st.N:
-                for k in ('s_ne', 's_eff', 's_act', 's_cl'): st.put(k, prev.s(k))
+                for k in ('s_ne', 's_eff', 's_act', 's_cl', 's_nek'):
+                    if k in prev.S: st.put(k, prev.s(k))
             else: step_misc.private_zero(st)
     # propriétaires personnes morales (DGFiP, annuel) : recalculés tous les 90 jours ou en reconstruction complète
     agep = (datetime.date.today() - datetime.date.fromisoformat(SD.get('own', '2000-01-01'))).days

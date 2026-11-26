@@ -140,6 +140,7 @@ label.ck{margin:8px 0;gap:10px;font-size:13px}
 .ovlg{margin:2px 0 10px 30px;line-height:1.5}
 #srch{margin-top:14px}#q{padding:9px 11px;font-size:13.5px}
 footer{padding:0;line-height:1.55}
+footer .srcb2{all:unset;display:block;box-sizing:border-box;width:100%;cursor:pointer;padding:13px 22px;font-size:12.5px;color:var(--ink);font-weight:600;border-top:1px solid var(--line)}footer .srcb2:hover{background:#e9eef2}footer .srcb2:after{content:' ▸';color:var(--ink2)}footer .srcb2[aria-expanded=true]:after{content:' ▾'}#metht{padding:0 22px 12px;font-size:12px;line-height:1.45;max-height:50vh;overflow:auto}#metht b{display:block;margin-top:8px}
 footer #srcb{all:unset;display:block;box-sizing:border-box;width:100%;cursor:pointer;padding:13px 22px;font-size:12.5px;color:var(--ink);font-weight:600}
 footer #srcb:hover{background:#e9eef2}footer #srcb:after{content:' ▸';color:var(--ink2)}footer #srcb[aria-expanded=true]:after{content:' ▾'}
 footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[hidden]{display:none}
@@ -233,7 +234,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
   <label class="ck"><input type="checkbox" id="fTrot" checked>Trottoirs et terre-pleins (à l'échelle de la rue)</label>
   </details>
  </div>
- <footer><button id="srcb" type="button" aria-expanded="false">Sources et licences</button><div id="srct" hidden></div><div id="ftr">© Bouchaud Architectes · <a href="https://www.bouchaudarchitectes.com/hors-piste/paris-graphie" target="_blank" rel="noopener">Présentation</a> · <a href="https://paris-graphie-api.hub-bokobza.workers.dev/" target="_blank" rel="noopener">API</a> · <a href="https://github.com/hubbokobza-lab/paris-graphie" target="_blank" rel="noopener">GitHub</a> · <a href="mailto:h.bokobza@bouchaudarchitectes.com?subject=Paris-graphie">Signaler un problème</a></div></footer>
+ <footer><button id="srcb" type="button" aria-expanded="false">Sources et licences</button><div id="srct" hidden></div><button id="methb" class="srcb2" type="button" aria-expanded="false">Méthodes de calcul</button><div id="metht" hidden></div><div id="ftr">© Bouchaud Architectes · <a href="https://www.bouchaudarchitectes.com/hors-piste/paris-graphie" target="_blank" rel="noopener">Présentation</a> · <a href="https://paris-graphie-api.hub-bokobza.workers.dev/" target="_blank" rel="noopener">API</a> · <a href="https://github.com/hubbokobza-lab/paris-graphie" target="_blank" rel="noopener">GitHub</a> · <a href="mailto:h.bokobza@bouchaudarchitectes.com?subject=Paris-graphie">Signaler un problème</a></div></footer>
 </aside>
 <div id="tip" hidden></div>
 <div id="card" hidden><button id="cx" type="button" aria-label="Fermer">×</button><div id="cb"></div></div>
@@ -339,7 +340,7 @@ function pick(wx,wy){
 
 /* ---------- critères ---------- */
 const AN=S.an_const,RE=S.an_rehab,SU=S.an_surel,HM=S.h_med,HX=S.h_max,VG=S.veg,PE=S.per,ARR=S.arr,TE=S.ter,SO=S.sol,IG=S.igh;
-const SNE=S.s_ne,SEF=S.s_eff,SAC=S.s_act,SCL=S.s_cl;
+const SNE=S.s_ne,SEF=S.s_eff,SAC=S.s_act,SCL=S.s_cl,SNEK=S.s_nek||new Uint16Array(N);
 const ZO=S.zo,HP=S.hp,PF=S.pf,RS=S.rs,ARN=S.ar_n,TYP=S.ty||new Uint8Array(N),NCM=S.nc||new Uint16Array(N);
 const TY_LAB=['Non renseigné','Logement collectif','Bâtiment mixte (logement et activité)','Tertiaire ou industriel','Logement individuel','Non déterminé'],TY_COL=['#3a4652','#66c2a5','#fee08b','#3288bd','#abdda4','#9a9aa8'];
 const COM_LAB=['Grand magasin','Alimentaire','Non alimentaire','Service commercial','Restauration','Local vacant','Autre local','Hôtel'],COM_COL=['#c77dff','#80ed99','#4cc9f0','#ffd166','#ff8c42','#e5e5e5','#9a9aa8','#ff4d6d'];
@@ -372,6 +373,12 @@ const MAT_LAB=['Indéterminé','Pierre','Brique ou meulière (avec ou sans pierr
 const USG_LAB=['Non renseigné','Résidentiel collectif','Résidentiel individuel','Tertiaire','Secondaire ou primaire','Dépendance'];
 const TFO=S.tfo||new Uint8Array(N),OWN=S.own||new Uint8Array(N),OWNN=S.own_n||new Uint16Array(N);
 const OWN_LAB=['Aucun propriétaire personne morale connu (particuliers ou inconnu)','État, Ville, établissement public','Bailleur social','Copropriété (syndicat des copropriétaires)','Société civile (SCI, SCPI…)','Société commerciale (foncière, assureur, banque…)','Association, fondation, autre'];
+// Taux d'occupation apparent : effectif salarié estimé × 20 m² de surface de plancher par salarié, rapporté à la surface de plancher estimée (milieu de fourchette)
+const M2_SAL=20;
+function occOf(s){const sdp=SPL(s)*.7;if(!(sdp>0)||!SNE[s])return null;const kn=SNEK[s]/SNE[s];if(kn<.5)return {kn,ok:0};
+ const r=SEF[s]*M2_SAL/sdp;return {r,kn,ok:1,c:r<.25?1:r<.5?2:r<.8?3:4};}
+const occTxt=s=>{const o=occOf(s);if(!o)return '';if(!o.ok)return 'non calculable : effectif connu pour '+Math.round(o.kn*100)+' % des établissements seulement';
+ return 'environ '+(o.r>=1.5?'plus de 150':Math.round(o.r*100/5)*5)+' % ('+nf.format(SEF[s])+' salariés estimés pour '+nf.format(Math.round(SPL(s)*.7/10)*10)+' m² de surface de plancher ; effectif connu pour '+Math.round(o.kn*100)+' % des établissements)';};
 // Indice de suspicion de vacance des bureaux (0 à 5) et fiabilité (1 à 5), à partir de Sirene, des permis et de la date de construction
 function vacOf(s){
  const off=burOf(s)===1||(BU[s]===3&&nivOf(s)>=2&&BL[s]===0);if(!off)return {c:0,f:0,why:''};
@@ -392,6 +399,11 @@ function vacOf(s){
   sc=r>=.5?3:cl>0?2:1;f=2;why=ne+' établissement'+(ne>1?'s':'')+' actif'+(ne>1?'s':'')+(cl?', '+cl+' fermé'+(cl>1?'s':'')+' depuis 2024':', aucune fermeture récente');
   if(neuf&&ne<=2){sc=Math.max(sc,3);why+=' ; immeuble neuf ou restructuré peu occupé';}
  }
+ if(ne>0){const o=occOf(s);if(o&&o.ok){   // taux d'occupation apparent (effectifs Sirene / surface)
+   if(o.r<.25){sc=Math.max(sc,4);why+=' ; occupation apparente inférieure à 25 %';}
+   else if(o.r<.5){sc=Math.max(sc,3);why+=' ; occupation apparente de 25 à 50 %';}
+   else if(o.r>=.8&&sc>1){sc=Math.max(1,sc-1);why+=' ; occupation apparente élevée';}
+   if(o.kn>=.8)f=Math.min(4,f+1);}}
  if(sc>=1&&sc<=1&&ne>=3)f=Math.min(4,f+1);
  return {c:sc<=1?1:sc,f,why,sc};
 }
@@ -405,7 +417,7 @@ const ARR_COL=Array.from({length:20},(_,i)=>{const h=i*18,l=(i%2?72:56);return h
 function hsl(h,s,l){s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return '#'+[f(0),f(8),f(4)].map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('');}
 const PC_LAB=["Avant 1990","1990–1999","2000–2009","2010–2014","2015–2019","2020 et après","Aucun connu"];
 const lastCls=A=>s=>{const y=A[s];if(!y)return 6;return y<1990?0:y<2000?1:y<2010?2:y<2015?3:y<2020?4:5;};
-const ORG={own:'DGFiP (locaux des personnes morales)',vac:'Déduction (Insee Sirene, permis, Apur)',per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
+const ORG={occ:'Calcul (Insee Sirene, Apur, CSTB)',own:'DGFiP (locaux des personnes morales)',vac:'Déduction (Insee Sirene, permis, Apur)',per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
 mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',hot:'Atout France',tcf:'IDFM',osmm:'OpenStreetMap',boa0:'bouchaudarchitectes.com',boa1:'bouchaudarchitectes.com',boa2:'bouchaudarchitectes.com',cult:'Ministère de la Culture',culte:'OpenStreetMap',osms:'OpenStreetMap',bus:'IDFM',gare:'IDFM',acc:'IDFM',cu:'Ville de Paris',abnb:'Inside Airbnb',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
 const orgOf=id=>ORG[id]||(/^at[m0-9]/.test(id)?'Michel Huard, Atlas historique de Paris':'Ville de Paris'),orgHtml=id=>'<small class="org">'+orgOf(id)+'</small>';
 const CRIT=[
@@ -423,6 +435,7 @@ const CRIT=[
  {id:'log',g:'Usages',name:'Nombre de logements (BDNB)',lab:['Aucun ou inconnu','1 à 5','6 à 15','16 à 40','41 à 100','Plus de 100'],col:['#3a4652','#d9f0d3','#a6dba0','#5aae61','#1b7837','#00441b'],cls:s=>{const n=BL[s];return n===0?0:n<=5?1:n<=15?2:n<=40?3:n<=100?4:5;}},
  {id:'soc',g:'Usages',name:'Logements sociaux (RPLS)',lab:['Aucun ou inconnu','1 à 10','11 à 50','Plus de 50'],col:['#3a4652','#fde0dd','#f768a1','#ae017e'],cls:s=>{const n=BS[s];return n===0?0:n<=10?1:n<=50?2:3;}},
  {id:'vac',g:'Usages',name:'Suspicion de vacance des bureaux (indice sur 5)',lab:['Hors champ (pas de bureaux, ou équipement, hôtel, lieu culturel, propriétaire public)','0 à 1 : occupation apparente','2 : départs notables','3 : vacance partielle ou aucune trace d\'occupant','4 : probablement vide','5 : neuf ou restructuré, sans occupant','Transformation en logements engagée'],col:[GRAY,'#2c7bb6','#abd9e9','#ffffbf','#fdae61','#d7191c','#9e6ebd'],cls:s=>vacOf(s).c},
+ {id:'occ',g:'Usages',name:'Taux d\'occupation apparent des bureaux (calcul)',lab:['Hors champ ou non calculable','Moins de 25 %','25 à 50 %','50 à 80 %','80 % et plus'],col:[GRAY,'#d7191c','#fdae61','#abd9e9','#2c7bb6'],cls:s=>{if(!vacOf(s).c||vacOf(s).c===6)return 0;const o=occOf(s);return o&&o.ok?o.c:0;}},
  {id:'own',g:'Propriété',name:'Propriétaire principal (personnes morales)',lab:OWN_LAB,col:[GRAY,'#d95fa6','#66c2a5','#fee08b','#3288bd','#f46d43','#9c8a54'],cls:s=>OWN[s]},
  {id:'dpe',g:'Énergie et carbone',name:'DPE, étiquette énergie',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:DPE_COL,cls:s=>BD[s]},
  {id:'ges',g:'Énergie et carbone',name:'DPE, étiquette climat (GES)',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:GES_COL,cls:s=>BG[s]},
@@ -856,7 +869,7 @@ function baseInfo(s,A,P){
   +row('Hauteur médiane / max',(HM[s]/10).toFixed(1).replace('.',',')+' m / '+(HX[s]/10).toFixed(1).replace('.',',')+' m')
   +row('Niveaux',niv+(nivFF(s)?' (fichiers fonciers)':' (estimé : hauteur médiane ÷ 3 m)'))
   +row('Emprise au sol',nf.format(Math.round(area[s]))+' m²')+row('Surface de plancher estimée',sdpTxt(s))
-  +(TYP[s]?row('Typologie (Apur)',TY_LAB[TYP[s]]):'')+(vacOf(s).c?row('Suspicion de vacance',vacTxt(s)):'')+row('Toiture',toit)+(IG[s]?row('Immeuble de grande hauteur','oui'):'')
+  +(TYP[s]?row('Typologie (Apur)',TY_LAB[TYP[s]]):'')+(vacOf(s).c?row('Suspicion de vacance',vacTxt(s)):'')+(vacOf(s).c&&vacOf(s).c<6&&occOf(s)?row('Occupation apparente',occTxt(s)):'')+row('Toiture',toit)+(IG[s]?row('Immeuble de grande hauteur','oui'):'')
   +(pl&&pl.length?row('Parcelle'+(pl.length>1?'s':'')+' cadastrale'+(pl.length>1?'s':''),pl.slice(0,4).map(x=>esc(x.slice(8,10)+' '+x.slice(10).replace(/^0+/,''))).join(', ')+(pl.length>4?' …':'')):'')
   +(ad&&ad.length?'<div style="margin-top:5px"><a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(ad[0]+', Paris')+'" target="_blank" rel="noopener">Voir sur Google Maps</a></div>':'');
 }
@@ -978,12 +991,12 @@ function cardModel(s,c){
   const h=row('Année de construction',AN[s]||'inconnue')+row('Période (Apur)',per)+row('Réhabilitation',RE[s]>=1900?RE[s]:'—')+row('Surélévation',SU[s]?SU[s]:'—')
    +row('Hauteur médiane / max',dm(HM[s])+' m / '+dm(HX[s])+' m')+row('Niveaux',niv+(nivFF(s)?' (fichiers fonciers)':' (estimé : hauteur médiane ÷ 3 m)'))
    +row('Emprise au sol',nf.format(Math.round(area[s]))+' m²')+row('Surface de plancher estimée',sdpTxt(s))
-   +(TYP[s]?row('Typologie (Apur)',TY_LAB[TYP[s]]):'')+(vacOf(s).c?row('Suspicion de vacance',vacTxt(s)):'')+row('Toiture',toit)+(IG[s]?row('Immeuble de grande hauteur','oui'):'');
+   +(TYP[s]?row('Typologie (Apur)',TY_LAB[TYP[s]]):'')+(vacOf(s).c?row('Suspicion de vacance',vacTxt(s)):'')+(vacOf(s).c&&vacOf(s).c<6&&occOf(s)?row('Occupation apparente',occTxt(s)):'')+row('Toiture',toit)+(IG[s]?row('Immeuble de grande hauteur','oui'):'');
   const items=[it('Année de construction : '+(AN[s]||'inconnue')+' (dates parfois approximatives)','apur'),it('Période : '+per,'apur'),
    it('Réhabilitation : '+(RE[s]>=1900?RE[s]:'—')+' ; surélévation : '+(SU[s]||'—'),'apur'),it('Hauteur médiane / maximale : '+dm(HM[s])+' m / '+dm(HX[s])+' m','apur'),
    it('Emprise au sol : '+nf.format(Math.round(area[s]))+' m²','apur'),
    it('Niveaux : '+niv+(nivFF(s)?' (fichiers fonciers, via la BDNB)':' (estimé : hauteur médiane ÷ 3 m)')+' ; surface de plancher estimée : '+sdpTxt(s),'calc'),
-   ...(TYP[s]?[it('Typologie : '+TY_LAB[TYP[s]],'typ')]:[]),...(vacOf(s).c?[it('Suspicion de vacance des bureaux : '+vacTxt(s)+'. Indice indicatif, à vérifier sur place.','sir')]:[]),
+   ...(TYP[s]?[it('Typologie : '+TY_LAB[TYP[s]],'typ')]:[]),...(vacOf(s).c?[it('Suspicion de vacance des bureaux : '+vacTxt(s)+'. Indice indicatif, à vérifier sur place.','sir')]:[]),...(vacOf(s).c&&vacOf(s).c<6&&occOf(s)?[it('Occupation apparente des bureaux : '+occTxt(s)+'. Calcul indicatif (voir méthodes).','sir')]:[]),
    it('Toiture : '+(SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'autre ou inconnue')+(IG[s]?' ; immeuble de grande hauteur':''),'apur')];
   sec('bati','Bâtiment',h,items);}
  // 3. Usages, énergie et carbone
@@ -1580,6 +1593,7 @@ let SRCD={};
 const fd10=d=>d?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):'';
 function srcLabel(k){const d=SRCD[k];return SRC[k][0]+(d?', données extraites le '+fd10(d):'');}
 function srcList(){return Object.keys(SRC).filter(k=>SRC[k][1]&&!(PUB&&k==='dvf')).map(k=>[srcLabel(k),SRC[k][1]]);}
+const METH=[{"indicateur": "Rattachement des adresses et des données aux bâtiments", "methode": "Chaque adresse de la Base Adresse Nationale est rattachée au bâtiment Apur qui contient son point, ou au plus proche dans un rayon de quelques mètres. Les données publiées par adresse (autorisations d'urbanisme, Sirene, DPE) suivent ce rattachement ; les données par parcelle (propriétaires) passent par la parcelle cadastrale de l'adresse. Un bâtiment peut ainsi recevoir les données d'un voisin, ou en manquer."}, {"indicateur": "Nombre de niveaux", "methode": "Nombre de niveaux des fichiers fonciers (CSTB, BDNB) quand il est cohérent avec la hauteur (au plus 5,5 m par niveau) ; sinon, hauteur médiane Apur divisée par 3 m, arrondie."}, {"indicateur": "Surface de plancher estimée", "methode": "Emprise au sol du bâtiment (polygone Apur) multipliée par le nombre de niveaux, puis réduite de 20 à 40 % pour tenir compte des murs, des circulations, des vides et des locaux non comptés. Le résultat est donné en fourchette ; les calculs qui ont besoin d'une valeur unique prennent le milieu (moins 30 %). Ce n'est pas une surface de plancher au sens du code de l'urbanisme."}, {"indicateur": "Carbone d'une reconstruction à neuf", "methode": "Surface de plancher estimée (milieu de fourchette) multipliée par 650 kg CO₂e par m², ordre de grandeur d'un bâtiment neuf. Sert à comparer, pas à évaluer un projet."}, {"indicateur": "Marge sous le plafond du PLU", "methode": "Plafond de hauteur du PLU bioclimatique moins la hauteur maximale Apur du bâtiment. Indicatif : ne tient compte ni des gabarits-enveloppes, ni des règles de prospect, ni des protections."}, {"indicateur": "Délai d'obtention des autorisations", "methode": "Pour les permis de construire, déclarations préalables et permis de démolir accordés : date de décision moins date de dépôt, en jours. La médiane parisienne est calculée sur les dossiers déposés depuis 5 ans. Les dossiers refusés, retirés ou en cours sont exclus."}, {"indicateur": "Surface créée cumulée", "methode": "Somme des surfaces créées lues dans le descriptif des autorisations accordées (Ville de Paris). Lecture automatique du texte, donc indicative."}, {"indicateur": "Transformation de bureaux en logements", "methode": "Permis de construire des 6 dernières années dont le descriptif mentionne le passage de bureaux à de l'habitation ou du logement (lecture automatique du texte)."}, {"indicateur": "Interdiction de louer (loi Climat et résilience)", "methode": "D'après l'étiquette DPE du logement représentatif (ADEME, via la BDNB) : G interdit à la location depuis 2025, F à partir de 2028, E à partir de 2034. Un immeuble contient des logements d'étiquettes différentes : à vérifier logement par logement."}, {"indicateur": "Effectif salarié estimé", "methode": "Somme, pour les établissements actifs rattachés au bâtiment (Insee Sirene), du milieu de leur tranche d'effectif (par exemple 35 pour « 20 à 49 salariés »). Les établissements sans tranche renseignée ne comptent pas."}, {"indicateur": "Taux d'occupation apparent des bureaux", "methode": "Effectif salarié estimé multiplié par 20 m² de surface de plancher par salarié, divisé par la surface de plancher estimée (milieu de fourchette). Calculé seulement si l'effectif est connu pour au moins la moitié des établissements de l'immeuble. Limites : tranches d'effectif larges, effectifs déclarés au siège mais travaillant ailleurs, prestataires non comptés, télétravail, surface elle-même estimée. À lire comme un ordre de grandeur."}, {"indicateur": "Suspicion de vacance des bureaux (note sur 5)", "methode": "Concerne les immeubles tertiaires (Apur ou CSTB) sans logement ni équipement, de 3 niveaux et plus, hors lieux culturels, lieux de culte, hôtels et propriétaires publics. Note 5 : neuf ou restructuré récemment (construit depuis 2018, réhabilité depuis 2021 ou permis depuis 2020) sans établissement actif. Note 4 : aucun établissement actif et des fermetures depuis 2024, ou occupation apparente inférieure à 25 %. Note 3 : aucun établissement déclaré, ou plus de la moitié des établissements fermés depuis 2024, ou occupation apparente de 25 à 50 %. Note 2 : départs notables. Notes 0 à 1 : occupation apparente. Plus de 100 établissements : adresse de domiciliation, non significatif. La fiabilité (sur 5) baisse quand l'information est indirecte (aucune trace d'occupant, petit nombre d'établissements) et monte quand l'effectif est bien connu. Indice de repérage, à vérifier sur place."}, {"indicateur": "Propriétaire principal", "methode": "Parmi les personnes morales propriétaires des locaux de la ou des parcelles du bâtiment (DGFiP, situation au 1er janvier), celle qui détient le plus de locaux, en écartant le syndicat des copropriétaires s'il y a d'autres propriétaires. Les particuliers ne figurent pas dans ce fichier. Le type (public, bailleur social, société civile, société commerciale…) vient du groupe et de la forme juridique déclarés."}, {"indicateur": "Distance à pied au métro et au RER", "methode": "Itinéraire piéton calculé par le service de l'IGN (Géoplateforme) depuis le centre du bâtiment jusqu'aux quatre stations de métro ou de RER les plus proches à vol d'oiseau (IDFM) ; on garde les trois plus courtes. Temps à 4,5 km/h. Si le service ne répond pas : distance à vol d'oiseau multipliée par 1,3, signalée comme estimation."}, {"indicateur": "Projets Bouchaud Architectes", "methode": "Projets publiés sur bouchaudarchitectes.com, localisés à partir de leur titre ou de leur adresse (Base Adresse Nationale) ; les appartements sont placés sur la rue. Livré depuis plus de 3 ans, livré récemment ou en cours selon l'année de livraison indiquée."}];
 function renderSrc(){const b=$('#srct');if(!b)return;b.innerHTML='<div style="margin-bottom:6px">Données ouvertes (licence ODbL ou Licence Ouverte selon le producteur). Date d\'extraction indiquée pour chaque source'+(SRCD._maj?' ; dernière mise à jour du site : '+fd10(SRCD._maj):'')+'.</div>'+srcList().map(x=>'<div style="margin:3px 0"><a href="'+esc(x[1])+'" target="_blank" rel="noopener">'+esc(x[0])+'</a></div>').join('');}
 getJson('sources.json').then(j=>{SRCD=j||{};renderSrc();}).catch(()=>renderSrc());
 function bldCenter(s){const wx=(bbox[4*s]+bbox[4*s+2])/2,wy=(bbox[4*s+1]+bbox[4*s+3])/2;return [H.lon0+wx/(H.q*111320*Math.cos(H.lat0*Math.PI/180))*H.q,H.lat0+wy/(H.q*110574)*H.q];}
@@ -1759,6 +1773,7 @@ function makePdf(M_,IMG,HIST){
  return new Blob([u8],{type:'application/pdf'});
 }
 $('#srcb').onclick=e=>{const o=$('#srct').hidden;$('#srct').hidden=!o;e.currentTarget.setAttribute('aria-expanded',o);};
+$('#methb').onclick=e=>{const b=$('#metht'),o=b.hidden;if(o&&!b.innerHTML)b.innerHTML='<div class="k" style="margin-top:6px">Les indicateurs ci-dessous sont calculés par Paris-graphie à partir des données sources. Ce sont des ordres de grandeur, à vérifier.</div>'+METH.map(m=>'<b>'+esc(m.indicateur)+'</b>'+esc(m.methode)).join('');b.hidden=!o;e.currentTarget.setAttribute('aria-expanded',o);};
 let PCTX=null;
 cb.addEventListener('click',async e=>{if(e.target&&e.target.id==='pdfb'&&PCTX&&(PF[PCTX.s]&3))await loadMhd();
  if(e.target.id!=='pdfb'||!PCTX)return;
@@ -1818,7 +1833,7 @@ const strip=x=>String(x).replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
 function bldRow(b){
  const [lo,la]=bldLonLat(b),r={'Arrondissement':ARR[b]?ARR[b]+(ARR[b]===1?'er':'e'):'','Année de construction':AN[b]||'','Hauteur médiane (m)':HM[b]?(HM[b]/10).toFixed(1).replace('.',','):'','Hauteur maximale (m)':HX[b]?(HX[b]/10).toFixed(1).replace('.',','):'','Niveaux':nivOf(b),'Emprise au sol (m²)':Math.round(area[b]),'Surface de plancher estimée (m²)':nf.format(Math.round(SPL(b)*.6/10)*10)+' à '+nf.format(Math.round(SPL(b)*.8/10)*10)};
  for(const c of CRIT){if(['neu','yr','arr','per','hm','hx','niv'].includes(c.id))continue;let i;try{i=c.cls(b);}catch(e){continue;}if(i==null||c.lab[i]==null)continue;r[strip(c.name)]=strip(c.lab[i]);}
- {const v=vacOf(b);if(v.c){r['Suspicion de vacance (sur 5)']=v.c===6?'transformation':(v.sc??v.c);r['Fiabilité de l\'indice (sur 5)']=v.f;r['Motif']=v.why;}}
+ {const v=vacOf(b);if(v.c){r['Suspicion de vacance (sur 5)']=v.c===6?'transformation':(v.sc??v.c);r['Fiabilité de l\'indice (sur 5)']=v.f;r['Motif']=v.why;const o=occOf(b);if(o&&o.ok&&v.c<6)r['Occupation apparente (%)']=Math.round(o.r*100);}}
  const d=r['DPE, étiquette énergie'];if(d&&LOC_BAN[d])r['Location (loi Climat)']=LOC_BAN[d];
  r['Lien']=location.origin+location.pathname+'?b='+lo.toFixed(6)+','+la.toFixed(6);r['lon']=+lo.toFixed(6);r['lat']=+la.toFixed(6);
  return r;
@@ -1852,7 +1867,7 @@ async function dumpStreets(i0,i1){   // utilisé par le robot pour publier l'acc
   out.push({voie:s.n,numeros:N,batiments:B});}
  return {total:A.length,out};
 }
-window.parisGraphie={analyse,toCsv,bldRow,dumpStreets,sources:()=>({sources:Object.keys(SRC).filter(k=>SRC[k][1]&&!(PUB&&k==='dvf')).map(k=>({id:k,source:SRC[k][0],url:SRC[k][1],extrait_le:SRCD[k]||null})),
+window.parisGraphie={analyse,toCsv,bldRow,dumpStreets,sources:()=>({methodologie:METH,sources:Object.keys(SRC).filter(k=>SRC[k][1]&&!(PUB&&k==='dvf')).map(k=>({id:k,source:SRC[k][0],url:SRC[k][1],extrait_le:SRCD[k]||null})),
  producteur_par_champ:Object.fromEntries(CRIT.filter(c=>!['neu','yr','arr','per'].includes(c.id)).map(c=>[strip(c.name),orgOf(c.id)]).concat([['Année de construction','Apur'],['Hauteur médiane (m)','Apur'],['Hauteur maximale (m)','Apur'],['Emprise au sol (m²)','Apur (calcul)'],['Niveaux','CSTB (BDNB), sinon estimé par la hauteur (Apur)'],['Surface de plancher estimée (m²)','Calcul : emprise × niveaux, moins 20 à 40 %'],['Suspicion de vacance (sur 5)','Déduction (Insee Sirene, permis, Apur)'],['Propriétaire principal','DGFiP (locaux des personnes morales)'],['SIREN du propriétaire','DGFiP (locaux des personnes morales)'],['Location (loi Climat)','Loi Climat et résilience, d\'après l\'étiquette DPE (ADEME)']]))})};
 {const box=document.createElement('div');box.id='alst';box.hidden=true;
  box.innerHTML='<div class="alp"><div class="alh"><b>Analyse d\'une liste d\'adresses</b><button id="alx" aria-label="Fermer">✕</button></div>'
@@ -1889,7 +1904,7 @@ new ResizeObserver(()=>{const first=W===1;resize();if(first)fit();draw();}).obse
 resize();fit();
 setCrit(CRIT[0]);ready=true;
 /* mode avancé : critères et calques spécialisés masqués par défaut (toujours trouvables par la recherche de calques) */
-{const AC=new Set(['vac','reh','sur','ncm','soc','bur','ges','mur','toit','co2','pd','sf','rc','pm','dv','sa','ne','se','cl','arr','rs','ar','dh']);
+{const AC=new Set(['occ','vac','reh','sur','ncm','soc','bur','ges','mur','toit','co2','pd','sf','rc','pm','dv','sa','ne','se','cl','arr','rs','ar','dh']);
  const AG=new Set(['Hébergement touristique','Culture et cultes','Commerces','Cadastre','Voirie','Relief','Archéologie','Îlots de chaleur','PLU : secteurs et réserves','Sous-sol et risques','Mobilité']);
  const AS=new Set(['Ensoleillement','Filtres','Marché (DVF 2021-2025)','Occupants (Sirene)','Sous-sol et fouilles']);
  const cb_=$('#adv');let on=false;try{on=localStorage.getItem('pg_adv')==='1';}catch(e){}

@@ -60,8 +60,9 @@ def run(st, ban):
     s_ne = np.zeros(N, np.uint16); s_eff = np.zeros(N, np.uint16); s_act = np.zeros(N, np.uint8); s_cl = np.zeros(N, np.uint8)
     g1 = act.groupby('sh'); n1 = g1.size(); s_ne[n1.index] = np.minimum(n1.values, 65535)
     a = g1.eff.sum(); s_eff[a.index] = np.minimum(a.values, 65535).astype(np.uint16)
+    s_nek = np.zeros(N, np.uint16); k = act[act.te.isin(list(MID))].groupby('sh').size(); s_nek[k.index] = np.minimum(k.values, 65535)   # établissements à effectif connu
     dom = act.groupby(['sh', 'g']).size().unstack(fill_value=0).idxmax(axis=1); s_act[dom.index] = dom.values
     g2 = clo.groupby('sh').size(); s_cl[g2.index] = np.minimum(g2.values, 255)
-    for k, v in (('s_ne', s_ne), ('s_eff', s_eff), ('s_act', s_act), ('s_cl', s_cl)): st.put(k, v)
+    for k, v in (('s_ne', s_ne), ('s_eff', s_eff), ('s_act', s_act), ('s_cl', s_cl), ('s_nek', s_nek)): st.put(k, v)
     log('Sirene : %d bâtiments avec établissement actif, %d avec fermetures depuis 2024' % ((s_ne > 0).sum(), (s_cl > 0).sum()))
     if (s_ne > 0).sum() < 20000: raise RuntimeError('trop peu de bâtiments occupés selon Sirene')
