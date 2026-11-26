@@ -94,7 +94,7 @@ def main():
             else: step_misc.private_zero(st)
     # propriétaires personnes morales (DGFiP, annuel) : recalculés tous les 90 jours ou en reconstruction complète
     agep = (datetime.date.today() - datetime.date.fromisoformat(SD.get('own', '2000-01-01'))).days
-    if a.mode == 'full' or agep > 90 or 'own' not in st.S:
+    if a.mode == 'full' or agep > 90 or 'own' not in st.S or SD.get('own', '') < '2026-11-26':   # recalcul unique : établissements publics industriels et commerciaux
         try:
             step_proprio.run(st); done('own')
         except Exception as e:

@@ -11,7 +11,7 @@ CL = ['Aucun propriétaire personne morale connu (particuliers ou inconnu)', 'É
 
 def cls(grp, forme):
     g = str(grp)[:1]; f = str(forme or '')
-    if g in '1234' or g == '9' or f[:1] == '7': return 1
+    if g in '1234' or g == '9' or f[:1] in '47': return 1   # 4 : établissements publics à caractère industriel ou commercial ; 7 : personnes morales de droit public
     if g == '5' or f in ('5546', '5547', '5646', '5647') or f.startswith('55') and 'HLM' in f: return 2
     if g == '7' or f == '9110': return 3
     if f.startswith('65'): return 4
