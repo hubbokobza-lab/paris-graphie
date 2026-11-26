@@ -80,6 +80,12 @@ def main():
             if f.endswith('.json') and not f.startswith(('arr_', 'data')) and not os.path.exists(os.path.join(STATIC, f)):
                 st.files[f] = open(os.path.join(a.site, f), 'rb').read()
         ban = step_ban.run(st); done('ban'); step_urba.run(st, ban); done('urb', 'cvp')
+    # filets de couleur avec type de trait (outil Coupe) : recalcul unique
+    if not SD.get('fil_v'):
+        try:
+            step_plu.filet(st); done('fil_v')
+        except Exception as e:
+            print('::warning title=Filets non mis à jour::%s' % str(e)[:300], flush=True)
     # Sirene (comptages d'établissements par bâtiment) : fichier mensuel, recalculé si la dernière extraction a plus de 25 jours
     import datetime
     age = (datetime.date.today() - datetime.date.fromisoformat(SD.get('sir', '2000-01-01'))).days

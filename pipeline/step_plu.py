@@ -28,6 +28,16 @@ def mobility():
         if c: coords[str(r['id'])] = [c['lon'], c['lat']]
     return {'rows': rows, 'sites': sites}, {'rows': list(agg.values()), 'coords': coords}
 
+FC = {'B': 0, 'N': 1, 'P': 2, 'G': 3, 'M': 4, 'V': 5, 'K': 6, 'O': 7, 'L': 8}
+FCN = {'B': 'bleu clair (18 m)', 'N': 'noir (20 m)', 'P': 'violet (15 m)', 'G': 'gris (23 m)', 'M': 'marron foncé (hauteur de façade existante)', 'V': 'vert (10 m)', 'K': 'kaki (7 m)', 'O': 'orange (12 m)', 'L': 'bleu marine (25 m)'}
+FCT = {'X': 'trait continu (couronnement selon la largeur de voie)', 'P': 'trait pointillé (horizontale)', 'H': 'hachure (pente 1/3, h 2 m)', 'C': 'tireté court (pente 1/2, h 3 m)', 'L': 'tireté long (pente 1/1, h 4,5 m)', 'M': 'tireté mixte (pente 2/1, h 4,5 m)'}
+
+def filet(st, feats=None):
+    """Filets de couleur du gabarit sur voie : couleur (hauteur de la verticale) et type de trait (couronnement), lus par l'outil Coupe."""
+    if feats is None: feats = load_geojson(ods('plub_filet'))
+    overlay(st, 'filet', feats, 'line', lambda p: FC.get(p.get('haut'), 9),
+            lambda p: 'Filet %s, %s' % (FCN.get(p.get('haut'), p.get('haut') or '?'), FCT.get(p.get('cour'), 'trait non renseigné')), tol=0.4)
+
 def run(st):
     g = st.geo(); polys, areas, rp, N = g.polys, g.areas, g.rp, st.N
     allb = shapely.total_bounds(polys); BB = shapely.box(allb[0] - 400, allb[1] - 400, allb[2] + 400, allb[3] + 400)
@@ -41,8 +51,7 @@ def run(st):
     G['hauteur'] = L['plub_hauteur']; HC = {18: 0, 25: 1, 31: 2, 37: 3}
     E('hauteur', L['plub_hauteur'], 'poly', lambda p: HC.get(int(p['hauteur']), 4), tol=1.0)
     E('hmc', L['plub_hmc'], 'poly', lambda p: 0, lambda p: 'Hauteur max constructible : %.0f m NGF' % p['ht_hmc'], tol=0.5)
-    fc = {'B': 0, 'N': 1, 'P': 2, 'G': 3, 'M': 4, 'V': 5, 'K': 6, 'O': 7}
-    E('filet', L['plub_filet'], 'line', lambda p: fc.get(p['haut'], 8), tol=0.4)
+    filet(st, L['plub_filet'])
     E('fuseau', L['plub_fuseau'], 'poly', lambda p: 0, lambda p: 'Fuseau %s : %.1f à %.1f m NGF' % (p['fuseau'], float(p['h_min']), float(p['h_max'])), tol=1.0)
     E('ecm', L['plub_ecm'], 'poly', lambda p: 0 if (p['hauteur'] or 0) == 0 else 1, lambda p: ('Hauteur max %.1f m' % p['hauteur']) if p['hauteur'] else 0, tol=0.2)
     E('ecml', L['plub_ecm_limite'], 'line', tol=0.2); E('ecbbv', L['plub_ecbbv'], 'poly', tol=0.2); E('isri', L['plub_isri'], 'line', tol=0.2)

@@ -9,11 +9,16 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-26
 
 ### Ajouté
+- Outil Coupe : gabarits-enveloppes du PLU bioclimatique en bordure de voie, selon la couleur et le type de trait des filets (ou selon la largeur de voie en l'absence de filet), plafond des hauteurs, limite de 15 m au-delà de la bande de 18 m, hauteur maximale constructible et estimation de la surface de nivellement d'îlot.
+- Outil Coupe : largeur des voies mesurée perpendiculairement aux limites de parcelles, et non dans le sens de la coupe.
+- Outil Coupe : arbres publics de la Ville de Paris lus en direct, avec une silhouette schématique selon le genre (fastigié, conique, parasol, pleureur, étalé, ovoïde), la hauteur et la circonférence relevées.
+- Outil Coupe : légende détaillant le mode de calcul de chaque élément, et calques DXF séparés (gabarits, plafond, nivellement, voies, troncs, houppiers, essences).
 - Analyse d'adresses : suggestions à la saisie, y compris pour les adresses introuvables (fautes de frappe), et toutes les colonnes avec leur source. Lien GitHub à côté de l'API.
 - Taux d'occupation apparent des bureaux (effectifs Sirene rapportés à la surface), intégré à l'indice de vacance. Méthodes de calcul expliquées dans la carte, l'API et le README.
 - Mini-carte des statistiques par quartier.
 
 ### Modifié
+- Calque des filets de hauteur : couleurs et hauteurs réelles en légende (au lieu des codes), type de trait dans l'infobulle, filet bleu marine (25 m) distingué.
 - Indice de suspicion de vacance des bureaux : exclusion des lieux culturels, des lieux de culte, des hôtels, des propriétaires publics, des établissements publics industriels et commerciaux, des très grandes emprises (Grand Palais), des monuments historiques et des gares ferroviaires. Prise en compte des immeubles mixtes à dominante de bureaux, du retard de Sirene sur les livraisons récentes et du rattachement Sirene au numéro voisin.
 - L'indice de vacance est rangé dans la section « Usages » de la fiche, où il figurait en double.
 - README : démarche du projet, et section pour les IA et les développeurs.
