@@ -10,6 +10,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 
 ### Ajouté
 - Outil Mesure dans la barre en bas à droite : distances cumulées sur la carte, surface quand le tracé est refermé sur le premier point.
+- Outil Coupe : la mesure se fait en glissant d'un point à l'autre ; pendant la mesure, le dessin ne défile plus au doigt (on fait défiler la fenêtre en dehors du dessin).
 - Outil Coupe : bouton Mesurer (distance, écart horizontal et vertical, pente, altitudes NVP sur la coupe ; distances sur le plan de repérage).
 - Tutoriel des premières visites en 4 étapes (adresse et calques, fiche PDF, export DXF, coupe), avec un bouton Passer ; relançable depuis le lien « Tutoriel » en pied de panneau.
 - Outil Coupe : gabarits-enveloppes du PLU bioclimatique en bordure de voie, selon la couleur et le type de trait des filets (ou selon la largeur de voie en l'absence de filet), plafond des hauteurs, limite de 15 m au-delà de la bande de 18 m, hauteur maximale constructible et estimation de la surface de nivellement d'îlot.

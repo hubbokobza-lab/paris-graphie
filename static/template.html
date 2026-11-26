@@ -1798,7 +1798,7 @@ async function cutShow(A,B,opt={}){
  box.innerHTML='<div class="alp"><div class="alh"><b>Coupe A-B · '+Math.round(L)+' m</b><button id="cutx" aria-label="Fermer">✕</button></div><div class="cutg"><aside class="cutside">'
   +CG.map(([g,ks])=>'<div class="cuth">'+g+'</div>'+ks.map(k=>'<label class="cutr"><input type="checkbox" data-k="'+k+'"'+(CUTOFF.has(k)?'':' checked')+'><i style="background:'+CCOL[k]+'"></i><span>'+CN[k]+'</span></label>').join('')).join('')
   +'<div class="cuth">Profondeur visible</div><div class="cutsl"><input type="range" id="lidd" min="0" max="1000" step="1" aria-label="Profondeur visible derrière le plan de coupe"><b id="liddv"></b></div><div class="k cutk">Derrière le plan, de 10 cm à 150 m : LiDAR, arbres, cotes et courbes. Rien n\'est montré devant le plan.</div>'
-  +'<div class="cuth">Outils et exports</div><div class="alb"><button id="cutm" title="Mesurer sur la coupe ou le plan : deux clics par mesure, Échap pour effacer" aria-label="Mesurer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M5.5 13 7.6 15.1M8 10.5 9.3 11.8M10.5 8 12.6 10.1M13 5.5 14.3 6.8"/></svg></button><button id="cutd">DXF</button><button id="cuts">SVG</button></div>'
+  +'<div class="cuth">Outils et exports</div><div class="alb"><button id="cutm" title="Mesurer sur la coupe ou le plan : glisser d\'un point à l\'autre, Échap pour effacer" aria-label="Mesurer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M5.5 13 7.6 15.1M8 10.5 9.3 11.8M10.5 8 12.6 10.1M13 5.5 14.3 6.8"/></svg></button><button id="cutd">DXF</button><button id="cuts">SVG</button></div>'
   +'<div class="k cutk" id="cutms" style="color:#0a6f99"></div><div class="k cutk" id="cutl"></div><div class="k cutk">'+stat+'</div></aside>'
   +'<div class="cutmain"><div class="cutsvg">'+svg+'</div>'
   +'<details class="cutd" open><summary>Comment chaque élément est calculé</summary>'+leg+'</details></div></div></div>';
@@ -1840,11 +1840,12 @@ async function cutShow(A,B,opt={}){
    else{const dt=B_.t-A_.t,dd=(B_.d??0)-(A_.d??0);t1=fm(Math.hypot(dt,dd))+(A_.k==='p'&&B_.k==='p'?' en plan':'');t2='';}
    g.append(el('line',{x1:p.x,y1:p.y,x2:q.x,y2:q.y,stroke:'#0a8fc4','stroke-width':1.4}),el('circle',{cx:p.x,cy:p.y,r:2.5,fill:'#0a8fc4'}),el('circle',{cx:q.x,cy:q.y,r:2.5,fill:'#0a8fc4'}));
    const mx=(p.x+q.x)/2+5,my=(p.y+q.y)/2-6,tt=el('text',{x:mx,y:my,fill:'#0a6f99','font-size':9,'font-weight':600,stroke:'#fff','stroke-width':2.6,'paint-order':'stroke'});tt.append(el('tspan',{x:mx},t1));if(t2)tt.append(el('tspan',{x:mx,dy:11,'font-weight':400},t2));g.append(tt);};
-  const down=e=>{if(!on)return;e.preventDefault();const p=loc(e);if(!a0){a0=p;tmp=el('g',{});gm.append(tmp);}else{draw_(a0,p,tmp);a0=null;tmp=null;}};
-  const move=e=>{if(on&&a0&&tmp)draw_(a0,loc(e),tmp);};
+  const down=e=>{if(!on)return;e.preventDefault();a0=loc(e);tmp=el('g',{});gm.append(tmp);try{sv().setPointerCapture(e.pointerId);}catch(_){}};
+  const move=e=>{if(on&&a0&&tmp){e.preventDefault();draw_(a0,loc(e),tmp);}};
+  const up=e=>{if(!on||!a0)return;const p=loc(e);if(Math.hypot(p.x-a0.x,p.y-a0.y)<2)tmp.remove();else draw_(a0,p,tmp);a0=null;tmp=null;};
   const esc_=e=>{if(e.key==='Escape'&&on&&gm){gm.innerHTML='';a0=null;tmp=null;}};
-  bm.onclick=()=>{on=!on;bm.classList.toggle('on',on);const s_=sv();s_.style.cursor=on?'crosshair':'';if(on&&!gm){gm=el('g',{id:'meas'});s_.append(gm);s_.addEventListener('pointerdown',down);s_.addEventListener('pointermove',move);addEventListener('keydown',esc_);}
-   box.querySelector('#cutms').textContent=on?'Mesure : deux clics par mesure, sur la coupe (distance, horizontal, vertical, pente) ou sur le plan ; Échap efface.':'';};}
+  bm.onclick=()=>{on=!on;bm.classList.toggle('on',on);const s_=sv();s_.style.cursor=on?'crosshair':'';s_.style.touchAction=on?'none':'';if(on&&!gm){gm=el('g',{id:'meas'});s_.append(gm);s_.addEventListener('pointerdown',down);s_.addEventListener('pointermove',move);s_.addEventListener('pointerup',up);s_.addEventListener('pointercancel',up);addEventListener('keydown',esc_);}
+   box.querySelector('#cutms').textContent=on?'Mesure : faites glisser d\'un point à l\'autre sur la coupe (distance, horizontal, vertical, pente) ou sur le plan ; le dessin ne défile plus, faites défiler la fenêtre en dehors. Échap efface.':'';};}
  if(opt.headless){if(!CUTOFF.has('lidar'))await loadLid();return {svg:svgOn(),L,lid:LIDP?LIDP.t.length:0};}
 }
 /* ---------- export DXF géoréférencé (Lambert 93, EPSG:2154), un calque par couche ---------- */
