@@ -38,20 +38,38 @@ Exemple :
 
 La réponse contient le bâtiment (`adresse`, `batiment`, `carte`), un objet `indicateurs` (hauteur, niveaux, emprise, surface de plancher estimée, DPE, matériau des murs, protection patrimoniale, zone et plafond de hauteur du PLU, dossiers d'urbanisme, établissements actifs, suspicion de vacance des bureaux, propriétaire personne morale, etc.), un lien `sources` et un `avertissement`.
 
+### Brancher Paris-graphie dans un assistant IA (connecteur MCP)
+
+**Claude** (claude.ai, application de bureau ou mobile) :
+
+1. Ouvrir les réglages, rubrique **Connecteurs**, puis **Ajouter un connecteur personnalisé**. Attention à ne pas utiliser la liste des « domaines autorisés » des réglages Capacités, qui ne sert pas à cela et n'accepte qu'un nom de domaine.
+2. Nom : `Paris-graphie`.
+3. Adresse du serveur, en entier, avec `https://` (sans quoi le bouton d'ajout reste grisé) : `https://paris-graphie-api.hub-bokobza.workers.dev/mcp`
+4. Laisser vides les champs OAuth : le serveur ne demande pas d'authentification.
+5. Dans une conversation, activer le connecteur et poser une question, par exemple : « Que sais-tu du 40 rue Laffitte à Paris ? »
+
+Le connecteur n'est visible que dans le compte qui l'a ajouté. Pour une équipe, un administrateur de l'organisation peut l'ajouter pour tous.
+
+**Autres assistants et outils compatibles MCP** (ChatGPT en mode développeur, Claude Code, Cursor, etc.) : déclarer un serveur MCP distant de type HTTP (« streamable HTTP ») à la même adresse, sans authentification. Par exemple avec Claude Code :
+
+    claude mcp add --transport http paris-graphie https://paris-graphie-api.hub-bokobza.workers.dev/mcp
+
+Outils proposés : `immeuble_paris` (une adresse, avec métro et RER à pied), `immeubles_paris` (jusqu'à 15 adresses), `sources_paris_graphie` (sources, méthodes et dates d'extraction).
+
 Règles d'usage pour un assistant ou un programme :
 
 1. Citer les sources renvoyées par `/sources`, et l'éditeur (Paris-graphie, Bouchaud Architectes).
 2. Les rattachements des données aux bâtiments sont approximatifs. La surface de plancher, les niveaux quand ils ne viennent pas de la base nationale des bâtiments, la suspicion de vacance et les ordres de grandeur carbone sont des estimations, signalées comme telles dans les champs concernés.
 3. Ces informations ne remplacent ni un extrait cadastral, ni une note de renseignements d'urbanisme, ni le PLU opposable. Le PLU bioclimatique est repris sans valeur réglementaire.
 4. Une adresse hors de Paris intra-muros n'est pas couverte.
-5. L'API n'a pas de quota documenté. Limiter les rafales, et utiliser `/adresses` (25 adresses par requête) plutôt que de nombreux appels isolés.
+5. L'API n'a pas de quota documenté. Limiter les rafales, et utiliser `/adresses` (15 adresses par requête) plutôt que de nombreux appels isolés.
 
 ## API
 
 | Point d'accès | Contenu |
 |---|---|
 | `/adresse?q=40 rue Laffitte` | un immeuble, avec métro et RER à pied (`&marche=0` pour les omettre) |
-| `/adresses?q=adresse 1\|adresse 2` | jusqu'à 25 adresses |
+| `/adresses?q=adresse 1\|adresse 2` | jusqu'à 15 adresses |
 | `/voie?nom=rue Laffitte` | tous les bâtiments d'une voie |
 | `/sources` | sources, producteur de chaque indicateur, dates d'extraction |
 | `/mcp` | serveur MCP (outils `immeuble_paris`, `immeubles_paris`, `sources_paris_graphie`) |
