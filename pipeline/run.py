@@ -83,9 +83,9 @@ def main():
     # Sirene (comptages d'établissements par bâtiment) : fichier mensuel, recalculé si la dernière extraction a plus de 25 jours
     import datetime
     age = (datetime.date.today() - datetime.date.fromisoformat(SD.get('sir', '2000-01-01'))).days
-    if a.mode == 'full' or age > 25 or 's_nek' not in st.S or int((st.s('s_ne') > 0).sum()) == 0 or SD.get('sir', '') < '2026-11-26':
+    if a.mode == 'full' or age > 25 or 's_nek' not in st.S or int((st.s('s_ne') > 0).sum()) == 0 or not SD.get('sir_v'):   # sir_v : recalcul unique après changement de méthode
         try:
-            step_sirene.run(st, ban); done('sir')
+            step_sirene.run(st, ban); done('sir'); done('sir_v')
         except Exception as e:
             print('::warning title=Sirene non mis à jour::%s' % str(e)[:300], flush=True)
             if prev is not None and 's_ne' in prev.S and len(prev.s('s_ne')) == st.N:
