@@ -103,7 +103,7 @@ footer{padding:9px 16px;border-top:1px solid var(--line);font-size:10.5px;color:
 body:not(.adv):not(.lqon) .advx{display:none!important}#advw{display:flex;gap:7px;align-items:center;font-size:12px;margin:6px 0 2px;cursor:pointer}#advw .k{font-size:11px}
 #ftr{font-size:11px;color:var(--ink2);margin-top:6px;line-height:1.5;padding:0 22px 4px}#ftr a{color:inherit}
 #legend .qmap canvas{display:block;border-radius:4px;background:rgba(0,0,0,.04)}#legend .qleg{display:flex;align-items:center;gap:6px;margin-top:3px}#legend .qleg i{flex:1;height:7px;border-radius:2px}
-#cutw{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:4vh 12px}#cutw[hidden]{display:none}#cutw .alp{background:var(--bg);color:var(--ink);border-radius:6px;max-width:1200px;width:100%;max-height:92vh;overflow:auto;padding:14px 16px;font-size:12.5px}#cutw .alh{display:flex;justify-content:space-between;margin-bottom:8px}#cutx{all:unset;cursor:pointer;font-size:16px;padding:2px 6px}#cutw .cutsvg{overflow:auto;border:1px solid var(--line);border-radius:4px;background:#fff}#cutw .cutsvg svg{display:block;min-width:700px;width:100%;height:auto}#cutw .alb{display:flex;gap:8px;align-items:center;margin:10px 0 6px}#cutw .cutd{margin-top:8px}#cutw .cutd summary{cursor:pointer;font-weight:600;margin-bottom:6px}#cutw .cutleg p{margin:0 0 6px;line-height:1.45}#cutw .alb button{all:unset;cursor:pointer;background:var(--ink);color:#fff;padding:6px 12px;border-radius:4px;font-size:12.5px}
+#cutw{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:4vh 12px}#cutw[hidden]{display:none}#cutw .alp{background:var(--bg);color:var(--ink);border-radius:6px;max-width:1200px;width:100%;max-height:92vh;overflow:auto;padding:14px 16px;font-size:12.5px}#cutw .alh{display:flex;justify-content:space-between;margin-bottom:8px}#cutx{all:unset;cursor:pointer;font-size:16px;padding:2px 6px}#cutw .cutsvg{overflow:auto;border:1px solid var(--line);border-radius:4px;background:#fff}#cutw .cutsvg svg{display:block;min-width:700px;width:100%;height:auto}#cutw .alb{display:flex;gap:8px;align-items:center;margin:10px 0 6px}#cutw .cutly{display:flex;flex-wrap:wrap;gap:4px 14px;margin:0 0 8px;font-size:12px}#cutw .cutly label{cursor:pointer;white-space:nowrap}#cutw .cutly input{vertical-align:-2px;margin:0 3px 0 0}#cutw .cutd{margin-top:8px}#cutw .cutd summary{cursor:pointer;font-weight:600;margin-bottom:6px}#cutw .cutleg p{margin:0 0 6px;line-height:1.45}#cutw .alb button{all:unset;cursor:pointer;background:var(--ink);color:#fff;padding:6px 12px;border-radius:4px;font-size:12.5px}
 #legend .hist{display:flex;align-items:flex-end;gap:2px;height:56px;margin:2px 0 6px;padding-bottom:1px;border-bottom:1px solid var(--line)}#legend .hb{flex:1;min-width:3px;border-radius:2px 2px 0 0;cursor:pointer;transition:opacity .15s}#legend .hb.off{opacity:.18}#legend .hb.cut{background-image:linear-gradient(0deg,transparent 78%,var(--bg) 78%,var(--bg) 84%,transparent 84%)!important}
 #tip{position:fixed;z-index:8;max-width:300px;background:var(--bg);border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.4);padding:6px 9px;font-size:12px;line-height:1.35;pointer-events:none;color:var(--ink)}#tip[hidden]{display:none}#tip hr{border:0;border-top:1px solid var(--line);margin:5px 0}
 #card .up{margin:2px 0 4px}#card .bdg{display:inline-block;font-size:11px;border:1px solid;border-radius:3px;padding:0 5px;margin:0 4px 3px 0}
@@ -1601,15 +1601,15 @@ async function cutData(A,B){
   let fl=null,bd=1e9;for(const q of FX){const dd=(q.t-tl)*dir;if(dd>-3&&dd<6&&Math.abs(q.t-tl)<bd){bd=Math.abs(q.t-tl);fl=q;}}
   const zc=zoneAt(tl+dir*2);if(!fl&&zc!=null&&zc>1)continue;   // UV, N, PSMV : pas de gabarit sur voie du PLU
   const t0=fl?fl.t:tl,zn=nivAt(t0+dir*.3);if(zn==null)continue;const sn=Math.max(.25,(fl&&fl.sn)||v.sn||1),P=v.w;
-  let Hh,h=0,pr,txt;
+  let Hh,h=0,pr,txt,rule=[];
   if(fl){const ty=/pointill/i.test(fl.l)?'P':/hachur/i.test(fl.l)?'H':/court/i.test(fl.l)?'C':/long/i.test(fl.l)?'L':/mixte/i.test(fl.l)?'M':'X';
    if(fl.c===4){const b=Bt.find(b=>t0+dir*1.5>=b.t0&&t0+dir*1.5<=b.t1);if(!b)continue;Hh=b.hm;}else{Hh=FH[fl.c];if(Hh==null)continue;}
    pr=[[0,0],[0,Hh]];const nm='filet '+(FN[fl.c]||'?')+' (H = '+(fl.c===4?fr(Hh)+' m, hauteur de façade existante estimée':Hh+' m')+')';
-   if(ty==='X'){const r=Math.min(7,Math.max(3,c10(.25*P)));h=r;for(let k=1;k<=10;k++){const q=Math.PI/2*k/10;pr.push([r-r*Math.cos(q),Hh+r*Math.sin(q)]);}txt=nm+', trait continu : quart de cercle r = '+fr(r)+' m (25 % de P = '+fr(P)+' m, entre 3 et 7 m)';}
-   else{const S={P:[0,0,'trait pointillé : horizontale'],H:[1/3,2,'hachure : pente 1/3, h = 2 m'],C:[.5,3,'tireté court : pente 1/2, h = 3 m'],L:[1,4.5,'tireté long : pente 1/1, h = 4,5 m'],M:[2,4.5,'tireté mixte : pente 2/1, h = 4,5 m']}[ty];h=S[1];if(h)pr.push([h/S[0],Hh+h]);txt=nm+', '+S[2];}}
+   if(ty==='X'){const r=Math.min(7,Math.max(3,c10(.25*P)));h=r;for(let k=1;k<=10;k++){const q=Math.PI/2*k/10;pr.push([r-r*Math.cos(q),Hh+r*Math.sin(q)]);}txt=nm+', trait continu : quart de cercle r = '+fr(r)+' m (25 % de P = '+fr(P)+' m, entre 3 et 7 m)';rule=['Filet '+FN[fl.c],'H = '+fr(Hh)+' m','trait continu : ¼ de cercle','r = 0,25 × P = 0,25 × '+fr(P)+' = '+fr(r)+' m'];}
+   else{const S={P:[0,0,'trait pointillé : horizontale'],H:[1/3,2,'hachure : pente 1/3, h = 2 m'],C:[.5,3,'tireté court : pente 1/2, h = 3 m'],L:[1,4.5,'tireté long : pente 1/1, h = 4,5 m'],M:[2,4.5,'tireté mixte : pente 2/1, h = 4,5 m']}[ty];h=S[1];if(h)pr.push([h/S[0],Hh+h]);txt=nm+', '+S[2];rule=['Filet '+FN[fl.c],'H = '+fr(Hh)+' m',S[2]];}}
   else{Hh=Math.min(28,c10(1.25*P));const r=Math.min(7,Math.max(3,c10(.25*P)));h=r;pr=[[0,0],[0,Hh]];for(let k=1;k<=10;k++){const q=Math.PI/2*k/10;pr.push([r-r*Math.cos(q),Hh+r*Math.sin(q)]);}
-   txt='voie sans filet : P = '+fr(P)+' m, H = P + 25 % = '+fr(Hh)+' m (28 m au plus), quart de cercle r = '+fr(r)+' m';}
-  pr.push([18,Hh+h]);const z0=zn-.33,il=ilotAt(t0+dir*.3),lo=Math.max(0,il?il.ta:0),hi=Math.min(L,il?il.tb:L),cl=t=>Math.min(hi,Math.max(lo,t));G.push({t0,dir,z0,zn,H:Hh,h,txt,fil:!!fl,pts:pr.map(([d,z])=>[cl(t0+dir*d/sn),z0+z])});}}
+   txt='voie sans filet : P = '+fr(P)+' m, H = P + 25 % = '+fr(Hh)+' m (28 m au plus), quart de cercle r = '+fr(r)+' m';rule=['Voie sans filet, P = '+fr(P)+' m','H = 1,25 × P = '+fr(Hh)+' m'+(Hh>=28?' (plafonné à 28)':''),'¼ de cercle r = 0,25 × P = '+fr(r)+' m'+(r===3&&.25*P<3?' (min. 3)':r===7&&.25*P>7?' (max. 7)':'')];}
+  pr.push([18,Hh+h]);const z0=zn-.33,il=ilotAt(t0+dir*.3),lo=Math.max(0,il?il.ta:0),hi=Math.min(L,il?il.tb:L),cl=t=>Math.min(hi,Math.max(lo,t));G.push({t0,dir,z0,zn,H:Hh,h,txt,rule:[...rule,'attache '+zn+' m NGF'+(fl?' sur le filet':' en limite de voie')],fil:!!fl,pts:pr.map(([d,z])=>[cl(t0+dir*d/sn),z0+z])});}}
  // au-delà de la bande de constructibilité principale de 18 m : 15 m au-dessus de la surface de nivellement
  const B15=step(t=>{const i=ilotAt(t),v=nivAt(t);if(!i||v==null)return null;const inA=i.zA!=null&&t-i.ta<18/Math.max(.25,i.sA),inB=i.zB!=null&&i.tb-t<18/Math.max(.25,i.sB);return inA||inB?null:v-.33+15;});
  // arbres
@@ -1626,6 +1626,8 @@ async function cutData(A,B){
  for(const a of A_)a.z=zAt(a.t);A_.sort((a,b)=>Math.abs(b.d)-Math.abs(a.d));
  return {L,T,tsrc,tsrcA,C,K,KX,Bt,A:A_,zAt,V,NIV,PLAF,HMC,G,B15,cad:!!cad};
 }
+const CLY=[['terrain','Terrain'],['bati','Bâtiments'],['arbres','Arbres'],['cotes','Cotes NVP'],['courbes','Courbes de niveau'],['voies','Largeur des voies'],['nivellement','Surface de nivellement'],['gabarits','Gabarits sur voie'],['regles','Règles des gabarits'],['plafond','Plafond des hauteurs'],['b15','15 m hors bande'],['hmc','HMC'],['grille','Grille et axes']];
+let CUTOFF=new Set();try{CUTOFF=new Set((localStorage.getItem('pg_cutoff')||'').split(',').filter(Boolean));}catch(e){}
 async function cutShow(A,B){
  const D=await cutData(A,B),{L,T,C,K,KX,Bt,A:Tr,V,NIV,PLAF,HMC,G,B15}=D;
  const allZ=[...PLAF.flat(),...G.flatMap(g=>g.pts),...B15.flat()].map(p=>p[1]);
@@ -1635,49 +1637,54 @@ async function cutShow(A,B){
  const S=[],f=v=>v.toFixed(1),pth=P=>'M'+P.map(p=>f(X(p[0]))+' '+f(Y(p[1]))).join(' L');
  S.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+f(ox+L*sc+30)+' '+f(Ht)+'" font-family="Inter,Arial,sans-serif" font-size="10">');
  S.push('<rect width="100%" height="100%" fill="#ffffff"/>');
- for(let z=zmin;z<=zmax;z+=5){S.push('<line x1="'+ox+'" x2="'+f(X(L))+'" y1="'+f(Y(z))+'" y2="'+f(Y(z))+'" stroke="#e6e9ec" stroke-width=".5"/><text x="'+(ox-6)+'" y="'+f(Y(z)+3)+'" text-anchor="end" fill="#7a8794">'+z+'</text>');}
+ S.push('<g data-ly="grille">');for(let z=zmin;z<=zmax;z+=5){S.push('<line x1="'+ox+'" x2="'+f(X(L))+'" y1="'+f(Y(z))+'" y2="'+f(Y(z))+'" stroke="#e6e9ec" stroke-width=".5"/><text x="'+(ox-6)+'" y="'+f(Y(z)+3)+'" text-anchor="end" fill="#7a8794">'+z+'</text>');}
  const st=L>600?100:L>200?50:L>80?20:10;for(let t=0;t<=L+.1;t+=st)S.push('<line x1="'+f(X(t))+'" x2="'+f(X(t))+'" y1="'+f(oy)+'" y2="'+f(oy+4)+'" stroke="#7a8794"/><text x="'+f(X(t))+'" y="'+f(oy+15)+'" text-anchor="middle" fill="#7a8794">'+Math.round(t)+' m</text>');
- S.push('<text x="'+(ox-40)+'" y="14" fill="#7a8794">m NVP</text>');
+ S.push('<text x="'+(ox-40)+'" y="14" fill="#7a8794">m NVP</text></g><g data-ly="courbes">');
  for(const k of K)S.push('<circle cx="'+f(X(k[0]))+'" cy="'+f(Y(k[1]))+'" r="1" fill="#c8a96a" opacity=".6"/>');
  for(const k of KX)S.push('<line x1="'+f(X(k[0]))+'" x2="'+f(X(k[0]))+'" y1="'+f(Y(k[1])-6)+'" y2="'+f(Y(k[1])+6)+'" stroke="#a8864a"/><text x="'+f(X(k[0])+2)+'" y="'+f(Y(k[1])-8)+'" fill="#a8864a" font-size="8">'+f(k[1])+'</text>');
- if(T.length>1){S.push('<path d="'+pth(T)+' L'+f(X(T[T.length-1][0]))+' '+f(oy)+' L'+f(X(T[0][0]))+' '+f(oy)+' Z" fill="#efe6d4"/>');S.push('<path d="'+pth(T)+'" fill="none" stroke="#6b5a3a" stroke-width="1.4"/>');}
+ S.push('</g><g data-ly="terrain">');if(T.length>1){S.push('<path d="'+pth(T)+' L'+f(X(T[T.length-1][0]))+' '+f(oy)+' L'+f(X(T[0][0]))+' '+f(oy)+' Z" fill="#efe6d4"/>');S.push('<path d="'+pth(T)+'" fill="none" stroke="#6b5a3a" stroke-width="1.4"/>');}
  // arbres situés derrière ou devant le plan de coupe (plus pâles avec la distance)
  const treeSvg=a=>{const g=treeGeom(a),op=Math.max(.25,1-Math.abs(a.d)/BAND*.7),cf=a.f==='con'||a.f==='pin'||a.f==='col'&&/cupress|thuja|taxus/i.test(a.n||'')?'#5d9466':'#8cc583',tip=esc((a.n||'Arbre ('+a.k+')')+' : '+fr(a.h,0)+' m'+(a.c?', circonférence '+a.c+' cm':'')+', port '+TK[a.f].n+(a.rem?', arbre remarquable':'')+(a.d?', à '+fr(Math.abs(a.d),0)+' m de la coupe':''));
   return '<g opacity="'+op.toFixed(2)+'"><title>'+tip+'</title><path d="'+pth(g.tr)+' Z" fill="#7a5a36"/>'+g.cr.map(c=>'<path d="'+pth(c)+' Z" fill="'+cf+'" fill-opacity=".6" stroke="#3f7f47" stroke-width=".6"/>').join('')+g.br.map(b=>'<path d="'+pth(b)+'" fill="none" stroke="#6b4f2a" stroke-width=".6" opacity=".7"/>').join('')+'</g>';};
- for(const a of Tr)if(Math.abs(a.d)>3)S.push(treeSvg(a));
+ S.push('</g><g data-ly="arbres">');for(const a of Tr)if(Math.abs(a.d)>3)S.push(treeSvg(a));S.push('</g><g data-ly="bati">');
  for(const b of Bt){S.push('<rect x="'+f(X(b.t0))+'" y="'+f(Y(b.zb+b.hm))+'" width="'+f((b.t1-b.t0)*sc)+'" height="'+f(b.hm*sc)+'" fill="#55606b" stroke="#2b333b" stroke-width=".6"><title>Bâtiment : hauteur médiane '+f(b.hm)+' m, maximale '+f(b.hx)+' m'+(b.an?', construit vers '+b.an:'')+'</title></rect>');
   if(b.hx>b.hm+.5)S.push('<rect x="'+f(X(b.t0))+'" y="'+f(Y(b.zb+b.hx))+'" width="'+f((b.t1-b.t0)*sc)+'" height="'+f((b.hx-b.hm)*sc)+'" fill="none" stroke="#55606b" stroke-dasharray="2 2" stroke-width=".6"/>');}
- for(const a of Tr)if(Math.abs(a.d)<=3)S.push(treeSvg(a));
+ S.push('</g><g data-ly="arbres">');for(const a of Tr)if(Math.abs(a.d)<=3)S.push(treeSvg(a));S.push('</g>');
  // PLU : nivellement, plafond, HMC, 15 m hors bande, gabarits
- for(const P of NIV)S.push('<path d="'+pth(P)+'" fill="none" stroke="#2f7fbf" stroke-width="1" stroke-dasharray="1 2"><title>Surface de nivellement d\'îlot estimée (cote ronde NGF)</title></path>');
- for(const P of B15)S.push('<path d="'+pth(P)+'" fill="none" stroke="#8a6fb5" stroke-width="1" stroke-dasharray="4 3"><title>15 m au-dessus de la surface de nivellement, au-delà de la bande de constructibilité principale de 18 m</title></path>');
- for(const P of PLAF)S.push('<path d="'+pth(P)+'" fill="none" stroke="#d9544d" stroke-width="1.2" stroke-dasharray="7 3"><title>Plafond des hauteurs (Plan général des hauteurs) au-dessus de la surface de nivellement</title></path>');
- for(const P of HMC)S.push('<path d="'+pth(P)+'" fill="none" stroke="#e07fb0" stroke-width="1.2" stroke-dasharray="2 2"><title>Hauteur maximale constructible (cote NGF)</title></path>');
+ S.push('<g data-ly="nivellement">');for(const P of NIV)S.push('<path d="'+pth(P)+'" fill="none" stroke="#2f7fbf" stroke-width="1" stroke-dasharray="1 2"><title>Surface de nivellement d\'îlot estimée (cote ronde NGF)</title></path>');
+ S.push('</g><g data-ly="b15">');for(const P of B15)S.push('<path d="'+pth(P)+'" fill="none" stroke="#8a6fb5" stroke-width="1" stroke-dasharray="4 3"><title>15 m au-dessus de la surface de nivellement, au-delà de la bande de constructibilité principale de 18 m</title></path>');
+ S.push('</g><g data-ly="plafond">');for(const P of PLAF)S.push('<path d="'+pth(P)+'" fill="none" stroke="#d9544d" stroke-width="1.2" stroke-dasharray="7 3"><title>Plafond des hauteurs (Plan général des hauteurs) au-dessus de la surface de nivellement</title></path>');
+ S.push('</g><g data-ly="hmc">');for(const P of HMC)S.push('<path d="'+pth(P)+'" fill="none" stroke="#e07fb0" stroke-width="1.2" stroke-dasharray="2 2"><title>Hauteur maximale constructible (cote NGF)</title></path>');
+ S.push('</g><g data-ly="gabarits">');const LB=[];
  for(const g of G){S.push('<path d="'+pth(g.pts)+'" fill="none" stroke="'+(g.fil?'#e07a1f':'#1f6fd0')+'" stroke-width="1.5"><title>'+esc('Gabarit-enveloppe, '+g.txt+'. Point d\'attache : '+g.zn+' m NGF')+'</title></path>');
-  const [tp,zp]=g.pts[1];S.push('<text x="'+f(X(tp)+(g.dir>0?3:-3))+'" y="'+f(Y(zp/2+g.z0/2))+'" text-anchor="'+(g.dir>0?'start':'end')+'" fill="'+(g.fil?'#e07a1f':'#1f6fd0')+'" font-size="8">H '+fr(g.H)+'</text>');}
- // largeur des voies mesurée perpendiculairement aux limites
+  const [tp,zp]=g.pts[1],zt=g.pts[g.pts.length-1][1],co=g.fil?'#e07a1f':'#1f6fd0';S.push('<text x="'+f(X(tp)+(g.dir>0?3:-3))+'" y="'+f(Y(zp/2+g.z0/2))+'" text-anchor="'+(g.dir>0?'start':'end')+'" fill="'+co+'" font-size="8">H '+fr(g.H)+'</text>');
+  const wR=Math.max(...g.rule.map(r=>r.length))*3.9;let an=g.dir>0?'start':'end';if(an==='end'&&X(tp)-wR<ox)an='start';if(an==='start'&&X(tp)+wR>ox+L*sc+25)an='end';const xr=X(tp)+(an==='start'?2:-2),hR=9*g.rule.length;let y0r=Y(zt)-4-9*(g.rule.length-1);const bx0=an==='start'?xr:xr-wR,bx1=bx0+wR;
+  for(let k=0;k<20;k++){const hit=LB.find(q=>bx0<q[1]&&bx1>q[0]&&y0r-9<q[3]&&y0r-9+hR>q[2]);if(!hit)break;y0r=hit[2]-hR+5;}LB.push([bx0,bx1,y0r-9,y0r-9+hR]);
+  S.push('<text x="'+f(xr)+'" y="'+f(y0r)+'" text-anchor="'+an+'" data-ly="regles" fill="'+co+'" font-size="7.5" stroke="#fff" stroke-width="2.4" paint-order="stroke" stroke-linejoin="round">'+g.rule.map((r,i)=>'<tspan x="'+f(xr)+'" dy="'+(i?9:0)+'"'+(i?'':' font-weight="600"')+'>'+esc(r)+'</tspan>').join('')+'</text>');}
+ S.push('</g><g data-ly="voies">');
  for(const v of V){if(v.w<2)continue;const zm=Math.max(D.zAt(v.s0),D.zAt(v.s1))+1.2,y=Y(zm);
   S.push('<path d="M'+f(X(v.s0))+' '+f(y)+' H'+f(X(v.s1))+' M'+f(X(v.s0))+' '+f(y-3)+' v6 M'+f(X(v.s1))+' '+f(y-3)+' v6" stroke="#1d2a36" stroke-width=".7"/>');
   S.push('<text x="'+f((X(v.s0)+X(v.s1))/2)+'" y="'+f(y-3)+'" text-anchor="middle" fill="#1d2a36" font-size="8.5">'+(v.big?'espace non cadastré '+fr(v.len,0)+' m':'voie '+fr(v.w)+' m ⟂')+'</text>');
   for(const [t,z] of [[v.s0,v.z0],[v.s1,v.z1]])S.push('<path d="M'+f(X(t))+' '+f(Y(z-.33))+' l-3 -5 h6 Z" fill="#2f7fbf"><title>Limite de voie : trottoir à '+fr(z,2)+' m NGF (terrain IGN)</title></path>');}
- for(const c of C)S.push('<path d="M'+f(X(c[0])-3)+' '+f(Y(c[1]))+' h6 M'+f(X(c[0]))+' '+f(Y(c[1])-3)+' v6" stroke="#b0412e" stroke-width="1"/><text x="'+f(X(c[0])+4)+'" y="'+f(Y(c[1])-4)+'" fill="#b0412e" font-size="8">'+f(c[1])+'</text>');
- S.push('<text x="'+ox+'" y="'+f(Y(zmax)-6)+'" font-weight="600" fill="#1d2a36">A</text><text x="'+f(X(L))+'" y="'+f(Y(zmax)-6)+'" text-anchor="end" font-weight="600" fill="#1d2a36">B</text>');
+ S.push('</g><g data-ly="cotes">');for(const c of C)S.push('<path d="M'+f(X(c[0])-3)+' '+f(Y(c[1]))+' h6 M'+f(X(c[0]))+' '+f(Y(c[1])-3)+' v6" stroke="#b0412e" stroke-width="1"/><text x="'+f(X(c[0])+4)+'" y="'+f(Y(c[1])-4)+'" fill="#b0412e" font-size="8">'+f(c[1])+'</text>');
+ S.push('</g>');S.push('<text x="'+ox+'" y="'+f(Y(zmax)-6)+'" font-weight="600" fill="#1d2a36">A</text><text x="'+f(X(L))+'" y="'+f(Y(zmax)-6)+'" text-anchor="end" font-weight="600" fill="#1d2a36">B</text>');
  S.push('</svg>');const svg=S.join('');
  // DXF de la coupe (repère local : X = distance depuis A, Y = altitude NVP), un calque par famille
- const E=[],pl=(ly,P,cl)=>{if(P.length<2)return;E.push('0\nPOLYLINE\n8\n'+ly+'\n66\n1\n70\n'+(cl?1:0));for(const [x,y] of P)E.push('0\nVERTEX\n8\n'+ly+'\n10\n'+x.toFixed(3)+'\n20\n'+y.toFixed(3)+'\n30\n0');E.push('0\nSEQEND\n8\n'+ly);};
- const tx=(ly,x,y,hh,s)=>E.push('0\nTEXT\n8\n'+ly+'\n10\n'+x.toFixed(3)+'\n20\n'+y.toFixed(3)+'\n30\n0\n40\n'+hh+'\n1\n'+String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\x20-\x7e]/g,'-'));
+ const E=[],pl=(ly,P,cl)=>{if(P.length<2)return;const q=['0\nPOLYLINE\n8\n'+ly+'\n66\n1\n70\n'+(cl?1:0)];for(const [x,y] of P)q.push('0\nVERTEX\n8\n'+ly+'\n10\n'+x.toFixed(3)+'\n20\n'+y.toFixed(3)+'\n30\n0');q.push('0\nSEQEND\n8\n'+ly);E.push([ly,q.join('\n')]);};
+ const tx=(ly,x,y,hh,s)=>E.push([ly,'0\nTEXT\n8\n'+ly+'\n10\n'+x.toFixed(3)+'\n20\n'+y.toFixed(3)+'\n30\n0\n40\n'+hh+'\n1\n'+String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\x20-\x7e]/g,'-')]);
  pl('TERRAIN',T,false);for(const b of Bt){pl('BATI',[[b.t0,b.zb],[b.t1,b.zb],[b.t1,b.zb+b.hm],[b.t0,b.zb+b.hm]],true);if(b.hx>b.hm+.5)pl('BATI_HAUTEUR_MAX',[[b.t0,b.zb+b.hm],[b.t0,b.zb+b.hx],[b.t1,b.zb+b.hx],[b.t1,b.zb+b.hm]],false);}
  for(const a of Tr){const g=treeGeom(a),ly=Math.abs(a.d)<=3?'':'_ARRIERE_PLAN';pl('ARBRES_TRONCS'+ly,g.tr,true);for(const c of g.cr)pl('ARBRES_HOUPPIERS'+ly,c,true);for(const b of g.br)pl('ARBRES_BRANCHES'+ly,b,false);if(a.n)tx('ARBRES_ESSENCES',a.t,a.z+a.h+.4,.35,a.n+' '+fr(a.h,0)+' m');}
  for(const c of C){pl('COTES_NVP_20M',[[c[0]-.5,c[1]],[c[0]+.5,c[1]]],false);pl('COTES_NVP_20M',[[c[0],c[1]-.5],[c[0],c[1]+.5]],false);tx('COTES_NVP_20M',c[0]+.6,c[1]+.3,.5,c[1].toFixed(2));}
  for(const k of KX){pl('COURBES_DE_NIVEAU',[[k[0],k[1]-1],[k[0],k[1]+1]],false);tx('COURBES_DE_NIVEAU',k[0]+.3,k[1]+1.2,.5,k[1].toFixed(1));}
  for(const k of K)pl('COURBES_POINTS_20M',[[k[0]-.15,k[1]],[k[0]+.15,k[1]]],false);
  for(const P of NIV)pl('PLU_NIVELLEMENT_ESTIME',P,false);for(const P of PLAF)pl('PLU_PLAFOND',P,false);for(const P of HMC)pl('PLU_HMC',P,false);for(const P of B15)pl('PLU_15M_HORS_BANDE',P,false);
- for(const g of G){pl(g.fil?'PLU_GABARIT_FILET':'PLU_GABARIT_VOIE',g.pts,false);tx(g.fil?'PLU_GABARIT_FILET':'PLU_GABARIT_VOIE',g.pts[1][0]+g.dir*.3,(g.z0+g.pts[1][1])/2,.45,'H '+fr(g.H)+' m');}
+ for(const g of G){pl(g.fil?'PLU_GABARIT_FILET':'PLU_GABARIT_VOIE',g.pts,false);tx(g.fil?'PLU_GABARIT_FILET':'PLU_GABARIT_VOIE',g.pts[1][0]+g.dir*.3,(g.z0+g.pts[1][1])/2,.45,'H '+fr(g.H)+' m');g.rule.forEach((r,i)=>tx('PLU_GABARIT_REGLES',g.pts[1][0]+(g.dir>0?.3:-r.length*.32),g.pts[g.pts.length-1][1]+.6+(g.rule.length-1-i)*.6,.4,r.replace('¼','1/4').replace(/×/g,'x')));}
  for(const v of V){if(v.w<2)continue;const zm=Math.max(D.zAt(v.s0),D.zAt(v.s1))+1.2;pl('VOIES_LARGEUR',[[v.s0,zm],[v.s1,zm]],false);pl('VOIES_LARGEUR',[[v.s0,zm-.4],[v.s0,zm+.4]],false);pl('VOIES_LARGEUR',[[v.s1,zm-.4],[v.s1,zm+.4]],false);tx('VOIES_LARGEUR',(v.s0+v.s1)/2,zm+.3,.5,v.big?'espace non cadastre':'voie '+fr(v.w)+' m (perpendiculaire)');}
  tx('INFO',0,zmin-4,1.2,'Paris-graphie (Bouchaud Architectes) - coupe A-B de '+Math.round(L)+' m - X : distance depuis A (m), Y : altitude NVP (m) - terrain : '+D.tsrc+' ; bati : Apur ; PLU bioclimatique (Ville de Paris, dec. 2025) : estimation indicative sans valeur reglementaire');
- const LYS=['TERRAIN','BATI','BATI_HAUTEUR_MAX','ARBRES_TRONCS','ARBRES_HOUPPIERS','ARBRES_BRANCHES','ARBRES_TRONCS_ARRIERE_PLAN','ARBRES_HOUPPIERS_ARRIERE_PLAN','ARBRES_BRANCHES_ARRIERE_PLAN','ARBRES_ESSENCES','COTES_NVP_20M','COURBES_DE_NIVEAU','COURBES_POINTS_20M','PLU_NIVELLEMENT_ESTIME','PLU_PLAFOND','PLU_HMC','PLU_15M_HORS_BANDE','PLU_GABARIT_VOIE','PLU_GABARIT_FILET','VOIES_LARGEUR','INFO'];
- const LC=[33,8,252,32,3,32,33,83,33,94,1,42,41,150,1,221,190,5,30,7,7];
- const dxf='0\nSECTION\n2\nHEADER\n9\n$INSUNITS\n70\n6\n0\nENDSEC\n0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n'+LYS.length+'\n'+LYS.map((l,i)=>'0\nLAYER\n2\n'+l+'\n70\n0\n62\n'+LC[i]+'\n6\nCONTINUOUS').join('\n')+'\n0\nENDTAB\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n'+E.join('\n')+'\n0\nENDSEC\n0\nEOF\n';
+ const LYS=['TERRAIN','BATI','BATI_HAUTEUR_MAX','ARBRES_TRONCS','ARBRES_HOUPPIERS','ARBRES_BRANCHES','ARBRES_TRONCS_ARRIERE_PLAN','ARBRES_HOUPPIERS_ARRIERE_PLAN','ARBRES_BRANCHES_ARRIERE_PLAN','ARBRES_ESSENCES','COTES_NVP_20M','COURBES_DE_NIVEAU','COURBES_POINTS_20M','PLU_NIVELLEMENT_ESTIME','PLU_PLAFOND','PLU_HMC','PLU_15M_HORS_BANDE','PLU_GABARIT_VOIE','PLU_GABARIT_FILET','PLU_GABARIT_REGLES','VOIES_LARGEUR','INFO'];
+ const LC=[33,8,252,32,3,32,33,83,33,94,1,42,41,150,1,221,190,5,30,30,7,7];
+ const LK=l=>/^TERRAIN/.test(l)?'terrain':/^BATI/.test(l)?'bati':/^ARBRES/.test(l)?'arbres':/^COTES/.test(l)?'cotes':/^COURBES/.test(l)?'courbes':/NIVELLEMENT/.test(l)?'nivellement':/PLAFOND/.test(l)?'plafond':/HMC/.test(l)?'hmc':/15M/.test(l)?'b15':/REGLES/.test(l)?'regles':/GABARIT/.test(l)?'gabarits':/^VOIES/.test(l)?'voies':'';
+ const mkDxf=on=>{const keep=l=>{const k=LK(l);return !k||on.has(k);},ly=LYS.filter(keep);return '0\nSECTION\n2\nHEADER\n9\n$INSUNITS\n70\n6\n0\nENDSEC\n0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n'+ly.length+'\n'+ly.map(l=>'0\nLAYER\n2\n'+l+'\n70\n0\n62\n'+LC[LYS.indexOf(l)]+'\n6\nCONTINUOUS').join('\n')+'\n0\nENDTAB\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n'+E.filter(e=>keep(e[0])).map(e=>e[1]).join('\n')+'\n0\nENDSEC\n0\nEOF\n';};
  let box=$('#cutw');if(!box){box=document.createElement('div');box.id='cutw';document.body.appendChild(box);}
  const nm='paris-graphie-coupe-'+new Date().toISOString().slice(0,10),nG=G.length,nA=Tr.filter(a=>a.k==='arbre').length;
  const sw=(c,d)=>'<svg width="26" height="8" style="vertical-align:middle;margin-right:5px"><line x1="0" y1="4" x2="26" y2="4" stroke="'+c+'" stroke-width="1.6"'+(d?' stroke-dasharray="'+d+'"':'')+'/></svg>';
@@ -1695,12 +1702,16 @@ async function cutShow(A,B){
   [sw('#e07fb0','2 2'),'Hauteur maximale constructible','Cote NGF des périmètres HMC du PLU, convertie en NVP.']];
  const leg='<div class="cutleg">'+LEG.map(l=>'<p>'+l[0]+'<b>'+l[1]+'.</b> '+l[2]+'</p>').join('')+'<p class="k">Dans le sens de la coupe, les longueurs horizontales d\'un gabarit sont divisées par le sinus de l\'angle entre la coupe et la limite : une coupe biaise étire le gabarit, une coupe perpendiculaire aux façades le donne en vraie grandeur. Données du PLU bioclimatique de Paris (décembre 2025, Ville de Paris, open data sans valeur réglementaire). Cette coupe est une aide à l\'esquisse : seuls le règlement, les documents graphiques officiels et un relevé de géomètre font foi. Tous les éléments sont sur des calques séparés du DXF pour être repris.</p></div>';
  box.innerHTML='<div class="alp"><div class="alh"><b>Coupe A-B ('+Math.round(L)+' m)</b><button id="cutx" aria-label="Fermer">✕</button></div>'
+  +'<div class="cutly">'+CLY.map(([k,n])=>'<label><input type="checkbox" data-k="'+k+'"'+(CUTOFF.has(k)?'':' checked')+'> '+n+'</label>').join('')+'</div>'
   +'<div class="cutsvg">'+svg+'</div>'
   +'<div class="alb"><button id="cutd">DXF</button><button id="cuts">SVG</button><span class="k">'+Bt.length+' bâtiments coupés, '+V.filter(v=>v.w>=2&&!v.big).length+' voies, '+nG+' gabarits, '+Tr.length+' arbres, '+C.length+' cotes NVP et '+K.length+' points de courbes à moins de 20 m'+(D.cad?'':' (cadastre indisponible : pas de voies ni de règles du PLU)')+'</span></div>'
   +'<details class="cutd" open><summary>Comment chaque élément est calculé</summary>'+leg+'</details></div>';
  box.hidden=false;$('#cutx').onclick=()=>box.hidden=true;
+ const on=()=>new Set(CLY.map(c=>c[0]).filter(k=>!CUTOFF.has(k))),apply=()=>{for(const g of box.querySelectorAll('.cutsvg [data-ly]'))g.style.display=CUTOFF.has(g.dataset.ly)?'none':'';};
+ for(const c of box.querySelectorAll('.cutly input'))c.onchange=()=>{c.checked?CUTOFF.delete(c.dataset.k):CUTOFF.add(c.dataset.k);try{localStorage.setItem('pg_cutoff',[...CUTOFF].join(','));}catch(e){}apply();};apply();
+ const svgOn=()=>{const d=new DOMParser().parseFromString(svg,'image/svg+xml');for(const g of [...d.querySelectorAll('[data-ly]')])if(CUTOFF.has(g.getAttribute('data-ly')))g.remove();return new XMLSerializer().serializeToString(d);};
  const dl=(txt,type,ext)=>{const u=URL.createObjectURL(new Blob([txt],{type}));const a=document.createElement('a');a.href=u;a.download=nm+ext;a.click();setTimeout(()=>URL.revokeObjectURL(u),2000);};
- $('#cutd').onclick=()=>dl(dxf,'application/dxf','.dxf');$('#cuts').onclick=()=>dl(svg,'image/svg+xml','.svg');
+ $('#cutd').onclick=()=>dl(mkDxf(on()),'application/dxf','.dxf');$('#cuts').onclick=()=>dl(svgOn(),'image/svg+xml','.svg');
 }
 /* ---------- export DXF géoréférencé (Lambert 93, EPSG:2154), un calque par couche ---------- */
 const L93=(()=>{const a=6378137,e=0.0818191910428158,l0=3*Math.PI/180,p0=46.5*Math.PI/180,p1=44*Math.PI/180,p2=49*Math.PI/180;
