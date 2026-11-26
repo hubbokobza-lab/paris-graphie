@@ -74,6 +74,7 @@ label.ck input{accent-color:var(--ink)}
 #fiche .t{font-weight:600;margin-bottom:2px}
 #count{font-size:12px;color:var(--ink2);margin:10px 0 0}
 footer{padding:9px 16px;border-top:1px solid var(--line);font-size:10.5px;color:var(--ink2);line-height:1.4}
+#fsb{position:fixed;top:12px;right:12px;z-index:5;width:36px;height:36px;border:0;border-radius:4px;background:var(--bg);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.3)}#fsb:hover{background:#e9eef2}
 #zoom{position:fixed;right:12px;bottom:34px;display:flex;flex-direction:column;gap:1px;z-index:4}
 #zoom button{width:34px;height:34px;border:0;background:var(--bg);color:var(--ink);font-size:18px;cursor:pointer}
 #zoom button:first-child{border-radius:4px 4px 0 0}#zoom button:last-child{border-radius:0 0 4px 4px;font-size:13px}
@@ -100,7 +101,7 @@ footer{padding:9px 16px;border-top:1px solid var(--line);font-size:10.5px;color:
 #alst .alb{display:flex;gap:8px;align-items:center;margin-bottom:10px}#alst .alb button{all:unset;cursor:pointer;background:var(--ink);color:#fff;padding:6px 12px;border-radius:4px;font-size:12.5px}#alst .alb button[disabled]{opacity:.4;cursor:default}
 #alr{overflow:auto;max-height:60vh}#alr table{border-collapse:collapse;font-size:12px;white-space:nowrap}#alr td{max-width:340px;overflow:hidden;text-overflow:ellipsis}#alr th,#alr td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}#alr th{position:sticky;top:-14px;background:var(--bg)}#alr tr[data-i]:not(.ko){cursor:pointer}#alr tr[data-i]:not(.ko):hover{background:var(--bg2)}#alr tr.ko td{color:#c0392b}
 body:not(.adv):not(.lqon) .advx{display:none!important}#advw{display:flex;gap:7px;align-items:center;font-size:12px;margin:6px 0 2px;cursor:pointer}#advw .k{font-size:11px}
-#ftr{font-size:11px;color:var(--ink2);margin-top:6px;line-height:1.5}#ftr a{color:inherit}
+#ftr{font-size:11px;color:var(--ink2);margin-top:6px;line-height:1.5;padding:0 22px 4px}#ftr a{color:inherit}
 #legend .qmap canvas{display:block;border-radius:4px;background:rgba(0,0,0,.04)}#legend .qleg{display:flex;align-items:center;gap:6px;margin-top:3px}#legend .qleg i{flex:1;height:7px;border-radius:2px}
 #legend .hist{display:flex;align-items:flex-end;gap:2px;height:56px;margin:2px 0 6px;padding-bottom:1px;border-bottom:1px solid var(--line)}#legend .hb{flex:1;min-width:3px;border-radius:2px 2px 0 0;cursor:pointer;transition:opacity .15s}#legend .hb.off{opacity:.18}#legend .hb.cut{background-image:linear-gradient(0deg,transparent 78%,var(--bg) 78%,var(--bg) 84%,transparent 84%)!important}
 #tip{position:fixed;z-index:8;max-width:300px;background:var(--bg);border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.4);padding:6px 9px;font-size:12px;line-height:1.35;pointer-events:none;color:var(--ink)}#tip[hidden]{display:none}#tip hr{border:0;border-top:1px solid var(--line);margin:5px 0}
@@ -241,6 +242,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
 <div id="card" hidden><button id="cx" type="button" aria-label="Fermer">×</button><div id="cb"></div></div>
 <div id="zoom"><button id="zi" type="button" aria-label="Zoom avant">+</button><button id="zo" type="button" aria-label="Zoom arrière">−</button><button id="zr" type="button" aria-label="Recadrer">⌂</button><button id="zx" type="button" aria-label="Exporter une zone en DXF géoréférencé" title="Exporter une zone en DXF géoréférencé (Lambert 93), un calque par couche : tracer un rectangle sur la carte">DXF</button></div><div id="xmsg" hidden></div>
 <div id="scale"><span id="scT"></span><i id="scB"></i></div>
+<button id="fsb" type="button" aria-label="Plein écran" title="Plein écran">⛶</button>
 
 <script src="https://cdn.jsdelivr.net/npm/earcut@2.2.4/dist/earcut.min.js"></script>
 <script>
@@ -1836,6 +1838,13 @@ function makePdf(M_,IMG,HIST){
  return new Blob([u8],{type:'application/pdf'});
 }
 $('#srcb').onclick=e=>{const o=$('#srct').hidden;$('#srct').hidden=!o;e.currentTarget.setAttribute('aria-expanded',o);};
+// plein écran : API du navigateur ; si elle est bloquée (iframe sans autorisation, iPhone), ouverture de la carte seule dans un nouvel onglet
+{const b=$('#fsb'),de=document.documentElement,req=de.requestFullscreen||de.webkitRequestFullscreen,ex=document.exitFullscreen||document.webkitExitFullscreen,cur=()=>document.fullscreenElement||document.webkitFullscreenElement;
+ const upd=()=>{const on=!!cur();b.textContent=on?'✕':'⛶';b.title=on?'Quitter le plein écran':'Plein écran';b.setAttribute('aria-label',b.title);};
+ b.onclick=async()=>{try{if(cur()){await ex.call(document);}else if(req&&(document.fullscreenEnabled||document.webkitFullscreenEnabled)){await req.call(de);}else throw 0;}catch(e){window.open(location.href,'_blank','noopener');}};
+ document.addEventListener('fullscreenchange',upd);document.addEventListener('webkitfullscreenchange',upd);
+ if(!(document.fullscreenEnabled||document.webkitFullscreenEnabled)&&window.top===window.self)b.hidden=true;   // iPhone : déjà en plein écran dans l'onglet
+}
 $('#methb').onclick=e=>{const b=$('#metht'),o=b.hidden;if(o&&!b.innerHTML)b.innerHTML='<div class="k" style="margin-top:6px">Les indicateurs ci-dessous sont calculés par Paris-graphie à partir des données sources. Ce sont des ordres de grandeur, à vérifier.</div>'+METH.map(m=>'<b>'+esc(m.indicateur)+'</b>'+esc(m.methode)).join('');b.hidden=!o;e.currentTarget.setAttribute('aria-expanded',o);};
 let PCTX=null;
 cb.addEventListener('click',async e=>{if(e.target&&e.target.id==='pdfb'&&PCTX&&(PF[PCTX.s]&3))await loadMhd();
