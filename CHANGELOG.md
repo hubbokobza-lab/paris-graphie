@@ -13,7 +13,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Outil Coupe : largeur des voies mesurée perpendiculairement aux limites de parcelles, et non dans le sens de la coupe.
 - Outil Coupe : arbres publics de la Ville de Paris lus en direct, avec une silhouette schématique selon le genre (fastigié, conique, parasol, pleureur, étalé, ovoïde), la hauteur et la circonférence relevées.
 - Outil Coupe : légende détaillant le mode de calcul de chaque élément, et calques DXF séparés (gabarits, plafond, nivellement, voies, troncs, houppiers, essences).
-- Outil Coupe : nuage de points LiDAR HD de l'IGN à 20 m de part et d'autre de la coupe, lu par morceaux directement depuis la Géoplateforme (format COPC), coloré par classe (sol, végétation, bâtiment, eau, pont) et exporté en points dans le DXF, un calque par classe.
+- Outil Coupe : nuage de points LiDAR HD de l'IGN à 20 m de part et d'autre de la coupe, lu par morceaux directement depuis la Géoplateforme (format COPC), coloré par classe (sol, végétation, bâtiment, eau, pont), opaque à moins de 25 cm du plan de coupe puis de plus en plus transparent (50 % à 25 cm, presque rien à 20 m) et exporté en points dans le DXF, un calque par classe.
 - Outil Coupe : règle de calcul écrite au-dessus de chaque gabarit (hauteur, couronnement, point d'attache).
 - Outil Coupe : calques activables dans la fenêtre (terrain, bâti, arbres, cotes, voies, nivellement, gabarits, règles, plafond, etc.), mémorisés d'une coupe à l'autre ; les exports SVG et DXF ne contiennent que les calques affichés.
 - Analyse d'adresses : suggestions à la saisie, y compris pour les adresses introuvables (fautes de frappe), et toutes les colonnes avec leur source. Lien GitHub à côté de l'API.
