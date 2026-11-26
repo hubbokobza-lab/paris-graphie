@@ -93,6 +93,10 @@ Le robot GitHub Actions (`.github/workflows/maj.yml`) recalcule le site et le pu
 
 Si une source est indisponible ou renvoie un résultat anormal, le calcul s'arrête avant publication : le site reste dans son état précédent.
 
+## Journal des modifications
+
+Les changements visibles pour les utilisateurs de la carte et de l'API sont consignés dans [CHANGELOG.md](CHANGELOG.md).
+
 ## Contenu du dépôt
 
 - `pipeline/` : les scripts (un module par famille de données, `run.py` pour l'enchaînement).
