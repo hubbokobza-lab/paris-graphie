@@ -9,6 +9,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-26
 
 ### Ajouté
+- Magnétisme pour la mesure et le tracé de coupe : accroche aux sommets et aux arêtes des bâtiments, et aux directions horizontale, verticale, parallèle ou perpendiculaire à la façade voisine et au segment précédent (à 5° près). Dans la fenêtre de coupe : sommets et arêtes du bâti, du terrain, des gabarits, du plan de repérage, et mesures horizontales ou verticales.
 - Outil Mesure dans la barre en bas à droite : distances cumulées sur la carte, surface quand le tracé est refermé sur le premier point.
 - Mesure au doigt : boutons Terminer, Effacer et Fermer dans le bandeau de mesure de la carte, et bouton Effacer dans la fenêtre de coupe (équivalents de la touche Échap sur téléphone et tablette).
 - Outil Coupe : la mesure se fait en glissant d'un point à l'autre ; pendant la mesure, le dessin ne défile plus au doigt (on fait défiler la fenêtre en dehors du dessin).
