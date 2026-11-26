@@ -27,6 +27,9 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Mini-carte des statistiques par quartier.
 
 ### Modifié
+- Fenêtre de coupe : calques, profondeur, outils et exports regroupés dans une barre latérale à gauche, comme sur la carte.
+- Outil de mesure : icône de règle sur la carte et dans la coupe.
+- Tutoriel : l'étape PDF zoome sur un immeuble, ouvre sa fiche pour montrer le bouton, puis revient à la vue d'ensemble.
 - Boutons « DXF » et « Coupe » : texte plus petit et centré, qui ne déborde plus de la case.
 - Calque des filets de hauteur : couleurs et hauteurs réelles en légende (au lieu des codes), type de trait dans l'infobulle, filet bleu marine (25 m) distingué.
 - Indice de suspicion de vacance des bureaux : exclusion des lieux culturels, des lieux de culte, des hôtels, des propriétaires publics, des établissements publics industriels et commerciaux, des très grandes emprises (Grand Palais), des monuments historiques et des gares ferroviaires. Prise en compte des immeubles mixtes à dominante de bureaux, du retard de Sirene sur les livraisons récentes et du rattachement Sirene au numéro voisin.
