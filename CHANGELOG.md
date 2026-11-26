@@ -27,6 +27,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Mini-carte des statistiques par quartier.
 
 ### Modifié
+- Tablettes : en portrait (jusqu'à 1024 px), mise en page à volet comme sur téléphone ; en paysage et sur ordinateur, l'immeuble recherché est centré dans l'espace libre entre le panneau et la fiche, et les boutons de zoom et de plein écran se décalent pour ne plus être cachés par la fiche ; boutons plus grands au doigt ; fenêtre de coupe avec calques sur plusieurs colonnes en largeur réduite.
 - Fenêtre de coupe : calques, profondeur, outils et exports regroupés dans une barre latérale à gauche, comme sur la carte.
 - Outil de mesure : icône de règle sur la carte et dans la coupe.
 - Tutoriel : l'étape PDF zoome sur un immeuble, ouvre sa fiche pour montrer le bouton, puis revient à la vue d'ensemble.
