@@ -53,6 +53,11 @@ def run(st, ban):
         if s is None:
             c = core_(v); s = bk2.get((ins, c, n, f))
             if s is None: s = bk20.get((ins, c, n))
+        if s is None:   # numéro absent de la BAN : numéro voisin du même côté de la voie (±2, ±4)
+            c = core_(v)
+            for dn in (2, -2, 4, -4):
+                s = bk0.get((ins, v, n + dn)) or bk20.get((ins, c, n + dn))
+                if s is not None: break
         if s is not None: sh[i] = s
     df['sh'] = sh; log('Sirene : %.1f %% rattachés à un bâtiment' % (100 * np.mean(sh >= 0)))
     df = df[df.sh >= 0].copy(); df['g'] = df.naf.map(grp); df['eff'] = df.te.map(MID).fillna(0)
