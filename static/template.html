@@ -375,6 +375,9 @@ const OWN_LAB=['Aucun propriétaire personne morale connu (particuliers ou incon
 // Indice de suspicion de vacance des bureaux (0 à 5) et fiabilité (1 à 5), à partir de Sirene, des permis et de la date de construction
 function vacOf(s){
  const off=burOf(s)===1||(BU[s]===3&&nivOf(s)>=2&&BL[s]===0);if(!off)return {c:0,f:0,why:''};
+ // hors champ : musées et lieux culturels, lieux de culte, hôtels, propriétaires publics (État, Ville, établissements publics)
+ let hors=OWN[s]===1;try{hors=hors||XTRA.some(x=>x[2]&&x[2][s]&&x[2][s].length);}catch(e){}
+ if(hors)return {c:0,f:0,why:''};
  const ne=SNE[s],cl=SCL[s],na=NA[s],neuf=AN[s]>=2018||RE[s]>=2021||LPC[s]>=2020,multi=ne>=5||na>=3;
  if(TFO[s])return {c:6,f:4,why:'permis de transformation de bureaux en logements '+(TFO[s]===1?'accordé':'en instruction')+' depuis moins de 6 ans'};
  if(ne>100)return {c:1,f:1,why:'plus de 100 établissements déclarés : adresse de domiciliation probable, indice non significatif'};
@@ -419,7 +422,7 @@ const CRIT=[
  {id:'usg',g:'Usages',name:'Usage principal (BDNB)',lab:USG_LAB,col:['#3a4652','#66c2a5','#abdda4','#3288bd','#c77dff','#9a9aa8'],cls:s=>BU[s]},
  {id:'log',g:'Usages',name:'Nombre de logements (BDNB)',lab:['Aucun ou inconnu','1 à 5','6 à 15','16 à 40','41 à 100','Plus de 100'],col:['#3a4652','#d9f0d3','#a6dba0','#5aae61','#1b7837','#00441b'],cls:s=>{const n=BL[s];return n===0?0:n<=5?1:n<=15?2:n<=40?3:n<=100?4:5;}},
  {id:'soc',g:'Usages',name:'Logements sociaux (RPLS)',lab:['Aucun ou inconnu','1 à 10','11 à 50','Plus de 50'],col:['#3a4652','#fde0dd','#f768a1','#ae017e'],cls:s=>{const n=BS[s];return n===0?0:n<=10?1:n<=50?2:3;}},
- {id:'vac',g:'Usages',name:'Suspicion de vacance des bureaux (indice sur 5)',lab:['Pas un immeuble de bureaux','0 à 1 : occupation apparente','2 : départs notables','3 : vacance partielle ou aucune trace d\'occupant','4 : probablement vide','5 : neuf ou restructuré, sans occupant','Transformation en logements engagée'],col:[GRAY,'#2c7bb6','#abd9e9','#ffffbf','#fdae61','#d7191c','#9e6ebd'],cls:s=>vacOf(s).c},
+ {id:'vac',g:'Usages',name:'Suspicion de vacance des bureaux (indice sur 5)',lab:['Hors champ (pas de bureaux, ou équipement, hôtel, lieu culturel, propriétaire public)','0 à 1 : occupation apparente','2 : départs notables','3 : vacance partielle ou aucune trace d\'occupant','4 : probablement vide','5 : neuf ou restructuré, sans occupant','Transformation en logements engagée'],col:[GRAY,'#2c7bb6','#abd9e9','#ffffbf','#fdae61','#d7191c','#9e6ebd'],cls:s=>vacOf(s).c},
  {id:'own',g:'Propriété',name:'Propriétaire principal (personnes morales)',lab:OWN_LAB,col:[GRAY,'#d95fa6','#66c2a5','#fee08b','#3288bd','#f46d43','#9c8a54'],cls:s=>OWN[s]},
  {id:'dpe',g:'Énergie et carbone',name:'DPE, étiquette énergie',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:DPE_COL,cls:s=>BD[s]},
  {id:'ges',g:'Énergie et carbone',name:'DPE, étiquette climat (GES)',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:GES_COL,cls:s=>BG[s]},
