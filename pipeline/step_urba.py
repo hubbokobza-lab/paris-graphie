@@ -89,6 +89,7 @@ def run(st, ban=None):
     surfc = np.zeros(N, np.uint32); recs = np.zeros(N, np.uint8)
     gs = h.groupby('sh').size(); n_tot[gs.index] = np.minimum(gs.values, 65535)
     pc = h[h.t == 'PC'].groupby('sh').size(); n_pc[pc.index] = np.minimum(pc.values, 255)
+    n_acc = np.zeros(N, np.uint16); ac = h[h.acc].groupby('sh').size(); n_acc[ac.index] = np.minimum(ac.values, 65535)   # autorisations accordées, toutes natures
     a = h[(h.t == 'PC') & h.acc].groupby('sh').yd.max(); last_pc[a.index] = a.values
     a = h[(h.t == 'PD') & h.acc].groupby('sh').yd.max(); last_pd[a.index] = a.values
     a = h.groupby('sh').sc.sum(); surfc[a.index] = np.minimum(np.round(a.values), 4e9).astype(np.uint32)
@@ -129,6 +130,6 @@ def run(st, ban=None):
         v = 1 if acc else (2 if not isinstance(dc, str) else 0)
         if v and (tfo[s_] == 0 or v == 1): tfo[s_] = v
     log('transformations de bureaux en logements repérées :', int((tfo == 1).sum()), 'accordées,', int((tfo == 2).sum()), 'en instruction')
-    for k, a_ in [('n_tot', n_tot), ('n_pc', n_pc), ('last_pc', last_pc), ('last_pd', last_pd), ('surf', surfc), ('cvp_n', cvp_n), ('cvp_k', cvp_k), ('rec', recs), ('tfo', tfo)]:
+    for k, a_ in [('n_tot', n_tot), ('n_pc', n_pc), ('last_pc', last_pc), ('last_pd', last_pd), ('surf', surfc), ('cvp_n', cvp_n), ('cvp_k', cvp_k), ('rec', recs), ('tfo', tfo), ('n_acc', n_acc)]:
         st.put(k, a_)
     log('urbanisme : %d bâtiments avec dossiers, %d avec un passage en CVP' % ((n_tot > 0).sum(), (cvp_n > 0).sum()))
