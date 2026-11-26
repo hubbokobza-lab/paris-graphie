@@ -21,6 +21,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Mini-carte des statistiques par quartier.
 
 ### Modifié
+- Boutons « DXF » et « Coupe » : texte plus petit et centré, qui ne déborde plus de la case.
 - Calque des filets de hauteur : couleurs et hauteurs réelles en légende (au lieu des codes), type de trait dans l'infobulle, filet bleu marine (25 m) distingué.
 - Indice de suspicion de vacance des bureaux : exclusion des lieux culturels, des lieux de culte, des hôtels, des propriétaires publics, des établissements publics industriels et commerciaux, des très grandes emprises (Grand Palais), des monuments historiques et des gares ferroviaires. Prise en compte des immeubles mixtes à dominante de bureaux, du retard de Sirene sur les livraisons récentes et du rattachement Sirene au numéro voisin.
 - L'indice de vacance est rangé dans la section « Usages » de la fiche, où il figurait en double.
