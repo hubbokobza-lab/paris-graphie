@@ -24,7 +24,7 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2
 .crit button[aria-pressed=true]{background:var(--ink);color:#fff}
 .crit .g{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);margin:8px 8px 2px}
 .org{margin-left:auto;padding-left:8px;font-size:10px;opacity:.5;white-space:nowrap;text-align:right;flex:none;max-width:42%;white-space:normal;line-height:1.2}
-#xmsg{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:8px 14px;border-radius:5px;z-index:9;box-shadow:0 2px 12px rgba(0,0,0,.4)}#xmsg a{color:#fff}
+#xmsg .msb{display:inline-flex;gap:6px;margin-left:10px;vertical-align:middle}#xmsg .msb button{all:unset;cursor:pointer;background:rgba(255,255,255,.16);border-radius:4px;padding:3px 9px;font-size:12px}@media (pointer:coarse){#xmsg .msb button{padding:7px 12px;font-size:13px}#xmsg{max-width:calc(100vw - 24px)}}#xmsg{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:8px 14px;border-radius:5px;z-index:9;box-shadow:0 2px 12px rgba(0,0,0,.4)}#xmsg a{color:#fff}
 #zx{font-size:10.5px;font-weight:700;letter-spacing:.03em}#zx.on{background:var(--ink);color:#fff}
 
 #card .pdfrow{margin:8px 0 10px}
@@ -1550,13 +1550,14 @@ const msLen=P=>{let d=0;for(let i=1;i<P.length;i++)d+=Math.hypot(P[i][0]-P[i-1][
 const fm=v=>v<1000?(v<10?v.toFixed(2):v.toFixed(1)).replace('.',',')+' m':(v/1000).toFixed(2).replace('.',',')+' km';
 function msInfo(){if(!MS)return;const P=MS.cur&&!MS.closed?MS.pts.concat([MS.cur]):MS.pts;let h='<b>Mesure</b> : '+(P.length<2?'cliquez le premier point':fm(msLen(MS.closed?P.concat([P[0]]):P)));
  if(MS.closed)h+=' (périmètre) ; surface '+Math.round(msArea(P)).toLocaleString('fr-FR')+' m²';else if(P.length>1){const l=P.length;h+=' ; dernier segment '+fm(Math.hypot(P[l-1][0]-P[l-2][0],P[l-1][1]-P[l-2][1]));}
- xMsg(h+' <span class="k">· clic sur le 1er point : surface · double-clic ou Échap : terminer</span>');}
+ xMsg(h+' <span class="k">· clic sur le 1er point : surface</span><span class="msb">'+(MS.pts.length>1&&!MS.done&&!MS.closed?'<button type="button" data-m="end">Terminer</button>':'')+(MS.pts.length?'<button type="button" data-m="clr">Effacer</button>':'')+'<button type="button" data-m="quit">Fermer</button></span>');}
 function drawMeas(){if(!MS||!MS.pts.length)return;const k=view.k,X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;lx.setTransform(dpr,0,0,dpr,0,0);
  const P=MS.cur&&!MS.closed?MS.pts.concat([MS.cur]):MS.pts;lx.lineWidth=2;lx.strokeStyle='#7fe0ff';lx.fillStyle='rgba(127,224,255,.15)';lx.beginPath();P.forEach((p,i)=>i?lx.lineTo(X(p[0]),Y(p[1])):lx.moveTo(X(p[0]),Y(p[1])));if(MS.closed){lx.closePath();lx.fill();}lx.stroke();
  lx.fillStyle='#7fe0ff';for(const p of MS.pts){lx.beginPath();lx.arc(X(p[0]),Y(p[1]),3.5,0,7);lx.fill();}
  lx.font='600 11px Inter, system-ui, sans-serif';lx.lineWidth=3;lx.strokeStyle='rgba(8,16,24,.9)';
  const Q=MS.closed?P.concat([P[0]]):P;for(let i=1;i<Q.length;i++){const a=Q[i-1],b=Q[i],t=fm(Math.hypot(b[0]-a[0],b[1]-a[1])),x=(X(a[0])+X(b[0]))/2+4,y=(Y(a[1])+Y(b[1]))/2-4;lx.strokeText(t,x,y);lx.fillStyle='#e9f8ff';lx.fillText(t,x,y);}
  if(MS.closed){let cx=0,cy=0;for(const p of P){cx+=p[0];cy+=p[1];}const t=Math.round(msArea(P)).toLocaleString('fr-FR')+' m²';lx.font='700 13px Inter, system-ui, sans-serif';lx.strokeText(t,X(cx/P.length)-20,Y(cy/P.length));lx.fillStyle='#ffffff';lx.fillText(t,X(cx/P.length)-20,Y(cy/P.length));}}
+xmsg.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b||!MS)return;e.stopPropagation();const m=b.dataset.m;if(m==='end'){MS.done=true;MS.cur=null;draw();msInfo();}else if(m==='clr'){MS={pts:[],cur:null,closed:false};draw();msInfo();}else msOff();});
 const msOff=()=>{MS=null;$('#zm').classList.remove('on');cv.style.cursor='';xMsg('');draw();};
 $('#zm').onclick=()=>{if(MS){msOff();return;}if(XC)xcOff();if(XP)$('#zx').click();MS={pts:[],cur:null,closed:false};$('#zm').classList.add('on');cv.style.cursor='crosshair';msInfo();};
 addEventListener('keydown',e=>{if(e.key==='Escape'&&MS){if(MS.pts.length&&!MS.done){MS.done=true;MS.cur=null;draw();msInfo();}else msOff();}});
@@ -1798,7 +1799,7 @@ async function cutShow(A,B,opt={}){
  box.innerHTML='<div class="alp"><div class="alh"><b>Coupe A-B · '+Math.round(L)+' m</b><button id="cutx" aria-label="Fermer">✕</button></div><div class="cutg"><aside class="cutside">'
   +CG.map(([g,ks])=>'<div class="cuth">'+g+'</div>'+ks.map(k=>'<label class="cutr"><input type="checkbox" data-k="'+k+'"'+(CUTOFF.has(k)?'':' checked')+'><i style="background:'+CCOL[k]+'"></i><span>'+CN[k]+'</span></label>').join('')).join('')
   +'<div class="cuth">Profondeur visible</div><div class="cutsl"><input type="range" id="lidd" min="0" max="1000" step="1" aria-label="Profondeur visible derrière le plan de coupe"><b id="liddv"></b></div><div class="k cutk">Derrière le plan, de 10 cm à 150 m : LiDAR, arbres, cotes et courbes. Rien n\'est montré devant le plan.</div>'
-  +'<div class="cuth">Outils et exports</div><div class="alb"><button id="cutm" title="Mesurer sur la coupe ou le plan : glisser d\'un point à l\'autre, Échap pour effacer" aria-label="Mesurer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M5.5 13 7.6 15.1M8 10.5 9.3 11.8M10.5 8 12.6 10.1M13 5.5 14.3 6.8"/></svg></button><button id="cutd">DXF</button><button id="cuts">SVG</button></div>'
+  +'<div class="cuth">Outils et exports</div><div class="alb"><button id="cutm" title="Mesurer sur la coupe ou le plan : glisser d\'un point à l\'autre, Échap pour effacer" aria-label="Mesurer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M5.5 13 7.6 15.1M8 10.5 9.3 11.8M10.5 8 12.6 10.1M13 5.5 14.3 6.8"/></svg></button><button id="cutmx" hidden title="Effacer les mesures" aria-label="Effacer les mesures">Effacer</button><button id="cutd">DXF</button><button id="cuts">SVG</button></div>'
   +'<div class="k cutk" id="cutms" style="color:#0a6f99"></div><div class="k cutk" id="cutl"></div><div class="k cutk">'+stat+'</div></aside>'
   +'<div class="cutmain"><div class="cutsvg">'+svg+'</div>'
   +'<details class="cutd" open><summary>Comment chaque élément est calculé</summary>'+leg+'</details></div></div></div>';
@@ -1843,9 +1844,9 @@ async function cutShow(A,B,opt={}){
   const down=e=>{if(!on)return;e.preventDefault();a0=loc(e);tmp=el('g',{});gm.append(tmp);try{sv().setPointerCapture(e.pointerId);}catch(_){}};
   const move=e=>{if(on&&a0&&tmp){e.preventDefault();draw_(a0,loc(e),tmp);}};
   const up=e=>{if(!on||!a0)return;const p=loc(e);if(Math.hypot(p.x-a0.x,p.y-a0.y)<2)tmp.remove();else draw_(a0,p,tmp);a0=null;tmp=null;};
-  const esc_=e=>{if(e.key==='Escape'&&on&&gm){gm.innerHTML='';a0=null;tmp=null;}};
-  bm.onclick=()=>{on=!on;bm.classList.toggle('on',on);const s_=sv();s_.style.cursor=on?'crosshair':'';s_.style.touchAction=on?'none':'';if(on&&!gm){gm=el('g',{id:'meas'});s_.append(gm);s_.addEventListener('pointerdown',down);s_.addEventListener('pointermove',move);s_.addEventListener('pointerup',up);s_.addEventListener('pointercancel',up);addEventListener('keydown',esc_);}
-   box.querySelector('#cutms').textContent=on?'Mesure : faites glisser d\'un point à l\'autre sur la coupe (distance, horizontal, vertical, pente) ou sur le plan ; le dessin ne défile plus, faites défiler la fenêtre en dehors. Échap efface.':'';};}
+  const clr=()=>{if(gm)gm.innerHTML='';a0=null;tmp=null;};const esc_=e=>{if(e.key==='Escape'&&on)clr();};box.querySelector('#cutmx').onclick=clr;
+  bm.onclick=()=>{on=!on;bm.classList.toggle('on',on);box.querySelector('#cutmx').hidden=!on;const s_=sv();s_.style.cursor=on?'crosshair':'';s_.style.touchAction=on?'none':'';if(on&&!gm){gm=el('g',{id:'meas'});s_.append(gm);s_.addEventListener('pointerdown',down);s_.addEventListener('pointermove',move);s_.addEventListener('pointerup',up);s_.addEventListener('pointercancel',up);addEventListener('keydown',esc_);}
+   box.querySelector('#cutms').textContent=on?'Mesure : faites glisser d\'un point à l\'autre sur la coupe (distance, horizontal, vertical, pente) ou sur le plan ; le dessin ne défile plus, faites défiler la fenêtre en dehors. « Effacer » (ou Échap) retire les mesures.':'';};}
  if(opt.headless){if(!CUTOFF.has('lidar'))await loadLid();return {svg:svgOn(),L,lid:LIDP?LIDP.t.length:0};}
 }
 /* ---------- export DXF géoréférencé (Lambert 93, EPSG:2154), un calque par couche ---------- */

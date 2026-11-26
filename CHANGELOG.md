@@ -10,6 +10,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 
 ### Ajouté
 - Outil Mesure dans la barre en bas à droite : distances cumulées sur la carte, surface quand le tracé est refermé sur le premier point.
+- Mesure au doigt : boutons Terminer, Effacer et Fermer dans le bandeau de mesure de la carte, et bouton Effacer dans la fenêtre de coupe (équivalents de la touche Échap sur téléphone et tablette).
 - Outil Coupe : la mesure se fait en glissant d'un point à l'autre ; pendant la mesure, le dessin ne défile plus au doigt (on fait défiler la fenêtre en dehors du dessin).
 - Outil Coupe : bouton Mesurer (distance, écart horizontal et vertical, pente, altitudes NVP sur la coupe ; distances sur le plan de repérage).
 - Tutoriel des premières visites en 4 étapes (adresse et calques, fiche PDF, export DXF, coupe), avec un bouton Passer ; relançable depuis le lien « Tutoriel » en pied de panneau.
