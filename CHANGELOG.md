@@ -9,6 +9,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-26
 
 ### Ajouté
+- Tutoriel des premières visites en 4 étapes (adresse et calques, fiche PDF, export DXF, coupe), avec un bouton Passer ; relançable depuis le lien « Tutoriel » en pied de panneau.
 - Outil Coupe : gabarits-enveloppes du PLU bioclimatique en bordure de voie, selon la couleur et le type de trait des filets (ou selon la largeur de voie en l'absence de filet), plafond des hauteurs, limite de 15 m au-delà de la bande de 18 m, hauteur maximale constructible et estimation de la surface de nivellement d'îlot.
 - Outil Coupe : largeur des voies mesurée perpendiculairement aux limites de parcelles, et non dans le sens de la coupe.
 - Outil Coupe : arbres publics de la Ville de Paris lus en direct, avec une silhouette schématique selon le genre (fastigié, conique, parasol, pleureur, étalé, ovoïde), la hauteur et la circonférence relevées.
