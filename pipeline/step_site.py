@@ -46,7 +46,6 @@ def write_page(out):
         if (f.endswith('.json') and f != 'maj.json') or f in ASSETS: h.update(f.encode()); h.update(open(os.path.join(out, f), 'rb').read())
     open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(html(dv=h.hexdigest()[:12]))
     open(os.path.join(out, '.nojekyll'), 'w').write('')
-    open(os.path.join(out, 'CNAME'), 'w').write('paris-graphie.bouchaudarchitectes.com\n')   # domaine propre (alias déclaré dans la zone DNS de bouchaudarchitectes.com)
     # référencement : robots.txt et plan du site (la page, la notice pour les IA, l'index de l'API)
     open(os.path.join(out, 'robots.txt'), 'w').write('User-agent: *\nAllow: /\nSitemap: %ssitemap.xml\n' % SITE_URL)
     today = time.strftime('%Y-%m-%d')
