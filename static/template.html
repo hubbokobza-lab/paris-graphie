@@ -1876,6 +1876,24 @@ async function lidarCut(A,B,prog,lo_=-BAND,hi_=BAND){
 }
 const CLY=[['lidar','Nuage LiDAR HD'],['terrain','Terrain'],['bati','Bâtiments'],['arbres','Arbres'],['cotes','Cotes NVP'],['courbes','Courbes de niveau'],['voies','Largeur des voies'],['nivellement','Surface de nivellement'],['gabarits','Gabarits sur voie'],['regles','Règles des gabarits'],['plafond','Plafond des hauteurs'],['b15','15 m hors bande'],['hmc','HMC'],['grille','Grille et axes'],['plan','Plan de repérage']];
 let CUTOFF=new Set();try{CUTOFF=new Set((localStorage.getItem('pg_cutoff')||'').split(',').filter(Boolean));}catch(e){}
+/* poignées A et B du plan de repérage : on les fait glisser dans l'axe de la coupe, puis la coupe est recalculée */
+function abDrag(box,A,B,L,sc,ox,yTop,oy,PY){const svg=box.querySelector('.cutsvg svg');if(!svg)return;const NS='http://www.w3.org/2000/svg',Lw=Math.hypot(B[0]-A[0],B[1]-A[1])||L,ux=(B[0]-A[0])/Lw,uy=(B[1]-A[1])/Lw;
+ const mk=(n,at)=>{const e=document.createElementNS(NS,n);for(const k in at)e.setAttribute(k,at[k]);return e;};
+ const g=mk('g',{id:'abdrag',style:'touch-action:none'}),gd=mk('g',{'pointer-events':'none'});g.append(gd);svg.append(g);
+ const hd={};for(const w of ['A','B']){const x=w==='A'?ox:ox+L*sc,h=mk('g',{cursor:'ew-resize','data-ab':w});const ti=mk('title',{});ti.textContent='Faire glisser '+w+' dans l\'axe de la coupe (allonger ou raccourcir), la coupe est recalculée au relâcher';
+  h.append(ti,mk('circle',{cx:x,cy:PY,r:9,fill:'#fff','fill-opacity':.01}),mk('circle',{cx:x,cy:PY,r:4.5,fill:'#fff',stroke:'#d4462f','stroke-width':1.6}),mk('path',{d:'M'+(x-8)+' '+(PY-9)+' l-3 3 l3 3 M'+(x+8)+' '+(PY-9)+' l3 3 l-3 3',fill:'none',stroke:'#d4462f','stroke-width':1}));g.append(h);hd[w]=h;}
+ const hdr=box.querySelector('.alh b'),h0=hdr?hdr.textContent:'';let dr=null;
+ const sx=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse()).x;};
+ const lim=(w,dt)=>w==='A'?Math.min(dt,L-15):Math.max(dt,15-L);
+ const show=()=>{const {w,dt}=dr,t0=w==='A'?dt:0,t1=w==='B'?L+dt:L,x0=ox+t0*sc,x1=ox+t1*sc,xm=w==='A'?x0:x1;hd[w].setAttribute('transform','translate('+(dt*sc)+' 0)');
+  gd.innerHTML='';gd.append(mk('line',{x1:x0,x2:x1,y1:PY,y2:PY,stroke:'#d4462f','stroke-width':1.4,'stroke-dasharray':'5 3'}),mk('line',{x1:xm,x2:xm,y1:yTop,y2:oy,stroke:'#d4462f','stroke-width':1,'stroke-dasharray':'3 3'}));
+  if(hdr)hdr.textContent='Coupe A-B · '+Math.round(L)+' m → '+Math.round(t1-t0)+' m';};
+ g.addEventListener('pointerdown',e=>{const h=e.target.closest('[data-ab]');if(!h)return;e.stopPropagation();e.preventDefault();dr={w:h.dataset.ab,x0:sx(e),dt:0};try{svg.setPointerCapture(e.pointerId);}catch(_){}},true);
+ svg.addEventListener('pointermove',e=>{if(!dr)return;e.stopPropagation();e.preventDefault();dr.dt=lim(dr.w,(sx(e)-dr.x0)/sc);show();},true);
+ const end=async e=>{if(!dr)return;e.stopPropagation();const {w,dt}=dr;dr=null;if(Math.abs(dt)<.5){hd[w].removeAttribute('transform');gd.innerHTML='';if(hdr)hdr.textContent=h0;return;}
+  const nA=w==='A'?[A[0]+ux*dt,A[1]+uy*dt]:A,nB=w==='B'?[B[0]+ux*dt,B[1]+uy*dt]:B;if(hdr)hdr.textContent='Recalcul de la coupe…';
+  try{await cutShow(nA,nB);}catch(err){if(hdr)hdr.textContent='Échec du recalcul : '+(err&&err.message||err);}};
+ svg.addEventListener('pointerup',end,true);svg.addEventListener('pointercancel',end,true);}
 async function cutShow(A,B,opt={}){
  let CC;if(opt.headless)CC={A,B,D:await cutData(A,B),lid:null,lidP:null,rid:0};else{if(!CUTC||CUTC.A!==A||CUTC.B!==B)CUTC={A,B,D:await cutData(A,B),lid:null,lidP:null,rid:0};CC=CUTC;}const rid=++CC.rid,D=CC.D,inD=d=>d>=-PTOL&&d<=LDg;
  const {L,T,KX,Bt,V,NIV,PLAF,HMC,G,B15}=D,C=D.C.filter(c=>inD(c[2])),K=D.K.filter(c=>inD(c[2])),Tr=D.A.filter(a=>inD(a.d));
@@ -1986,7 +2004,7 @@ async function cutShow(A,B,opt={}){
   +'<div class="k cutk" id="cutms" style="color:#0a6f99"></div><div class="k cutk" id="cutl"></div><div class="k cutk">'+stat+'</div></aside>'
   +'<div class="cutmain"><div class="cutsvg">'+svg+'</div>'
   +'<details class="cutd" open><summary>Comment chaque élément est calculé</summary>'+leg+'</details></div></div></div>';
- box.hidden=false;box.querySelector('#cutx').onclick=()=>box.hidden=true;{const sb=box.querySelector('#cutsb');sb.onclick=()=>{const o=box.classList.toggle('side');sb.setAttribute('aria-expanded',o?'true':'false');};}
+ box.hidden=false;box.querySelector('#cutx').onclick=()=>box.hidden=true;abDrag(box,A,B,L,sc,ox,Y(zmax),oy,PY);{const sb=box.querySelector('#cutsb');sb.onclick=()=>{const o=box.classList.toggle('side');sb.setAttribute('aria-expanded',o?'true':'false');};}
  let lidSt=0;const lidMsg=(t,busy)=>{const e=box.querySelector('#cutl');if(e)e.innerHTML=(busy?'<span class="spin"></span>':'')+esc(t);const o=box.querySelector('.lidspin');if(busy&&!o){const d=document.createElement('div');d.className='lidspin';d.innerHTML='<span class="spin"></span>LiDAR HD';box.querySelector('.cutsvg').appendChild(d);}if(!busy&&o)o.remove();};
  // profondeur de visibilité du LiDAR : du plan de coupe (vu depuis le bas du plan de repérage) jusqu'à la profondeur choisie, 10 cm à 150 m
  const sl2d=v=>.1*Math.pow(1500,v/1000),d2sl=d=>Math.round(1000*Math.log(d/.1)/Math.log(1500)),fd=d=>d<1?Math.round(d*100)+' cm':d<10?fr(d)+' m':Math.round(d)+' m';
