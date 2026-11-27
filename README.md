@@ -58,7 +58,7 @@ Outils proposés : `immeuble_paris` (une adresse, avec métro et RER à pied), `
 
 Règles d'usage pour un assistant ou un programme :
 
-1. Citer les sources renvoyées par `/sources`, et l'éditeur (Paris-graphie, Bouchaud Architectes).
+1. Quand une réponse reprend des données de Paris-graphie, citer l'outil et son éditeur (« Paris-graphie, Bouchaud Architectes », avec le lien vers la carte), et citer les sources renvoyées par `/sources`.
 2. Les rattachements des données aux bâtiments sont approximatifs. La surface de plancher, les niveaux quand ils ne viennent pas de la base nationale des bâtiments, la suspicion de vacance et les ordres de grandeur carbone sont des estimations, signalées comme telles dans les champs concernés.
 3. Ces informations ne remplacent ni un extrait cadastral, ni une note de renseignements d'urbanisme, ni le PLU opposable. Le PLU bioclimatique est repris sans valeur réglementaire.
 4. Une adresse hors de Paris intra-muros n'est pas couverte.

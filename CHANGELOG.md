@@ -25,6 +25,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Fiche PDF : les coupes sur rue sont désormais vectorielles.
 - Coupe : bâtiments en blanc cassé (contour gris) au lieu de blocs gris, pour laisser voir le nuage LiDAR.
 - Tutoriel avec démonstration sur le 65 bis rue La Fayette (projet de Bouchaud Architectes) : défilement et choix du calque de l'âge du bâti, zoom et ouverture de la fiche avec aperçu du PDF, plan PDF tracé avec aperçu, coupe tracée avec aperçu (LiDAR compris). La vue, le calque et la fiche d'origine sont rétablis à la fin.
+- Notice pour les IA (`llms.txt`), description de la page et données structurées (WebApplication) pour les moteurs de recherche et les assistants, avec la consigne de citer Paris-graphie, Bouchaud Architectes, et les sources.
 
 ## 2026-11-26
 
