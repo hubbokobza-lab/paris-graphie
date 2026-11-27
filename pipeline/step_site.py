@@ -24,7 +24,7 @@ def run(st, out):
     st.save(out)
     for f in glob.glob(os.path.join(STATIC, '*.json')):
         if not os.path.basename(f).startswith('sources_'): shutil.copy(f, out)
-    for f in ('pg-copc.js', 'laz-perf.wasm'):   # lecture du LiDAR HD dans l'outil Coupe (copc.js et laz-perf, licences MIT et Apache 2.0)
+    for f in ('pg-copc.js', 'laz-perf.wasm', 'tuto-fiche.jpg', 'tuto-plan.jpg', 'tuto-coupe.jpg'):   # lecture du LiDAR HD dans l'outil Coupe (copc.js et laz-perf, licences MIT et Apache 2.0)
         shutil.copy(os.path.join(STATIC, f), out)
     open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(html())
     open(os.path.join(out, '.nojekyll'), 'w').write('')

@@ -77,7 +77,7 @@ footer{padding:9px 16px;border-top:1px solid var(--line);font-size:10.5px;color:
 #fsb{position:fixed;top:12px;right:12px;z-index:5;width:36px;height:36px;border:0;border-radius:4px;background:var(--bg);color:var(--ink);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.3)}#fsb:hover{background:#e9eef2}
 #zoom{position:fixed;right:12px;bottom:34px;display:flex;flex-direction:column;gap:1px;z-index:4}
 #zoom button{width:34px;height:34px;border:0;background:var(--bg);color:var(--ink);font-size:18px;cursor:pointer}
-#zoom button:first-child{border-radius:4px 4px 0 0}#zoom button:last-child{border-radius:0 0 4px 4px;font-size:11px}#zx{font-size:13px}#zoom button.on{background:#ffd27f;color:#111}#zoom #zm svg{width:19px;height:19px}#zoom #zx,#zoom #zc,#zoom #zm{font-size:9.5px;font-weight:600;letter-spacing:-.01em;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1;overflow:hidden}
+#zoom button:first-child{border-radius:4px 4px 0 0}#zoom button:last-child{border-radius:0 0 4px 4px;font-size:11px}#zx{font-size:13px}#zoom button.on{background:#ffd27f;color:#111}#zoom #zm svg{width:19px;height:19px}#zpw{position:relative;display:flex}#zpm{position:absolute;right:calc(100% + 6px);top:0;display:flex;gap:1px;box-shadow:0 1px 6px rgba(0,0,0,.3)}#zpm[hidden]{display:none}#zoom #zpm button{width:auto;min-width:44px;padding:0 10px}#zoom #zp,#zoom #zpm button,#zoom #zx,#zoom #zc,#zoom #zm{font-size:9.5px;font-weight:600;letter-spacing:-.01em;padding:0;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1;overflow:hidden}
 #scale{position:fixed;right:56px;bottom:14px;color:#9fb3c2;font-size:11px;z-index:4;text-align:right}
 #scale i{display:block;height:5px;border:1.5px solid #9fb3c2;border-top:0;margin-top:2px}
 #load{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--map);color:#cfdbe4;z-index:10;gap:12px;font-size:14px;text-align:center;padding:20px}
@@ -103,7 +103,7 @@ footer{padding:9px 16px;border-top:1px solid var(--line);font-size:10.5px;color:
 body:not(.adv):not(.lqon) .advx{display:none!important}#advw{display:flex;gap:7px;align-items:center;font-size:12px;margin:6px 0 2px;cursor:pointer}#advw .k{font-size:11px}
 #ftr{font-size:11px;color:var(--ink2);margin-top:6px;line-height:1.5;padding:0 22px 4px}#ftr a{color:inherit}
 #legend .qmap canvas{display:block;border-radius:4px;background:rgba(0,0,0,.04)}#legend .qleg{display:flex;align-items:center;gap:6px;margin-top:3px}#legend .qleg i{flex:1;height:7px;border-radius:2px}
-#tuhl{position:fixed;z-index:30;border:2px solid #ffd27f;border-radius:6px;box-shadow:0 0 0 9999px rgba(8,16,24,.55);pointer-events:none;transition:all .25s}#tuw{position:fixed;z-index:31;width:min(340px,calc(100vw - 24px));background:var(--bg);color:var(--ink);border-radius:8px;padding:14px 16px 12px;box-shadow:0 8px 30px rgba(0,0,0,.35);font-size:13px;line-height:1.5}#tuw .tun{display:flex;gap:6px;margin-bottom:8px}#tuw .tun span{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;background:#e6e9ec;color:#55606b}#tuw .tun span.on{background:#ffd27f;color:#111}#tuw h4{margin:0 0 6px;font-size:15px}#tuw p{margin:0 0 10px}#tuw .tub{display:flex;justify-content:space-between;align-items:center;gap:8px}#tuw button{all:unset;cursor:pointer;padding:6px 12px;border-radius:4px;font-size:12.5px}#tuw .tuo{background:var(--ink);color:#fff}#tuw .tus{color:#7a8794;text-decoration:underline}
+#tuhl{position:fixed;z-index:30;border:2px solid #ffd27f;border-radius:6px;box-shadow:0 0 0 9999px rgba(8,16,24,.55);pointer-events:none;transition:all .25s}#tublk{position:fixed;inset:0;z-index:29}#tcur{position:fixed;z-index:33;pointer-events:none;left:60%;top:60%;opacity:0;transform:translate(-4px,-3px);filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}#tcur.clk::after{content:'';position:absolute;left:-9px;top:-9px;width:24px;height:24px;border-radius:50%;border:2px solid #ffd27f;animation:tclk .4s ease-out}@keyframes tclk{from{transform:scale(.3);opacity:1}to{transform:scale(1.7);opacity:0}}#tuw .tuim{max-height:0;opacity:0;overflow:hidden;transition:max-height .45s ease,opacity .45s ease;margin:0 0 10px}#tuw .tuim.on{max-height:260px;opacity:1}#tuw .tuim img{display:block;width:100%;max-height:250px;object-fit:contain;object-position:left top;border:1px solid var(--line);border-radius:3px;box-shadow:0 4px 14px rgba(0,0,0,.25);background:#fff}#tuw{position:fixed;z-index:31;width:min(360px,calc(100vw - 24px));background:var(--bg);color:var(--ink);border-radius:8px;padding:14px 16px 12px;box-shadow:0 8px 30px rgba(0,0,0,.35);font-size:13px;line-height:1.5}#tuw .tun{display:flex;gap:6px;margin-bottom:8px}#tuw .tun span{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;background:#e6e9ec;color:#55606b}#tuw .tun span.on{background:#ffd27f;color:#111}#tuw h4{margin:0 0 6px;font-size:15px}#tuw p{margin:0 0 10px}#tuw .tub{display:flex;justify-content:space-between;align-items:center;gap:8px}#tuw button{all:unset;cursor:pointer;padding:6px 12px;border-radius:4px;font-size:12.5px}#tuw .tuo{background:var(--ink);color:#fff}#tuw .tus{color:#7a8794;text-decoration:underline}
 #cutw{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;padding:4vh 12px}#cutw[hidden]{display:none}#cutw .alp{background:var(--bg);color:var(--ink);border-radius:6px;max-width:1440px;width:100%;max-height:92vh;overflow:auto;padding:14px 16px;font-size:12.5px}#cutw .alh{display:flex;justify-content:space-between;margin-bottom:8px}#cutx{all:unset;cursor:pointer;font-size:16px;padding:2px 6px}#cutw .cutsvg{position:relative;overflow:auto;border:1px solid var(--line);border-radius:4px;background:#fff}#cutw .cutsvg svg{display:block;min-width:700px;width:100%;height:auto}#cutw .alb{display:flex;gap:8px;align-items:center;margin:10px 0 6px}#cutw .cutg{display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px;align-items:start}#cutw .cutside{position:sticky;top:0;border-right:1px solid var(--line);padding-right:14px}#cutw .cutmain{min-width:0}#cutw .cuth{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#7a8794;margin:12px 0 5px}#cutw .cuth:first-child{margin-top:2px}#cutw .cutr{display:flex;align-items:center;gap:8px;padding:4px 6px;margin:0 -6px;border-radius:4px;cursor:pointer;font-size:12.5px}#cutw .cutr:hover{background:rgba(127,140,150,.12)}#cutw .cutr input{margin:0;accent-color:#1d2a36}#cutw .cutr i{width:14px;height:10px;border-radius:2px;flex:none}#cutw .cutr input:not(:checked)~i,#cutw .cutr input:not(:checked)~span{opacity:.4}#cutw .cutk{margin:6px 0 0;line-height:1.4;overflow-wrap:anywhere}#cutw .cutside .alb{flex-wrap:wrap;margin:2px 0 0}#cutw #cutm{display:inline-flex;align-items:center;padding:4px 9px}@media (max-width:900px){#cutw .cutg{grid-template-columns:1fr}#cutw .cutside{position:static;border-right:0;padding-right:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));column-gap:14px}#cutw .cuth,#cutw .cutsl,#cutw .cutk,#cutw .cutside .alb{grid-column:1/-1}}body.cardv #zoom,body.cardv #fsb{right:446px;transition:right .2s}@media (pointer:coarse){#zoom button{width:44px;height:44px}#zoom #zm svg{width:22px;height:22px}#cutw .cutr{padding:8px 6px}#cutw .cutr input{width:18px;height:18px}#cutw .alb button{padding:9px 14px}#tuw button{padding:9px 14px}#cutw .cutsl input{height:28px}}#cutw .cutsl{display:flex;align-items:center;gap:8px;font-size:12px}#cutw .cutsl input{flex:1;min-width:0;accent-color:#2f8a3e}#cutw .cutsl b{min-width:44px;text-align:right}#cutw .cutd{margin-top:8px}@keyframes pgspin{to{transform:rotate(360deg)}}#cutw .spin{display:inline-block;width:11px;height:11px;border:2px solid #c9cdd2;border-top-color:#2f8a3e;border-radius:50%;animation:pgspin .8s linear infinite;vertical-align:-2px;margin-right:6px}#cutw .lidspin{position:absolute;top:8px;right:10px;background:rgba(255,255,255,.92);border:1px solid #dde1e5;border-radius:12px;padding:3px 10px 3px 7px;font-size:11.5px;color:#1d2a36}#cutw .cutd summary{cursor:pointer;font-weight:600;margin-bottom:6px}#cutw .cutleg p{margin:0 0 6px;line-height:1.45}#cutw .alb button.on{background:#0a8fc4}#cutw .alb button{all:unset;cursor:pointer;background:var(--ink);color:#fff;padding:6px 12px;border-radius:4px;font-size:12.5px}
 #legend .hist{display:flex;align-items:flex-end;gap:2px;height:56px;margin:2px 0 6px;padding-bottom:1px;border-bottom:1px solid var(--line)}#legend .hb{flex:1;min-width:3px;border-radius:2px 2px 0 0;cursor:pointer;transition:opacity .15s}#legend .hb.off{opacity:.18}#legend .hb.cut{background-image:linear-gradient(0deg,transparent 78%,var(--bg) 78%,var(--bg) 84%,transparent 84%)!important}
 #tip{position:fixed;z-index:8;max-width:300px;background:var(--bg);border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.4);padding:6px 9px;font-size:12px;line-height:1.35;pointer-events:none;color:var(--ink)}#tip[hidden]{display:none}#tip hr{border:0;border-top:1px solid var(--line);margin:5px 0}
@@ -242,7 +242,7 @@ footer #srct{padding:2px 22px 16px;max-height:34vh;overflow-y:auto}footer #srct[
 </aside>
 <div id="tip" hidden></div>
 <div id="card" hidden><button id="cx" type="button" aria-label="Fermer">×</button><div id="cb"></div></div>
-<div id="zoom"><button id="zi" type="button" aria-label="Zoom avant">+</button><button id="zo" type="button" aria-label="Zoom arrière">−</button><button id="zr" type="button" aria-label="Recadrer">⌂</button><button id="zx" type="button" aria-label="Exporter une zone en DXF géoréférencé" title="Exporter une zone en DXF géoréférencé (Lambert 93), un calque par couche : tracer un rectangle sur la carte">DXF</button><button id="zc" type="button" aria-label="Coupe" title="Coupe : tracer une ligne sur la carte, de A vers B ; on regarde vers la gauche du trait (bâti, terrain, PLU, arbres, LiDAR, topographie derrière le plan)">Coupe</button><button id="zm" type="button" aria-label="Mesurer" title="Mesurer sur la carte : cliquez des points (distances cumulées) ; cliquez le premier point pour fermer et obtenir la surface ; double-clic ou Échap pour terminer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M5.5 13 7.6 15.1M8 10.5 9.3 11.8M10.5 8 12.6 10.1M13 5.5 14.3 6.8"/></svg></button></div><div id="xmsg" hidden></div>
+<div id="zoom"><button id="zi" type="button" aria-label="Zoom avant">+</button><button id="zo" type="button" aria-label="Zoom arrière">−</button><button id="zr" type="button" aria-label="Recadrer">⌂</button><div id="zpw"><button id="zp" type="button" aria-label="Plan" aria-expanded="false" title="Exporter un plan : choisir DXF (géoréférencé, Lambert 93) ou PDF (vectoriel, aux couleurs de la carte), puis tracer un rectangle">Plan</button><div id="zpm" hidden><button id="zx" type="button" aria-label="Plan en DXF géoréférencé" title="DXF géoréférencé (Lambert 93), un calque par couche">DXF</button><button id="zpp" type="button" aria-label="Plan en PDF vectoriel" title="PDF vectoriel aux couleurs de la carte (non géoréférencé)">PDF</button></div></div><button id="zc" type="button" aria-label="Coupe" title="Coupe : tracer une ligne sur la carte, de A vers B ; on regarde vers la gauche du trait (bâti, terrain, PLU, arbres, LiDAR, topographie derrière le plan)">Coupe</button><button id="zm" type="button" aria-label="Mesurer" title="Mesurer sur la carte : cliquez des points (distances cumulées) ; cliquez le premier point pour fermer et obtenir la surface ; double-clic ou Échap pour terminer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M5.5 13 7.6 15.1M8 10.5 9.3 11.8M10.5 8 12.6 10.1M13 5.5 14.3 6.8"/></svg></button></div><div id="xmsg" hidden></div>
 <div id="scale"><span id="scT"></span><i id="scB"></i></div>
 <button id="fsb" type="button" aria-label="Plein écran" title="Plein écran">⛶</button>
 
@@ -1481,13 +1481,21 @@ async function savePdf(blob,nm,show){
 /* ---------- export d'une zone en PDF géoréférencé ---------- */
 let XP=null;const xmsg=$('#xmsg');
 function xMsg(h){xmsg.innerHTML=h;xmsg.hidden=!h;}
-$('#zx').onclick=()=>{if(XP){XP=null;$('#zx').classList.remove('on');xMsg('');cv.style.cursor='';draw();return;}XP={a:null,b:null};$('#zx').classList.add('on');cv.style.cursor='crosshair';xMsg('Tracez un rectangle sur la carte : export DXF géoréférencé en Lambert 93 (Échap pour annuler)');};
-addEventListener('keydown',e=>{if(e.key==='Escape'&&XP){XP=null;$('#zx').classList.remove('on');xMsg('');cv.style.cursor='';draw();}});
+const zpm=$('#zpm'),zpMenu=o=>{zpm.hidden=!o;$('#zp').setAttribute('aria-expanded',o?'true':'false');};
+function xpOff(){XP=null;['#zp','#zx','#zpp'].forEach(q=>$(q).classList.remove('on'));xMsg('');cv.style.cursor='';draw();}
+$('#zp').onclick=()=>{if(XP){xpOff();zpMenu(false);return;}zpMenu(zpm.hidden);};
+const xpStart=fmt=>{if(typeof XC!=='undefined'&&XC)xcOff();if(typeof MS!=='undefined'&&MS)msOff();XP={a:null,b:null,fmt};zpMenu(false);$('#zp').classList.add('on');cv.style.cursor='crosshair';
+ xMsg(fmt==='pdf'?'Tracez un rectangle sur la carte : plan PDF vectoriel aux couleurs de la carte, calques affichés compris (Échap pour annuler)':'Tracez un rectangle sur la carte : export DXF géoréférencé en Lambert 93 (Échap pour annuler)');};
+$('#zx').onclick=()=>xpStart('dxf');$('#zpp').onclick=()=>xpStart('pdf');
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(XP)xpOff();zpMenu(false);}});
 cv.addEventListener('pointerdown',e=>{if(!XP)return;e.stopImmediatePropagation();e.preventDefault();XP.a=s2w(e.clientX,e.clientY);XP.b=XP.a;cv.setPointerCapture(e.pointerId);},true);
 cv.addEventListener('pointermove',e=>{if(!XP)return;e.stopImmediatePropagation();if(!XP.a)return;XP.b=s2w(e.clientX,e.clientY);draw();},true);
 cv.addEventListener('pointerup',async e=>{if(!XP||!XP.a)return;e.stopImmediatePropagation();const a=XP.a,b=XP.b;const R=[Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.max(a[0],b[0]),Math.max(a[1],b[1])];
  if(R[2]-R[0]<20||R[3]-R[1]<20){XP.a=null;draw();return;}
- XP=null;$('#zx').classList.remove('on');cv.style.cursor='';xMsg('Préparation du DXF…');
+ const fmt=XP.fmt;xpOff();xMsg(fmt==='pdf'?'Préparation du plan PDF…':'Préparation du DXF…');
+ if(fmt==='pdf'){try{const r=await geoPdf(R),nm='paris-graphie-plan-'+new Date().toISOString().slice(0,10)+'.pdf';
+  await savePdf(r.blob,nm,(h,cb)=>{xMsg(h.replace('PDF prêt','Plan PDF prêt ('+r.nb+' bâtiments, '+r.no+' objets de calques, échelle 1/'+Math.round(r.den/10)*10+' en A3)')+' · <a href="#" id="xclose">fermer</a>');$('#xclose').onclick=ev=>{ev.preventDefault();xMsg('');};if(cb)cb(xmsg);});}
+  catch(err){xMsg('Échec de l\'export : '+esc(String(err&&err.message||err)));}draw();return;}
  try{const r=await geoDxf(R),blob=r.blob,nm='paris-graphie-zone-L93-'+new Date().toISOString().slice(0,10)+'.dxf';
   await savePdf(blob,nm,(h,cb)=>{xMsg(h.replace('DXF prêt','DXF prêt ('+r.nb+' bâtiments, '+r.no+' objets de calques, '+r.nl+' calques DXF, Lambert 93)').replace('PDF enregistré','DXF enregistré')+' · <a href="#" id="xclose">fermer</a>');$('#xclose').onclick=ev=>{ev.preventDefault();xMsg('');};if(cb)cb(xmsg);});
  }catch(err){xMsg('Échec de l\'export : '+esc(String(err&&err.message||err)));}
@@ -1497,6 +1505,144 @@ function drawXRect(){if(!XP||!XP.a)return;const k=view.k,X=x=>(x-view.cx)*k+W/2,
  lx.fillStyle='rgba(255,255,255,.12)';lx.fillRect(x0,y0,x1-x0,y1-y0);lx.setLineDash([6,4]);lx.strokeStyle='#fff';lx.lineWidth=1.5;lx.strokeRect(x0,y0,x1-x0,y1-y0);lx.setLineDash([]);
  const wm=Math.abs(XP.b[0]-XP.a[0]),hm=Math.abs(XP.b[1]-XP.a[1]);lx.font='600 12px Inter, system-ui, sans-serif';lx.fillStyle='#fff';lx.textAlign='left';lx.fillText(Math.round(wm)+' × '+Math.round(hm)+' m',x0+4,y0-6);}
 
+/* ---------- PDF vectoriel : plan aux vraies couleurs, coupe (LiDAR compris) ---------- */
+const VCPX={'€':'\x80','…':'\x85','‘':'\x91','’':'\x92','“':'\x93','”':'\x94','•':'\x95','●':'\x95','–':'\x96','—':'\x97','œ':'\x9c','Œ':'\x8c','≈':'~','→':'->','·':'\xb7','−':'-','⊥':'perp.','⟂':'perp.','²':'\xb2','×':'\xd7','¼':'\xbc','½':'\xbd','✕':'x','‑':'-'};
+const vEnc=t=>String(t).replace(/[\r\n\t]+/g,' ').replace(/[   ]/g,' ').replace(/[\s\S]/g,c=>{const k=c.charCodeAt(0);if(k<128)return (c==='\\'||c==='('||c===')')?'\\'+c:c;if(k<256)return c;return VCPX[c]||'?';});
+const VGX=document.createElement('canvas').getContext('2d');
+const vWid=(t,sz,b)=>{VGX.font=(b?'bold ':'')+sz+'px Helvetica, Arial, sans-serif';return VGX.measureText(String(t)).width;};
+const vN=v=>{const r=Math.round(v*100)/100;return Object.is(r,-0)?'0':String(r);};
+function vCol(c){if(!c||c==='none'||c==='transparent')return null;c=String(c).trim();let m;
+ if(c[0]==='#'){if(c.length===4)c='#'+c[1]+c[1]+c[2]+c[2]+c[3]+c[3];const v=parseInt(c.slice(1,7),16);return [(v>>16&255)/255,(v>>8&255)/255,(v&255)/255,1];}
+ if((m=c.match(/rgba?\(([^)]+)\)/))){const p=m[1].split(/[,\s/]+/).filter(Boolean).map(Number);return [p[0]/255,p[1]/255,p[2]/255,p.length>3?p[3]:1];}
+ return c==='white'?[1,1,1,1]:[0,0,0,1];}
+const vRGB=c=>c.slice(0,3).map(v=>v.toFixed(3)).join(' ');
+class VPdf{constructor(){this.pages=[];this.gs=new Set([100]);}
+ page(w,h){const p={w,h,o:[]};this.pages.push(p);return p;}
+ a(al){const k=Math.max(0,Math.min(100,Math.round(al*100)));this.gs.add(k);return '/G'+k+' gs ';}
+ async blob(){const enc=s=>{const u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i)&255;return u;};
+  const zip=async s=>{const u=enc(s);if(typeof CompressionStream==='undefined')return {u,z:false};try{const st=new Blob([u]).stream().pipeThrough(new CompressionStream('deflate'));return {u:new Uint8Array(await new Response(st).arrayBuffer()),z:true};}catch(e){return {u,z:false};}};
+  const parts=[],offs=[];let len=0;const push=x=>{const u=typeof x==='string'?enc(x):x;parts.push(u);len+=u.length;};
+  const objs=[];const add=v=>{objs.push(v);return objs.length;};
+  add('<< /Type /Catalog /Pages 2 0 R >>');add(null);
+  add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  const gs='/ExtGState << '+[...this.gs].map(k=>'/G'+k+' << /ca '+(k/100)+' /CA '+(k/100)+' >>').join(' ')+' >>',kids=[];
+  for(const p of this.pages){const c=await zip(p.o.join('\n'));const so=add({head:'<< /Length '+c.u.length+(c.z?' /Filter /FlateDecode':'')+' >>\nstream\n',body:c.u});
+   kids.push(add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+vN(p.w)+' '+vN(p.h)+'] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> '+gs+' >> /Contents '+so+' 0 R >>'));}
+  objs[1]='<< /Type /Pages /Kids ['+kids.map(k=>k+' 0 R').join(' ')+'] /Count '+kids.length+' >>';
+  push('%PDF-1.5\n%\xe2\xe3\xcf\xd3\n');
+  objs.forEach((o,i)=>{offs.push(len);push((i+1)+' 0 obj\n');if(typeof o==='string')push(o);else{push(o.head);push(o.body);push('\nendstream');}push('\nendobj\n');});
+  const xr=len;push('xref\n0 '+(objs.length+1)+'\n0000000000 65535 f \n'+offs.map(o=>String(o).padStart(10,'0')+' 00000 n \n').join(''));
+  push('trailer\n<< /Size '+(objs.length+1)+' /Root 1 0 R /Info << /Producer (Paris-graphie, Bouchaud Architectes) >> >>\nstartxref\n'+xr+'\n%%EOF');
+  return new Blob(parts,{type:'application/pdf'});}}
+// texte (Helvetica), avec halo éventuel ; x, y en points, ancrage start | middle | end, rotation en degrés
+function vText(doc,x,y,t,sz,col,o={}){const b=!!o.b,w=vWid(t,sz,b),an=o.an||'start',r=(o.rot||0)*Math.PI/180,c=Math.cos(r),s=Math.sin(r),dx=an==='middle'?-w/2:an==='end'?-w:0,dy=o.mid?-sz*.35:0;
+ const X=x+c*dx-s*dy,Y=y+s*dx+c*dy,tm=[c,s,-s,c,X,Y].map(vN).join(' ')+' Tm',str='('+vEnc(t)+') Tj';let out='';
+ if(o.halo){const h=vCol(o.halo);out+='q '+doc.a((o.ha??1)*h[3])+vRGB(h)+' RG '+vN(o.hw||sz*.28)+' w 1 j BT /F'+(b?2:1)+' '+vN(sz)+' Tf 1 Tr '+tm+' '+str+' ET Q\n';}
+ const k=vCol(col);return out+'q '+doc.a((o.al??1)*k[3])+vRGB(k)+' rg BT /F'+(b?2:1)+' '+vN(sz)+' Tf 0 Tr '+tm+' '+str+' ET Q';}
+function vPath(d){const t=d.match(/[a-zA-Z]|-?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/g)||[];let i=0,c='',x=0,y=0,sx=0,sy=0;const o=[],n=()=>+t[i++],P=()=>vN(x)+' '+vN(y);
+ while(i<t.length){if(/^[a-zA-Z]$/.test(t[i]))c=t[i++];
+  switch(c){case 'M':x=n();y=n();sx=x;sy=y;o.push(P()+' m');c='L';break;case 'm':x+=n();y+=n();sx=x;sy=y;o.push(P()+' m');c='l';break;
+   case 'L':x=n();y=n();o.push(P()+' l');break;case 'l':x+=n();y+=n();o.push(P()+' l');break;
+   case 'H':x=n();o.push(P()+' l');break;case 'h':x+=n();o.push(P()+' l');break;case 'V':y=n();o.push(P()+' l');break;case 'v':y+=n();o.push(P()+' l');break;
+   case 'C':{const a=[n(),n(),n(),n(),n(),n()];o.push(a.map(vN).join(' ')+' c');x=a[4];y=a[5];break;}
+   case 'Z':case 'z':o.push('h');x=sx;y=sy;break;default:i++;}}
+ return o.join(' ');}
+// conversion d'un SVG de Paris-graphie (coupe, plan de repérage) en opérateurs PDF vectoriels
+function svg2pdf(svgStr,doc,box,opt={}){
+ const d=new DOMParser().parseFromString(svgStr,'image/svg+xml'),root=d.documentElement,vb=(root.getAttribute('viewBox')||'0 0 100 100').split(/[\s,]+/).map(Number);
+ const s=Math.min(box[2]/vb[2],box[3]/vb[3]),ox=box[0]+(box[2]-vb[2]*s)/2,oy=box[1]+(box[3]-vb[3]*s)/2,O=[];
+ O.push('q '+[s,0,0,-s,ox-vb[0]*s,oy+(vb[3]+vb[1])*s].map(vN).join(' ')+' cm 1 j 1 J');
+ const clips={};for(const c of root.querySelectorAll('clipPath')){const r=c.querySelector('rect');if(r)clips[c.id]=['x','y','width','height'].map(k=>+r.getAttribute(k)||0);}
+ const A=(el,k)=>el.getAttribute(k);
+ const paint=(g,st,canFill=true)=>{const f=canFill?vCol(st.fill):null,k=vCol(st.stroke);if(!f&&!k)return;const fa=f?st.op*st.fo*f[3]:0,sa=k?st.op*st.so*k[3]:0,ev=st.fr==='evenodd'?'*':'';
+  const sk=k?vRGB(k)+' RG '+vN(st.sw)+' w '+(st.dash?'['+st.dash+'] 0 d ':''):'';
+  if(f&&k&&Math.abs(fa-sa)>.01){O.push('q '+vRGB(f)+' rg '+doc.a(fa)+g+' f'+ev+' Q');O.push('q '+sk+doc.a(sa)+g+' S Q');return;}
+  O.push('q '+(f?vRGB(f)+' rg ':'')+sk+doc.a(f?fa:sa)+g+(f&&k?' B'+ev:f?' f'+ev:' S')+' Q');};
+ const circ=(cx,cy,r)=>{const k=.5523*r;return [cx+r,cy,'m',cx+r,cy+k,cx+k,cy+r,cx,cy+r,'c',cx-k,cy+r,cx-r,cy+k,cx-r,cy,'c',cx-r,cy-k,cx-k,cy-r,cx,cy-r,'c',cx+k,cy-r,cx+r,cy-k,cx+r,cy,'c','h'].map(v=>typeof v==='number'?vN(v):v).join(' ');};
+ const mtx=t=>{if(!t)return null;let m=[1,0,0,1,0,0];const mul=(a,b)=>[a[0]*b[0]+a[2]*b[1],a[1]*b[0]+a[3]*b[1],a[0]*b[2]+a[2]*b[3],a[1]*b[2]+a[3]*b[3],a[0]*b[4]+a[2]*b[5]+a[4],a[1]*b[4]+a[3]*b[5]+a[5]];
+  for(const [,fn,args] of t.matchAll(/(\w+)\(([^)]*)\)/g)){const p=args.split(/[\s,]+/).filter(Boolean).map(Number);
+   if(fn==='translate')m=mul(m,[1,0,0,1,p[0],p[1]||0]);else if(fn==='scale')m=mul(m,[p[0],0,0,p[1]??p[0],0,0]);else if(fn==='matrix')m=mul(m,p);
+   else if(fn==='rotate'){const r=p[0]*Math.PI/180,c=Math.cos(r),sn=Math.sin(r),cx=p[1]||0,cy=p[2]||0;m=mul(m,[1,0,0,1,cx,cy]);m=mul(m,[c,sn,-sn,c,0,0]);m=mul(m,[1,0,0,1,-cx,-cy]);}}
+  return m;};
+ const walk=(el,P)=>{const tag=el.localName;if(!tag||['title','defs','clipPath','desc','style','metadata'].includes(tag))return;
+  if(A(el,'display')==='none'||(el.style&&el.style.display==='none'))return;
+  const st=Object.assign({},P),g=k=>{const v=A(el,k);return v==null?null:v;};
+  if(g('fill')!=null)st.fill=g('fill');if(g('stroke')!=null)st.stroke=g('stroke');if(g('stroke-width')!=null)st.sw=+g('stroke-width');
+  if(g('opacity')!=null)st.op*=+g('opacity');if(g('fill-opacity')!=null)st.fo=+g('fill-opacity');if(g('stroke-opacity')!=null)st.so=+g('stroke-opacity');
+  if(g('stroke-dasharray')!=null)st.dash=g('stroke-dasharray')==='none'?null:g('stroke-dasharray').split(/[\s,]+/).map(Number).map(vN).join(' ');
+  if(g('font-size')!=null)st.fs=+g('font-size');if(g('font-weight')!=null)st.fw=g('font-weight');if(g('text-anchor')!=null)st.ta=g('text-anchor');if(g('fill-rule')!=null)st.fr=g('fill-rule');if(g('paint-order')!=null)st.po=g('paint-order');
+  const m=mtx(g('transform')),cp=g('clip-path'),cid=cp&&(cp.match(/#([^)]+)/)||[])[1];let pushed=0;
+  if(m){O.push('q '+m.map(vN).join(' ')+' cm');pushed++;}if(cid&&clips[cid]){const r=clips[cid];O.push('q '+r.map(vN).join(' ')+' re W n');pushed++;}
+  if(tag==='svg'||tag==='g'){if(el.getAttribute('data-ly')==='lidar'&&opt.lidar){O.push(opt.lidar(doc));}else for(const c of el.children)walk(c,st);}
+  else if(tag==='rect'){const w=A(el,'width'),h=A(el,'height'),x=+A(el,'x')||0,y=+A(el,'y')||0,W_=/%/.test(w)?vb[2]:+w,H_=/%/.test(h)?vb[3]:+h;paint(vN(x)+' '+vN(y)+' '+vN(W_)+' '+vN(H_)+' re',st);}
+  else if(tag==='line')paint(vN(+A(el,'x1'))+' '+vN(+A(el,'y1'))+' m '+vN(+A(el,'x2'))+' '+vN(+A(el,'y2'))+' l',st,false);
+  else if(tag==='circle')paint(circ(+A(el,'cx'),+A(el,'cy'),+A(el,'r')),st);
+  else if(tag==='path'){const dd=A(el,'d');if(dd)paint(vPath(dd),st);}
+  else if(tag==='text'){const sp=[...el.children].filter(c=>c.localName==='tspan'),x0=+A(el,'x')||0;let cy=+A(el,'y')||0;
+   const one=(t,x,y,S)=>{if(!t.trim())return;const b=S.fw==='bold'||+S.fw>=600,w=vWid(t,S.fs,b),xx=S.ta==='middle'?x-w/2:S.ta==='end'?x-w:x,tm='1 0 0 -1 '+vN(xx)+' '+vN(y)+' Tm',str='('+vEnc(t)+') Tj',f=vCol(S.fill),k=vCol(S.stroke);
+    if(k&&S.po==='stroke')O.push('q '+doc.a(S.op*S.so*k[3])+vRGB(k)+' RG '+vN(S.sw)+' w BT /F'+(b?2:1)+' '+vN(S.fs)+' Tf 1 Tr '+tm+' '+str+' ET Q');
+    if(f)O.push('q '+doc.a(S.op*S.fo*f[3])+vRGB(f)+' rg BT /F'+(b?2:1)+' '+vN(S.fs)+' Tf 0 Tr '+tm+' '+str+' ET Q');};
+   if(!sp.length)one([...el.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(''),x0,cy,st);
+   else for(const t of sp){const S=Object.assign({},st);if(A(t,'font-weight'))S.fw=A(t,'font-weight');if(A(t,'fill'))S.fill=A(t,'fill');cy+=+(A(t,'dy')||0);one(t.textContent,A(t,'x')!=null?+A(t,'x'):x0,cy,S);}}
+  else if(tag==='image'&&opt.lidar&&el.closest('[data-ly="lidar"]'))O.push(opt.lidar(doc));
+  for(let i=0;i<pushed;i++)O.push('Q');};
+ walk(root,{fill:'#000',stroke:null,sw:1,op:1,fo:1,so:1,dash:null,fs:10,fw:'400',ta:'start',fr:'nonzero',po:''});
+ O.push('Q');return {ops:O.join('\n'),s,ox,oy,vb};}
+// plan vectoriel aux couleurs de la carte (rectangle R en coordonnées de la carte, mètres)
+async function geoPdf(R){
+ const [X0,Y0,X1,Y1]=R,wm=X1-X0,hm=Y1-Y0,land=wm>=hm*1.05,PW_=land?1190.55:841.89,PH_=land?841.89:1190.55,M=28,top=46,bot=96;
+ const aw=PW_-2*M,ah=PH_-2*M-top-bot,s=Math.min(aw/wm,ah/hm),mx=M+(aw-wm*s)/2,my=M+bot+(ah-hm*s)/2,doc=new VPdf(),p=doc.page(PW_,PH_),O=p.o;
+ const TX=x=>mx+(x-X0)*s,TY=y=>my+(y-Y0)*s,T=(x,y)=>vN(TX(x))+' '+vN(TY(y));
+ const ringA=(a,close)=>{let o=T(a[0],a[1])+' m';for(let i=2;i<a.length;i+=2)o+=' '+T(a[i],a[i+1])+' l';return o+(close?' h':'');};
+ const ringP=(r,close)=>{let o=T(r[0][0],r[0][1])+' m';for(let i=1;i<r.length;i++)o+=' '+T(r[i][0],r[i][1])+' l';return o+(close?' h':'');};
+ const inB=b=>b[2]>=X0&&b[0]<=X1&&b[3]>=Y0&&b[1]<=Y1,BG=vCol('#0f1a24'),fw=wm*s,fh=hm*s,den=2834.65/s;
+ O.push('q '+vRGB(BG)+' rg '+vN(mx)+' '+vN(my)+' '+vN(fw)+' '+vN(fh)+' re f Q');
+ O.push('q '+vN(mx)+' '+vN(my)+' '+vN(fw)+' '+vN(fh)+' re W n 1 j 1 J');
+ // Seine et canaux
+ if(BASE&&BASE.w){const o=[];for(const poly of BASE.w)for(const r of poly){let b=[1e18,1e18,-1e18,-1e18];for(const q of r){b=[Math.min(b[0],q[0]),Math.min(b[1],q[1]),Math.max(b[2],q[0]),Math.max(b[3],q[1])];}if(inB(b))o.push(ringP(r,true));}if(o.length)O.push('q 0.094 0.204 0.306 rg '+o.join(' ')+' f* Q');}
+ // bâtiments, groupés par couleur
+ const BY=new Map();let nb=0;
+ for(let s_=0;s_<N;s_++){if(bbox[4*s_+2]<X0||bbox[4*s_]>X1||bbox[4*s_+3]<Y0||bbox[4*s_+1]>Y1)continue;const c=shapeCol[s_];let a=BY.get(c);if(!a)BY.set(c,a=[]);
+  let ring=[],prev=-1;const rs=[];for(let e=edgS[s_];e<edgS[s_+1];e+=2){const a_=edg[e],b_=edg[e+1];if(a_!==prev){if(ring.length)rs.push(ring);ring=[[pos[2*a_],pos[2*a_+1]]];}else ring.push([pos[2*a_],pos[2*a_+1]]);prev=b_;}if(ring.length)rs.push(ring);
+  a.push(rs.map(r=>ringP(r,true)).join(' '));nb++;}
+ const lw=Math.max(.12,Math.min(.5,s*.12));
+ for(const [c,a] of BY){const rgb=[(c&255)/255,(c>>8&255)/255,(c>>16&255)/255];O.push('q '+vRGB(rgb)+' rg 0.04 0.07 0.1 RG '+vN(lw)+' w '+doc.a(1)+a.join(' ')+' f* Q');O.push('q 0.04 0.07 0.1 RG '+vN(lw)+' w '+doc.a(.55)+a.join(' ')+' S Q');}
+ // calques superposés affichés
+ let no=0;const px=v=>v*.55;
+ for(const o of OVO){if(!o.on||!o.raw)continue;const j=o.raw;
+  if(j.bg&&o.atlas){const b=j.bg.map(v=>v/10),c=vCol(ATLBG);O.push('q '+vRGB(c)+' rg '+doc.a(o.a)+ringA(b,true)+' f Q');}
+  for(const ft of j.f){const ci=Math.min(ft[0],o.cols.length-1),col=vCol(o.cols[ci]);if(!col)continue;
+   if(j.k==='pt'){const x=ft[2]/10,y=ft[3]/10;if(x<X0||x>X1||y<Y0||y>Y1)continue;const r=px(o.id==='mob'?4+ci*1.5:(o.r||o.rr||4)),k=.5523*r,cx=TX(x),cy=TY(y);
+    O.push('q '+vRGB(col)+' rg 0.059 0.102 0.141 RG 0.5 w '+doc.a(1)+[cx+r,cy,'m',cx+r,cy+k,cx+k,cy+r,cx,cy+r,'c',cx-k,cy+r,cx-r,cy+k,cx-r,cy,'c',cx-r,cy-k,cx-k,cy-r,cx,cy-r,'c',cx+k,cy-r,cx+r,cy-k,cx+r,cy,'c'].map(v=>typeof v==='number'?vN(v):v).join(' ')+(o.r?' f':' B')+' Q');no++;continue;}
+   const rings=ft[2].map(decPath);let b=[1e18,1e18,-1e18,-1e18];for(const a of rings)for(let i=0;i<a.length;i+=2){if(a[i]<b[0])b[0]=a[i];if(a[i]>b[2])b[2]=a[i];if(a[i+1]<b[1])b[1]=a[i+1];if(a[i+1]>b[3])b[3]=a[i+1];}
+   if(!inB(b))continue;const g_=rings.map(a=>ringA(a,j.k==='poly')).join(' ');no++;
+   if(j.k==='poly'){if(o.atlas){O.push('q '+vRGB(col)+' rg '+doc.a(o.a)+g_+' f* Q');continue;}
+    if(o.a===0){O.push('q '+vRGB(col)+' RG 0.4 w '+doc.a(.5)+g_+' S Q');continue;}
+    const fa=o.hatch?(o.hal?.06:.13)+.15:o.a;O.push('q '+vRGB(col)+' rg '+doc.a(fa)+g_+' f* Q');O.push('q '+vRGB(col)+' RG 0.45 w '+doc.a(Math.min(1,o.a+.4))+g_+' S Q');}
+   else O.push('q '+vRGB(col)+' RG '+vN(px(o.lw?o.lw[ci]:o.lwa||1.7))+' w '+doc.a(.95)+g_+' S Q');}
+  if(j.L){const lc=o.lcol||o.cols[1]||o.cols[0];for(const l of j.L){const x=l[0]/10,y=l[1]/10;if(x<X0||x>X1||y<Y0||y>Y1)continue;O.push(vText(doc,TX(x),TY(y),l[2]+(o.lsuf??' m'),5.5,o.atlas?'#3a2c1c':lc,{an:'middle',mid:1,b:1,halo:o.atlas?'rgba(242,236,221,.92)':'rgba(15,26,36,.9)',hw:1.6}));}}}
+ // limites d'arrondissement
+ if(BASE&&showArr){const o=[];for(const a of BASE.a)for(const r of a.rings)o.push(ringP(r,true));O.push('q 0.92 0.95 0.97 RG 0.9 w [4 3] 0 d '+doc.a(.45)+o.join(' ')+' S Q');}
+ // bâtiment sélectionné
+ if(sel>=0&&!(bbox[4*sel+2]<X0||bbox[4*sel]>X1||bbox[4*sel+3]<Y0||bbox[4*sel+1]>Y1)){let o='';for(let e=edgS[sel];e<edgS[sel+1];e+=2){const a_=edg[e],b_=edg[e+1];o+=T(pos[2*a_],pos[2*a_+1])+' m '+T(pos[2*b_],pos[2*b_+1])+' l ';}O.push('q 0.059 0.102 0.141 RG 3 w '+o+'S Q');O.push('q 1 1 1 RG 1.4 w '+o+'S Q');}
+ // numéros et noms de rues
+ if(showLbl&&LBL){if(s>=1.1)for(const q of LBL.n||[]){const x=q[0]/2,y=q[1]/2;if(x<X0||x>X1||y<Y0||y>Y1)continue;O.push(vText(doc,TX(x),TY(y),q[2],Math.min(7,3+s*.9),'#ffd9a0',{an:'middle',mid:1,halo:'rgba(15,26,36,.92)',hw:1.4}));}
+  if(s>=.18){const fs=Math.min(9,Math.max(5.5,3+s*2));for(const l of LBL.s||[]){const [x,y,ang,nm0,len]=l;if(x<X0||x>X1||y<Y0||y>Y1)continue;let nm=nm0;if(vWid(nm,fs,1)>len*s*1.05)nm=shortName(nm);if(vWid(nm,fs,1)>len*s*1.05)continue;
+   let a=ang||0;a=((a%360)+540)%360-180;if(a>90)a-=180;if(a<-90)a+=180;O.push(vText(doc,TX(x),TY(y),nm,fs,'#d7e4ee',{an:'middle',mid:1,b:1,rot:a,halo:'rgba(15,26,36,.95)',hw:1.8}));}}}
+ O.push('Q');
+ // cadre, titre, échelle, nord, légende, sources
+ O.push('q 0.10 0.16 0.22 RG 0.8 w '+vN(mx)+' '+vN(my)+' '+vN(fw)+' '+vN(fh)+' re S Q');
+ const c=st.crit,neu=c.id==='neu',nice=[5,10,20,25,50,100,200,250,500,1000,2000],sb=nice.find(v=>v*s>=70)||nice[nice.length-1],now=new Date();
+ O.push(vText(doc,M,PH_-M-14,'Paris-graphie · plan du '+now.toLocaleDateString('fr-FR'),14,'#1a486a',{b:1}));
+ O.push(vText(doc,M,PH_-M-30,'Calque : '+(neu?'plan neutre':c.name)+' · zone de '+Math.round(wm)+' × '+Math.round(hm)+' m · échelle 1/'+Math.round(den/10)*10+' en '+(land?'A3 paysage':'A3 portrait'),9,'#55606b'));
+ const by=M+bot-30;O.push('q 0.10 0.16 0.22 rg '+vN(M)+' '+vN(by)+' '+vN(sb*s/2)+' 4 re f 1 1 1 rg '+vN(M+sb*s/2)+' '+vN(by)+' '+vN(sb*s/2)+' 4 re f 0.10 0.16 0.22 RG 0.6 w '+vN(M)+' '+vN(by)+' '+vN(sb*s)+' 4 re S Q');
+ O.push(vText(doc,M,by+8,'0',7,'#1d2a36'));O.push(vText(doc,M+sb*s,by+8,sb+' m',7,'#1d2a36',{an:'middle'}));
+ {const nx=mx+fw-20,ny=my+fh-26;O.push('q 1 1 1 rg 0.10 0.16 0.22 RG 0.6 w '+vN(nx-10)+' '+vN(ny-12)+' 20 30 re B 0.10 0.16 0.22 rg '+vN(nx)+' '+vN(ny+12)+' m '+vN(nx-5)+' '+vN(ny-6)+' l '+vN(nx)+' '+vN(ny-2)+' l '+vN(nx+5)+' '+vN(ny-6)+' l h f Q');O.push(vText(doc,nx,ny+12.5,'N',7,'#1d2a36',{an:'middle',b:1}));}
+ if(!neu){const it=c.lab.map((l,i)=>[l,c.grad&&i===0?'#e6a23c':(c.col[i]||'#8b98a4'),c.cnt?c.cnt[i]:1]).filter(e=>e[2]>0).slice(0,18),cw=Math.max(110,Math.min(200,(PW_-2*M-180)/Math.ceil(it.length/3)));
+  it.forEach((e,i)=>{const x=M+180+Math.floor(i/3)*cw,y=M+bot-22-(i%3)*12,k=vCol(e[1]);O.push('q '+vRGB(k)+' rg '+vN(x)+' '+vN(y-1)+' 8 7 re f Q');O.push(vText(doc,x+12,y,String(e[0]).slice(0,40),7,'#1d2a36'));});}
+ O.push(vText(doc,M,M+14,'Bouchaud Architectes · Paris-graphie (https://www.bouchaudarchitectes.com/hors-piste/paris-graphie). Plan non géoréférencé, à usage indicatif ; pour un plan en Lambert 93, utiliser l\'export DXF.',6.5,'#7a8794'));
+ O.push(vText(doc,M,M+5,'Sources : Apur (emprises, hauteurs), Ville de Paris (PLU, voirie, arbres), Base Adresse Nationale, IGN, DGFiP, CSTB. Données ouvertes (ODbL, Licence Ouverte).',6.5,'#7a8794'));
+ return {blob:await doc.blob(),nb,no,den};}
 /* ---------- coupe vectorielle : bâti, terrain (RGE ALTI IGN), arbres schématiques, points et courbes topographiques à ±20 m ---------- */
 let XC=null;const BAND=20,DMAX=150,PTOL=.1;let LDg=20,CUTC=null;try{LDg=Math.min(DMAX,Math.max(.1,+localStorage.getItem('pg_lidd')||20));}catch(e){}
 function drawXCut(){if(!XC||!XC.a)return;const k=view.k,X=x=>(x-view.cx)*k+W/2,Y=y=>Hh/2-(y-view.cy)*k;lx.setTransform(dpr,0,0,dpr,0,0);
@@ -1505,7 +1651,7 @@ function drawXCut(){if(!XC||!XC.a)return;const k=view.k,X=x=>(x-view.cx)*k+W/2,Y
  lx.strokeStyle='#ffd27f';lx.lineWidth=2;lx.beginPath();lx.moveTo(X(ax),Y(ay));lx.lineTo(X(bx),Y(by));lx.stroke();
  lx.fillStyle='#ffd27f';lx.font='600 12px Inter, system-ui, sans-serif';lx.fillText('A',X(ax)-12,Y(ay)-6);lx.fillText('B  '+Math.round(L)+' m',X(bx)+6,Y(by)-6);}
 const xcOff=()=>{XC=null;SNAP=null;$('#zc').classList.remove('on');cv.style.cursor='';xMsg('');draw();};
-$('#zc').onclick=()=>{if(XC){xcOff();return;}if(XP)$('#zx').click();if(MS)msOff();XC={a:null,b:null};$('#zc').classList.add('on');cv.style.cursor='crosshair';xMsg('Tracez la ligne de coupe sur la carte, de A vers B. Aimant : sommets et arêtes des bâtiments (carré, croix), directions perpendiculaires ou parallèles aux façades (⊥). Échap pour annuler.');};
+$('#zc').onclick=()=>{if(XC){xcOff();return;}if(XP)xpOff();if(MS)msOff();XC={a:null,b:null};$('#zc').classList.add('on');cv.style.cursor='crosshair';xMsg('Tracez la ligne de coupe sur la carte, de A vers B. Aimant : sommets et arêtes des bâtiments (carré, croix), directions perpendiculaires ou parallèles aux façades (⊥). Échap pour annuler.');};
 addEventListener('keydown',e=>{if(e.key==='Escape'&&XC)xcOff();});
 cv.addEventListener('pointerdown',e=>{if(!XC)return;e.stopImmediatePropagation();e.preventDefault();XC.a=snapW(s2w(e.clientX,e.clientY)).p;XC.b=XC.a;cv.setPointerCapture(e.pointerId);},true);
 cv.addEventListener('pointermove',e=>{if(!XC||!XC.a)return;e.stopImmediatePropagation();XC.b=snapW(s2w(e.clientX,e.clientY),XC.a).p;draw();},true);
@@ -1580,7 +1726,7 @@ function drawMeas(){if(!MS||!MS.pts.length)return;const k=view.k,X=x=>(x-view.cx
  if(MS.closed){let cx=0,cy=0;for(const p of P){cx+=p[0];cy+=p[1];}const t=Math.round(msArea(P)).toLocaleString('fr-FR')+' m²';lx.font='700 13px Inter, system-ui, sans-serif';lx.strokeText(t,X(cx/P.length)-20,Y(cy/P.length));lx.fillStyle='#ffffff';lx.fillText(t,X(cx/P.length)-20,Y(cy/P.length));}}
 xmsg.addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b||!MS)return;e.stopPropagation();const m=b.dataset.m;if(m==='end'){MS.done=true;MS.cur=null;draw();msInfo();}else if(m==='clr'){MS={pts:[],cur:null,closed:false};draw();msInfo();}else msOff();});
 const msOff=()=>{MS=null;SNAP=null;$('#zm').classList.remove('on');cv.style.cursor='';xMsg('');draw();};
-$('#zm').onclick=()=>{if(MS){msOff();return;}if(XC)xcOff();if(XP)$('#zx').click();MS={pts:[],cur:null,closed:false};$('#zm').classList.add('on');cv.style.cursor='crosshair';msInfo();};
+$('#zm').onclick=()=>{if(MS){msOff();return;}if(XC)xcOff();if(XP)xpOff();MS={pts:[],cur:null,closed:false};$('#zm').classList.add('on');cv.style.cursor='crosshair';msInfo();};
 addEventListener('keydown',e=>{if(e.key==='Escape'&&MS){if(MS.pts.length&&!MS.done){MS.done=true;MS.cur=null;draw();msInfo();}else msOff();}});
 cv.addEventListener('pointerdown',e=>{if(!MS)return;e.stopImmediatePropagation();e.preventDefault();
  if(MS.closed||MS.done)MS={pts:[],cur:null,closed:false};const w=snapW(s2w(e.clientX,e.clientY),MS.pts[MS.pts.length-1]).p;
@@ -1820,7 +1966,7 @@ async function cutShow(A,B,opt={}){
  box.innerHTML='<div class="alp"><div class="alh"><b>Coupe A-B · '+Math.round(L)+' m</b><button id="cutx" aria-label="Fermer">✕</button></div><div class="cutg"><aside class="cutside">'
   +CG.map(([g,ks])=>'<div class="cuth">'+g+'</div>'+ks.map(k=>'<label class="cutr"><input type="checkbox" data-k="'+k+'"'+(CUTOFF.has(k)?'':' checked')+'><i style="background:'+CCOL[k]+'"></i><span>'+CN[k]+'</span></label>').join('')).join('')
   +'<div class="cuth">Profondeur visible</div><div class="cutsl"><input type="range" id="lidd" min="0" max="1000" step="1" aria-label="Profondeur visible derrière le plan de coupe"><b id="liddv"></b></div><div class="k cutk">Derrière le plan, de 10 cm à 150 m : LiDAR, arbres, cotes et courbes. Rien n\'est montré devant le plan.</div>'
-  +'<div class="cuth">Outils et exports</div><div class="alb"><button id="cutm" title="Mesurer sur la coupe ou le plan : glisser d\'un point à l\'autre, Échap pour effacer" aria-label="Mesurer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M5.5 13 7.6 15.1M8 10.5 9.3 11.8M10.5 8 12.6 10.1M13 5.5 14.3 6.8"/></svg></button><button id="cutmx" hidden title="Effacer les mesures" aria-label="Effacer les mesures">Effacer</button><button id="cutd">DXF</button><button id="cuts">SVG</button></div>'
+  +'<div class="cuth">Outils et exports</div><div class="alb"><button id="cutm" title="Mesurer sur la coupe ou le plan : glisser d\'un point à l\'autre, Échap pour effacer" aria-label="Mesurer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M5.5 13 7.6 15.1M8 10.5 9.3 11.8M10.5 8 12.6 10.1M13 5.5 14.3 6.8"/></svg></button><button id="cutmx" hidden title="Effacer les mesures" aria-label="Effacer les mesures">Effacer</button><button id="cutd">DXF</button><button id="cuts" title="PDF vectoriel A3 (LiDAR compris), calques affichés">PDF</button></div>'
   +'<div class="k cutk" id="cutms" style="color:#0a6f99"></div><div class="k cutk" id="cutl"></div><div class="k cutk">'+stat+'</div></aside>'
   +'<div class="cutmain"><div class="cutsvg">'+svg+'</div>'
   +'<details class="cutd" open><summary>Comment chaque élément est calculé</summary>'+leg+'</details></div></div></div>';
@@ -1853,7 +1999,19 @@ async function cutShow(A,B,opt={}){
  for(const c of box.querySelectorAll('.cutside input[data-k]'))c.onchange=()=>{c.checked?CUTOFF.delete(c.dataset.k):CUTOFF.add(c.dataset.k);if(c.checked&&c.dataset.k==='lidar')loadLid();try{localStorage.setItem('pg_cutoff',[...CUTOFF].join(','));}catch(e){}apply();};apply();
  const svgOn=()=>{const d=new DOMParser().parseFromString(svg,'image/svg+xml');for(const g of [...d.querySelectorAll('[data-ly]')])if(CUTOFF.has(g.getAttribute('data-ly')))g.remove();return new XMLSerializer().serializeToString(d);};
  const dl=(txt,type,ext)=>{const u=URL.createObjectURL(new Blob([txt],{type}));const a=document.createElement('a');a.href=u;a.download=nm+ext;a.click();setTimeout(()=>URL.revokeObjectURL(u),2000);};
- box.querySelector('#cutd').onclick=()=>dl(mkDxf(on()),'application/dxf','.dxf');box.querySelector('#cuts').onclick=()=>dl(svgOn(),'image/svg+xml','.svg');
+ // nuage LiDAR en vectoriel : un petit carré par point, regroupés par couleur et par opacité
+ const lidarVec=(max=4e5)=>doc=>{if(!LIDP||CUTOFF.has('lidar'))return '';const P=LIDP,k=LIDK,G_=new Map(),idx=[];for(let i=0;i<P.t.length;i++){const dd=P.d[i];if(dd<=LDg&&dd>=-PTOL)idx.push(i);}
+  const stp=Math.max(1,Math.ceil(idx.length/max));for(let j=0;j<idx.length;j+=stp){const i=idx[j],ad=Math.abs(P.d[i]),near=ad<=.25,al=near?1:Math.max(.05,.5*(1-(ad-.25)/Math.max(.01,LDg-.25))),q=Math.round(al*20)/20,key=q+'|'+P.c[i];let a=G_.get(key);if(!a)G_.set(key,a=[]);const w=near?1:.75;a.push(vN(X(P.t[i]*k)-w/2)+' '+vN(Y(P.z[i])-w/2)+' '+w+' '+w+' re');}
+  let o='';for(const key of [...G_.keys()].sort((a,b)=>parseFloat(a)-parseFloat(b))){const [q,c]=key.split('|'),col=vCol((LCL[c]||[0,'#9aa3ad'])[1]);o+='q '+vRGB(col)+' rg '+doc.a(+q)+'\n'+G_.get(key).join('\n')+'\nf Q\n';}return o;};
+ const vecCut=(doc,box,max)=>svg2pdf(svgOn(),doc,box,{lidar:lidarVec(max)});
+ const pdfCut=async()=>{const doc=new VPdf(),PW_=1190.55,PH_=841.89,M=28,p=doc.page(PW_,PH_),r=vecCut(doc,[M,M+26,PW_-2*M,PH_-2*M-60]);p.o.push(r.ops);
+  const den=Math.round(2834.65/(sc*r.s)/10)*10;
+  p.o.push(vText(doc,M,PH_-M-14,'Coupe A-B · '+Math.round(L)+' m · Paris-graphie, '+new Date().toLocaleDateString('fr-FR'),14,'#1a486a',{b:1}));
+  p.o.push(vText(doc,M,PH_-M-30,'Échelle 1/'+den+' en A3 paysage (verticale égale à l\'horizontale) · profondeur visible '+(LDg<1?Math.round(LDg*100)+' cm':fr(LDg,LDg<10?1:0)+' m')+' derrière le plan · on regarde vers la gauche du trait A-B',9,'#55606b'));
+  p.o.push(vText(doc,M,M+8,'Bouchaud Architectes · Paris-graphie. Terrain : '+D.tsrc+' ; bâti : Apur ; PLU bioclimatique : Ville de Paris (déc. 2025) ; arbres : Ville de Paris ; LiDAR HD : IGN (Licence Ouverte). Estimation sans valeur réglementaire.',6.5,'#7a8794'));
+  return doc.blob();};
+ box.querySelector('#cutd').onclick=()=>dl(mkDxf(on()),'application/dxf','.dxf');
+ box.querySelector('#cuts').onclick=async()=>{const b=box.querySelector('#cuts');b.textContent='…';try{const bl=await pdfCut();const u=URL.createObjectURL(bl),a=document.createElement('a');a.href=u;a.download=nm+'.pdf';a.click();setTimeout(()=>URL.revokeObjectURL(u),4000);}catch(e){alert('Échec du PDF : '+e.message);}b.textContent='PDF';};
  {const bm=box.querySelector('#cutm'),sv=()=>box.querySelector('.cutsvg svg');let on=false,a0=null,gm=null,tmp=null;const NS='http://www.w3.org/2000/svg';
   // géométrie aimantée de la coupe et du plan, en unités SVG
   const SV=[],SG=[],ap=(P,cl)=>{for(let i=0;i<P.length;i++){SV.push(P[i]);if(i)SG.push([P[i-1],P[i]]);}if(cl&&P.length>2)SG.push([P[P.length-1],P[0]]);};
@@ -1886,7 +2044,7 @@ async function cutShow(A,B,opt={}){
   const clr=()=>{if(gm)gm.innerHTML='';mk=null;a0=null;tmp=null;};const esc_=e=>{if(e.key==='Escape'&&on)clr();};box.querySelector('#cutmx').onclick=clr;
   bm.onclick=()=>{on=!on;bm.classList.toggle('on',on);box.querySelector('#cutmx').hidden=!on;const s_=sv();s_.style.cursor=on?'crosshair':'';s_.style.touchAction=on?'none':'';if(on&&!gm){gm=el('g',{id:'meas'});s_.append(gm);s_.addEventListener('pointerdown',down);s_.addEventListener('pointermove',move);s_.addEventListener('pointerup',up);s_.addEventListener('pointercancel',up);addEventListener('keydown',esc_);}
    box.querySelector('#cutms').textContent=on?'Mesure : faites glisser d\'un point à l\'autre (aimant : sommets, arêtes, points LiDAR, horizontales et verticales) sur la coupe (distance, horizontal, vertical, pente) ou sur le plan ; le dessin ne défile plus, faites défiler la fenêtre en dehors. « Effacer » (ou Échap) retire les mesures.':'';};}
- if(opt.headless){if(!CUTOFF.has('lidar'))await loadLid();return {svg:svgOn(),L,lid:LIDP?LIDP.t.length:0};}
+ if(opt.headless){if(!CUTOFF.has('lidar'))await loadLid();return {svg:svgOn(),L,lid:LIDP?LIDP.t.length:0,vec:(doc,box)=>vecCut(doc,box,6e4)};}
 }
 /* ---------- export DXF géoréférencé (Lambert 93, EPSG:2154), un calque par couche ---------- */
 const L93=(()=>{const a=6378137,e=0.0818191910428158,l0=3*Math.PI/180,p0=46.5*Math.PI/180,p1=44*Math.PI/180,p2=49*Math.PI/180;
@@ -2186,6 +2344,7 @@ async function svgJpeg(svg){const vb=svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/
  await new Promise((r,j)=>{img.onload=r;img.onerror=()=>j(new Error('rendu de la coupe'));img.src=u;});const k=Math.min(2.2,2600/w),c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);
  const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);return {url:c.toDataURL('image/jpeg',.86),w:c.width,h:c.height};}
 function makePdf(M_,IMG,HIST,COUP){
+ const VGS={gs:new Set([100]),a(al){const k=Math.max(0,Math.min(100,Math.round(al*100)));this.gs.add(k);return '/G'+k+' gs ';}};
  const PW=595.28,PH=841.89,MG=56,LW=PW-2*MG,pages=[];let cur,y;
  const g=document.createElement('canvas').getContext('2d');
  const wid=(t,sz,b)=>{g.font=(b?'bold ':'')+sz+'px Arial, Helvetica, sans-serif';return g.measureText(t).width;};
@@ -2214,7 +2373,7 @@ function makePdf(M_,IMG,HIST,COUP){
  }
  if(COUP&&COUP.length){newPage();put('COUPES SUR RUE',13,true,'0.10 0.28 0.41',0,null,0,1.2);y-=4;cur.ops.push('0.75 0.81 0.85 RG 0.7 w '+MG+' '+y.toFixed(2)+' m '+(PW-MG)+' '+y.toFixed(2)+' l S');y-=12;
   put(COUP.note,8,false,'0.45 0.45 0.45',0,null,10);
-  COUP.forEach((c,i)=>{let w=LW,h=w*c.h/c.w;const hm=PH-2*MG-70;if(h>hm){h=hm;w=h*c.w/c.h;}if(y-h-30<MG+20)newPage();y-=h;cur.ops.push('q '+w.toFixed(2)+' 0 0 '+h.toFixed(2)+' '+(MG+(LW-w)/2).toFixed(2)+' '+y.toFixed(2)+' cm /Ic'+i+' Do Q');y-=6;put(c.cap,8,false,'0.25 0.25 0.25',0,null,14);});}
+  COUP.forEach((c,i)=>{let w=LW,h=w*c.vb[1]/c.vb[0];const hm=PH-2*MG-70;if(h>hm){h=hm;w=h*c.vb[0]/c.vb[1];}if(y-h-30<MG+20)newPage();y-=h;cur.ops.push(c.vec(VGS,[MG+(LW-w)/2,y,w,h]).ops);y-=6;put(c.cap,8,false,'0.25 0.25 0.25',0,null,14);});}
  const hist=()=>{if(!(HIST&&HIST.length))return;
   y-=10;put('Extraits des plans de Michel Huard (paris-atlas-historique.fr), calés automatiquement sur le plan actuel : l\'immeuble est cerclé et entouré de rouge. Précision indicative, de l\'ordre de 5 à 15 m. Chaque titre renvoie à la page de la carte.',8,false,'0.45 0.45 0.45',0,null,8);
   if(HIST.empty)put('Rien de dessiné autour de l\'immeuble sur : '+HIST.empty.join(', ')+' (site encore hors de la ville ou non renseigné).',8,false,'0.45 0.45 0.45',0,null,8);
@@ -2239,13 +2398,13 @@ function makePdf(M_,IMG,HIST,COUP){
  add('<< /Type /Catalog /Pages 2 0 R >>');add('');add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
  let imObj=0;
  const hObj=(HIST||[]).map(im=>{const bin=atob(im.url.split(',')[1]);return add('<< /Type /XObject /Subtype /Image /Width '+im.w+' /Height '+im.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+bin.length+' >>\nstream\n'+bin+'\nendstream');});
- const cObj=(COUP||[]).map(im=>{const bin=atob(im.url.split(',')[1]);return add('<< /Type /XObject /Subtype /Image /Width '+im.w+' /Height '+im.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+bin.length+' >>\nstream\n'+bin+'\nendstream');});
+ const cObj=[];
  if(IMG){const bin=atob(IMG.url.split(',')[1]);imObj=add('<< /Type /XObject /Subtype /Image /Width '+IMG.w+' /Height '+IMG.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+bin.length+' >>\nstream\n'+bin+'\nendstream');}
  const kids=[];
  for(const p of pages){
   const cs=p.ops.join('\n'),cn=add('<< /Length '+cs.length+' >>\nstream\n'+cs+'\nendstream');
   const an=p.ln.map(l=>add('<< /Type /Annot /Subtype /Link /Rect ['+l.slice(0,4).map(v=>v.toFixed(2)).join(' ')+'] /Border [0 0 0] /A << /S /URI /URI ('+enc(l[4])+') >> >>'));
-  const pn=add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>'+((imObj||hObj.length||cObj.length)?' /XObject << '+(imObj?'/Im1 '+imObj+' 0 R ':'')+hObj.map((h,i)=>'/Ih'+i+' '+h+' 0 R ').join('')+cObj.map((h,i)=>'/Ic'+i+' '+h+' 0 R ').join('')+'>>':'')+' >> /Contents '+cn+' 0 R'+(an.length?' /Annots ['+an.map(a=>a+' 0 R').join(' ')+']':'')+' >>');
+  const pn=add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+PW+' '+PH+'] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> /ExtGState << '+[...VGS.gs].map(k=>'/G'+k+' << /ca '+(k/100)+' /CA '+(k/100)+' >>').join(' ')+' >>'+((imObj||hObj.length||cObj.length)?' /XObject << '+(imObj?'/Im1 '+imObj+' 0 R ':'')+hObj.map((h,i)=>'/Ih'+i+' '+h+' 0 R ').join('')+cObj.map((h,i)=>'/Ic'+i+' '+h+' 0 R ').join('')+'>>':'')+' >> /Contents '+cn+' 0 R'+(an.length?' /Annots ['+an.map(a=>a+' 0 R').join(' ')+']':'')+' >>');
   kids.push(pn);
  }
  objs[1]='<< /Type /Pages /Count '+kids.length+' /Kids ['+kids.map(k=>k+' 0 R').join(' ')+'] >>';
@@ -2272,8 +2431,8 @@ cb.addEventListener('click',async e=>{if(e.target&&e.target.id==='pdfb'&&PCTX&&(
   const HIST=await histCaptures(PCTX.s,PCTX.atl).catch(()=>[]);const COUP=[];
   {const FC=await facadeCuts(PCTX.s).catch(()=>[]);
    for(let i=0;i<FC.length;i++){const c=FC[i];m.textContent='Coupe sur rue '+(i+1)+' / '+FC.length+' (terrain, PLU, arbres'+(CUTOFF.has('lidar')?'':', LiDAR HD')+')…';
-    try{const r=await cutShow(c.A,c.B,{headless:true}),J=await svgJpeg(r.svg);J.cap='Coupe '+(i+1)+' : perpendiculaire à la façade sur '+(c.st||'rue')+' (façade de '+fr(c.L,0)+' m), de l\'immeuble en face (A) jusqu\'au fond de la parcelle (B), '+fr(r.L,0)+' m ; voie d\'environ '+(c.w?fr(c.w,1)+' m':'?')+' entre limites de parcelles'+(r.lid?' ; '+r.lid.toLocaleString('fr-FR')+' points LiDAR HD':'')+'. On regarde vers la gauche du trait A-B (flèches rouges du plan de repérage).';COUP.push(J);}catch(e){}}
-   COUP.note='Coupes tracées automatiquement perpendiculairement à chaque façade sur rue (bords de l\'emprise Apur donnant sur un espace hors parcelle cadastrale), de l\'immeuble d\'en face jusqu\'au fond de la parcelle. Calques et profondeur visible ('+(LDg<1?Math.round(LDg*100)+' cm':fr(LDg,LDg<10?1:0)+' m')+' derrière le plan) repris des réglages de la fenêtre Coupe. Méthodes et sources de chaque élément : voir « Coupe » dans les méthodes de calcul de Paris-graphie. Estimation sans valeur réglementaire.';}
+    try{const r=await cutShow(c.A,c.B,{headless:true}),J={vec:r.vec,vb:r.svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/).slice(1).map(Number)};J.cap='Coupe '+(i+1)+' : perpendiculaire à la façade sur '+(c.st||'rue')+' (façade de '+fr(c.L,0)+' m), de l\'immeuble en face (A) jusqu\'au fond de la parcelle (B), '+fr(r.L,0)+' m ; voie d\'environ '+(c.w?fr(c.w,1)+' m':'?')+' entre limites de parcelles'+(r.lid?' ; '+r.lid.toLocaleString('fr-FR')+' points LiDAR HD':'')+'. On regarde vers la gauche du trait A-B (flèches rouges du plan de repérage).';COUP.push(J);}catch(e){}}
+   COUP.note='Coupes vectorielles tracées automatiquement perpendiculairement à chaque façade sur rue (bords de l\'emprise Apur donnant sur un espace hors parcelle cadastrale), de l\'immeuble d\'en face jusqu\'au fond de la parcelle. Calques et profondeur visible ('+(LDg<1?Math.round(LDg*100)+' cm':fr(LDg,LDg<10?1:0)+' m')+' derrière le plan) repris des réglages de la fenêtre Coupe. Méthodes et sources de chaque élément : voir « Coupe » dans les méthodes de calcul de Paris-graphie. Estimation sans valeur réglementaire.';}
   m.textContent='Assemblage du PDF…';
   const M_=docModel(PCTX.s,PCTX),IMG=captureParcel(PCTX.s),blob=makePdf(M_,(IMG&&(IMG.layer=st.crit.id==='neu'?'':st.crit.name,IMG.leg=(()=>{const L=legendOf(PCTX.s);if(!L)return null;const c=L.c;return {name:c.name,items:c.grad?[[L.col,'Année de construction : '+L.lab,true]]:c.lab.map((lb,i)=>[c.col[i]||'#999',lb,i===L.i])};})(),IMG)),HIST,COUP),url=URL.createObjectURL(blob);
   const nm='fiche-'+(M_.title.replace(/[^\w]+/g,'-').replace(/^-|-$/g,'').toLowerCase()||'batiment')+'.pdf';
@@ -2417,33 +2576,60 @@ setCrit(CRIT[0]);ready=true;
 }
 /* ---------- tutoriel des premières visites : 4 étapes, bouton Passer, relançable depuis le pied de page ---------- */
 const TUTO=[
- {el:['#srch','#scroll'],h:'Une adresse, des calques',p:'Tapez une adresse pour centrer la carte sur l\'immeuble. Dans la liste, choisissez un calque (hauteurs, époques, PLU, usages, métro…) : les bâtiments se colorent selon ce critère, et la légende s\'affiche. Cliquez un bâtiment pour ouvrir sa fiche.'},
- {el:['#pdfb'],h:'La fiche PDF',p:'Un clic sur un immeuble ouvre sa fiche. Le bouton « Exporter la fiche en PDF » produit un dossier complet : carte, données sourcées, autorisations, plans historiques et coupes sur rue tracées automatiquement, de l\'immeuble d\'en face jusqu\'au fond de la parcelle.',enter:tuPdfIn,leave:tuPdfOut},
- {el:['#zx'],h:'Export DXF géoréférencé',p:'Le bouton DXF permet de tracer un rectangle sur la carte : vous récupérez un DXF en Lambert 93, avec un calque par couche affichée (bâti, PLU, réseaux, noms de rues…), prêt pour ArchiCAD, AutoCAD ou QGIS.'},
- {el:['#zc'],h:'La coupe',p:'Le bouton Coupe permet de tracer une ligne de A vers B : terrain IGN, bâti, gabarits du PLU avec leurs règles, arbres selon leur essence et nuage de points LiDAR HD, avec un curseur de profondeur et un plan de repérage. Export SVG et DXF.'}];
-function flyView(k1,cx1,cy1,ms=1100){return new Promise(r=>{const k0=view.k,cx0=view.cx,cy0=view.cy,t0=performance.now();const st=()=>{const u=Math.min(1,(performance.now()-t0)/ms),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;view.k=k0*Math.pow(k1/k0,e);view.cx=cx0+(cx1-cx0)*e;view.cy=cy0+(cy1-cy0)*e;draw();if(u<1)requestAnimationFrame(st);else r();};requestAnimationFrame(st);});}
-let TUV=null;
-async function tuPdfIn(){TUV={k:view.k,cx:view.cx,cy:view.cy,sel};const [wx,wy]=llToW(2.33055,48.87395),cand=[];for(const [dx,dy] of [[0,0],[6,0],[-6,0],[0,6],[0,-6],[12,12],[-12,-12],[12,-12],[-12,12],[20,0],[-20,0]]){const c=pick(wx+dx,wy+dy);if(c>=0&&!cand.includes(c))cand.push(c);}if(!cand.length)return;
- let s=cand[0];try{const D_=await loadArr(ARR[s]);const ok=cand.find(c=>ARR[c]===ARR[s]&&D_&&D_.a&&D_.a[c]&&D_.a[c].length);if(ok!=null)s=ok;}catch(e){}
- const k=Math.max(TUV.k,3.2),bx=(bbox[4*s]+bbox[4*s+2])/2,by=(bbox[4*s+1]+bbox[4*s+3])/2,pw=isMob()?0:340-422;
- await flyView(k,bx-pw/2/k,by-(isMob()?innerHeight*.31/k:0));sel=s;await showCard(s,true);draw();await new Promise(r=>setTimeout(r,350));}
-async function tuPdfOut(){if(!TUV)return;sel=TUV.sel;await showCard(-1);draw();await flyView(TUV.k,TUV.cx,TUV.cy,900);TUV=null;}
-function tuto(){let i=0;const hl=document.createElement('div'),w=document.createElement('div');hl.id='tuhl';w.id='tuw';w.setAttribute('role','dialog');w.setAttribute('aria-label','Tutoriel');document.body.append(hl,w);
- let prev=-1,busy=false;const end=async()=>{if(TUTO[prev]&&TUTO[prev].leave){const L_=TUTO[prev].leave;prev=-1;hl.style.opacity=0;w.style.opacity=0;await L_();}hl.remove();w.remove();removeEventListener('resize',show);removeEventListener('keydown',kd);try{localStorage.setItem('pg_tuto','1');}catch(e){}};
+ {el:['#scroll'],h:'Une adresse, des calques',p:'Tapez une adresse pour centrer la carte sur l\'immeuble. Dans la liste, choisissez un calque, ici l\'âge du bâti : les bâtiments se colorent selon ce critère et la légende s\'affiche. Un clic sur un bâtiment ouvre sa fiche.',demo:tuD1},
+ {el:['#pdfb'],h:'La fiche PDF',p:'Dans la fiche d\'un bâtiment, le bouton « Exporter la fiche en PDF » produit un dossier complet : carte, données sourcées, autorisations, plans historiques et coupes sur rue tracées automatiquement, de l\'immeuble d\'en face jusqu\'au fond de la parcelle.',img:'tuto-fiche.jpg',demo:tuD2},
+ {el:['#zoom'],h:'Le plan, en DXF ou en PDF',p:'Le bouton Plan propose deux formats avant de tracer un rectangle : DXF géoréférencé en Lambert 93 (un calque par couche, pour ArchiCAD, AutoCAD ou QGIS) ou PDF vectoriel aux couleurs de la carte, calques affichés compris.',img:'tuto-plan.jpg',demo:tuD3},
+ {el:['#zoom'],h:'La coupe',p:'Le bouton Coupe permet de tracer une ligne de A vers B : terrain IGN, bâti, gabarits du PLU avec leurs règles, arbres selon leur essence et nuage de points LiDAR HD, avec un curseur de profondeur, un plan de repérage et la mesure. Export DXF et PDF vectoriel.',img:'tuto-coupe.jpg',demo:tuD4}];
+function flyView(k1,cx1,cy1,ms=1100){return new Promise(r=>{const k0=view.k,cx0=view.cx,cy0=view.cy,t0=performance.now();const st_=()=>{const u=Math.min(1,(performance.now()-t0)/ms),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;view.k=k0*Math.pow(k1/k0,e);view.cx=cx0+(cx1-cx0)*e;view.cy=cy0+(cy1-cy0)*e;draw();if(u<1)requestAnimationFrame(st_);else r();};requestAnimationFrame(st_);});}
+/* démonstration : toujours le même immeuble (48 boulevard Haussmann), aperçus pré-calculés */
+const TS={tok:0,save:null,s:-1,cut:null};const tSleep=ms=>new Promise(r=>setTimeout(r,ms));
+let TCUR=null;const tCur=()=>{if(!TCUR){TCUR=document.createElement('div');TCUR.id='tcur';TCUR.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M5 3l14 8-6.2 1.7L9.6 19z" fill="#fff" stroke="#0f1a24" stroke-width="1.4" stroke-linejoin="round"/></svg>';document.body.appendChild(TCUR);}return TCUR;};
+async function tMove(x,y,ms=650){const c=tCur();c.style.transition='left '+ms+'ms cubic-bezier(.4,0,.2,1),top '+ms+'ms cubic-bezier(.4,0,.2,1),opacity .2s';c.style.opacity=1;c.style.left=x+'px';c.style.top=y+'px';await tSleep(ms+40);}
+async function tClick(){const c=tCur();c.classList.remove('clk');void c.offsetWidth;c.classList.add('clk');await tSleep(400);}
+const tPos=q=>{const e=typeof q==='string'?$(q):q;if(!e)return null;const r=e.getBoundingClientRect();return r.width?[r.left+r.width/2,r.top+r.height/2]:null;};
+const tW2s=(x,y)=>[(x-view.cx)*view.k+W/2,Hh/2-(y-view.cy)*view.k];
+async function tBuilding(){if(TS.s>=0)return TS.s;const [wx,wy]=llToW(2.33055,48.87395),cand=[];for(const [dx,dy] of [[0,0],[6,0],[-6,0],[0,6],[0,-6],[12,12],[-12,-12],[20,0],[-20,0]]){const c=pick(wx+dx,wy+dy);if(c>=0&&!cand.includes(c))cand.push(c);}
+ let s=cand[0]??-1;try{const D_=await loadArr(ARR[s]);const ok=cand.find(c=>ARR[c]===ARR[s]&&D_&&D_.a&&D_.a[c]&&D_.a[c].length);if(ok!=null)s=ok;}catch(e){}return TS.s=s;}
+async function tZoom(){const s=await tBuilding();if(s<0)return -1;const k=2.3,bx=(bbox[4*s]+bbox[4*s+2])/2,by=(bbox[4*s+1]+bbox[4*s+3])/2,pw=isMob()?0:340-422;
+ if(Math.abs(view.k-k)>.05||Math.hypot(view.cx-(bx-pw/2/k),view.cy-(by-(isMob()?innerHeight*.28:-Hh*.17)/k))>3)await flyView(k,bx-pw/2/k,by-(isMob()?innerHeight*.28:-Hh*.17)/k);return s;}
+async function tuD1(tok){const sc=$('#scroll'),b=$('#scroll button[data-id="per"]');if(!b)return;
+ if(!isMob()&&sc){await tMove(innerWidth*.6,innerHeight*.55,500);const p0=tPos(sc);if(p0)await tMove(p0[0],p0[1]);if(tok!==TS.tok)return;
+  const r=b.getBoundingClientRect(),r0=sc.getBoundingClientRect();sc.scrollTo({top:sc.scrollTop+r.top-r0.top-r0.height*.35,behavior:'smooth'});await tSleep(900);if(tok!==TS.tok)return;
+  const p=tPos(b);if(p)await tMove(p[0]-40,p[1]);await tClick();}
+ if(tok!==TS.tok)return;if(st.crit.id!=='per')b.click();}
+async function tuD2(tok){if(st.crit.id!=='per'){const b=$('#scroll button[data-id="per"]');if(b)b.click();}
+ const s=await tZoom();if(s<0||tok!==TS.tok)return;const bc=tW2s((bbox[4*s]+bbox[4*s+2])/2,(bbox[4*s+1]+bbox[4*s+3])/2);await tMove(bc[0],bc[1]);await tClick();if(tok!==TS.tok)return;
+ sel=s;await showCard(s,true);draw();await tSleep(450);if(tok!==TS.tok)return;const p=tPos('#pdfb');if(p){await tMove(p[0],p[1]);await tClick();}}
+async function tuD3(tok){const s=await tZoom();if(s<0||tok!==TS.tok)return;sel=s;if(cardFor>=0){await showCard(-1);}draw();TS.place&&TS.place();
+ let p=tPos('#zp');if(p){await tMove(p[0],p[1]);await tClick();}if(tok!==TS.tok)return;zpMenu(true);await tSleep(250);p=tPos('#zpp');if(p){await tMove(p[0],p[1]);await tClick();}if(tok!==TS.tok)return;
+ zpMenu(false);$('#zp').classList.add('on');const m=15,a=[bbox[4*s]-m,bbox[4*s+3]+m],b=[bbox[4*s+2]+m,bbox[4*s+1]-m];XP={a,b:a,fmt:'pdf',demo:1};const pa=tW2s(...a);await tMove(pa[0],pa[1],500);
+ const t0=performance.now();await new Promise(r=>{const f=()=>{if(tok!==TS.tok||!XP)return r();const u=Math.min(1,(performance.now()-t0)/1100);XP.b=[a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u];const q=tW2s(...XP.b),c=tCur();c.style.transition='none';c.style.left=q[0]+'px';c.style.top=q[1]+'px';draw();if(u<1)requestAnimationFrame(f);else r();};requestAnimationFrame(f);});}
+async function tuD4(tok){if(XP&&XP.demo){XP=null;$('#zp').classList.remove('on');}const s=await tZoom();if(s<0||tok!==TS.tok)return;sel=s;if(cardFor>=0)await showCard(-1);draw();TS.place&&TS.place();
+ if(!TS.cut){const F=await facadeCuts(s).catch(()=>[]);TS.cut=F[0]||{A:[bbox[4*s]-20,(bbox[4*s+1]+bbox[4*s+3])/2],B:[bbox[4*s+2]+20,(bbox[4*s+1]+bbox[4*s+3])/2]};}
+ let p=tPos('#zc');if(p){await tMove(p[0],p[1]);await tClick();}if(tok!==TS.tok)return;$('#zc').classList.add('on');const {A,B}=TS.cut;XC={a:A,b:A,demo:1};const pa=tW2s(...A);await tMove(pa[0],pa[1],600);
+ const t0=performance.now();await new Promise(r=>{const f=()=>{if(tok!==TS.tok||!XC)return r();const u=Math.min(1,(performance.now()-t0)/1200);XC.b=[A[0]+(B[0]-A[0])*u,A[1]+(B[1]-A[1])*u];const q=tW2s(...XC.b),c=tCur();c.style.transition='none';c.style.left=q[0]+'px';c.style.top=q[1]+'px';draw();if(u<1)requestAnimationFrame(f);else r();};requestAnimationFrame(f);});}
+function tCleanStep(){if(XP&&XP.demo){XP=null;$('#zp').classList.remove('on');zpMenu(false);}if(XC&&XC.demo){XC=null;$('#zc').classList.remove('on');}draw();}
+function tuto(){let i=0;const hl=document.createElement('div'),w=document.createElement('div'),bk=document.createElement('div');hl.id='tuhl';w.id='tuw';bk.id='tublk';w.setAttribute('role','dialog');w.setAttribute('aria-label','Tutoriel');document.body.append(bk,hl,w);
+ TS.save={crit:st.crit,k:view.k,cx:view.cx,cy:view.cy,sel,card:cardFor};TS.tok++;
  const kd=e=>{if(e.key==='Escape')end();};addEventListener('keydown',kd);
- async function show(){if(busy)return;busy=true;if(prev!==i){const P_=TUTO[prev],S0=TUTO[i];if(P_&&P_.leave||S0.enter){hl.style.opacity=0;w.style.opacity=0;}if(P_&&P_.leave)await P_.leave();if(S0.enter)await S0.enter();prev=i;hl.style.opacity=1;w.style.opacity=1;}busy=false;const S=TUTO[i],rs=S.el.map(q=>$(q)).filter(e=>e&&e.offsetParent!==null||e&&e.id==='map').map(e=>e.getBoundingClientRect()).filter(r=>r.width>0);
-  let r={left:innerWidth/2-90,top:innerHeight/2-90,right:innerWidth/2+90,bottom:innerHeight/2+90};
-  if(rs.length&&!S.c){r={left:Math.min(...rs.map(r=>r.left)),top:Math.min(...rs.map(r=>r.top)),right:Math.max(...rs.map(r=>r.right)),bottom:Math.max(...rs.map(r=>r.bottom))};r.bottom=Math.min(r.bottom,innerHeight-8);}
-  const pd=6;Object.assign(hl.style,{left:(r.left-pd)+'px',top:(r.top-pd)+'px',width:(r.right-r.left+2*pd)+'px',height:(r.bottom-r.top+2*pd)+'px'});
-  w.innerHTML='<div class="tun">'+TUTO.map((_,k)=>'<span'+(k===i?' class="on"':'')+'>'+(k+1)+'</span>').join('')+'</div><h4>'+TUTO[i].h+'</h4><p>'+TUTO[i].p+'</p><div class="tub"><button class="tus" type="button">Passer</button><span>'+(i?'<button class="tup" type="button">Précédent</button>':'')+'<button class="tuo" type="button">'+(i<TUTO.length-1?'Suivant':'Terminer')+'</button></span></div>';
+ const end=async()=>{TS.tok++;removeEventListener('resize',place);removeEventListener('keydown',kd);w.remove();bk.remove();hl.style.opacity=0;if(TCUR)TCUR.style.opacity=0;tCleanStep();
+  const S0=TS.save;if(S0){if(st.crit!==S0.crit)setCrit(S0.crit);sel=S0.sel;await showCard(S0.card>=0?S0.card:-1,S0.card>=0);await flyView(S0.k,S0.cx,S0.cy,900);}hl.remove();try{localStorage.setItem('pg_tuto','1');}catch(e){}};
+ function place(){const S=TUTO[i],rs=S.el.map(q=>$(q)).filter(e=>e&&e.getBoundingClientRect().width>0).map(e=>e.getBoundingClientRect());
+  let r={left:innerWidth/2-90,top:innerHeight/2-90,right:innerWidth/2+90,bottom:innerHeight/2+90};if(rs.length)r={left:Math.min(...rs.map(r=>r.left)),top:Math.min(...rs.map(r=>r.top)),right:Math.max(...rs.map(r=>r.right)),bottom:Math.min(innerHeight-8,Math.max(...rs.map(r=>r.bottom)))};
+  const pd=6;Object.assign(hl.style,{left:(r.left-pd)+'px',top:(r.top-pd)+'px',width:(r.right-r.left+2*pd)+'px',height:(r.bottom-r.top+2*pd)+'px',opacity:rs.length?1:0});
   const ww=w.offsetWidth,wh=w.offsetHeight,M=12;let x,y;
   if(innerWidth<640){x=(innerWidth-ww)/2;y=r.top>innerHeight/2?M:innerHeight-wh-M;}
-  else if(r.right+M+ww<innerWidth-M&&!S.c){x=r.right+M+pd;y=Math.min(Math.max(M,r.top),innerHeight-wh-M);}
-  else if(r.left-M-ww>M&&!S.c){x=r.left-M-ww-pd;y=Math.min(Math.max(M,r.top),innerHeight-wh-M);}
+  else if(S.img&&w.querySelector('.tuim.on')){x=Math.min(Math.max(M,r.left-ww-M-pd),innerWidth-ww-M);if(x+ww>r.left-pd&&r.left>ww+2*M)x=r.left-ww-M-pd;y=innerHeight-wh-M;}
+  else if(r.left-M-ww>M){x=r.left-M-ww-pd;y=Math.min(Math.max(M,r.top),innerHeight-wh-M);}
+  else if(r.right+M+ww<innerWidth-M){x=r.right+M+pd;y=Math.min(Math.max(M,r.top),innerHeight-wh-M);}
   else{x=(innerWidth-ww)/2;y=Math.min(innerHeight-wh-M,r.bottom+M+pd);}
-  Object.assign(w.style,{left:Math.max(M,x)+'px',top:Math.max(M,y)+'px'});
-  w.querySelector('.tus').onclick=end;w.querySelector('.tuo').onclick=()=>{if(i<TUTO.length-1){i++;show();}else end();};const pv=w.querySelector('.tup');if(pv)pv.onclick=()=>{i--;show();};w.querySelector('.tuo').focus();}
- addEventListener('resize',show);show();}
+  Object.assign(w.style,{left:Math.max(M,x)+'px',top:Math.max(M,y)+'px'});}
+ async function show(){const S=TUTO[i],tok=++TS.tok;tCleanStep();
+  w.innerHTML='<div class="tun">'+TUTO.map((_,k)=>'<span'+(k===i?' class="on"':'')+'>'+(k+1)+'</span>').join('')+'</div><h4>'+S.h+'</h4><p>'+S.p+'</p>'+(S.img?'<div class="tuim"><img alt="Aperçu" src="'+S.img+'" onerror="this.parentNode.remove()"></div>':'')+'<div class="tub"><button class="tus" type="button">Passer</button><span>'+(i?'<button class="tup" type="button">Précédent</button>':'')+'<button class="tuo" type="button">'+(i<TUTO.length-1?'Suivant':'Terminer')+'</button></span></div>';
+  w.querySelector('.tus').onclick=end;w.querySelector('.tuo').onclick=()=>{if(i<TUTO.length-1){i++;show();}else end();};const pv=w.querySelector('.tup');if(pv)pv.onclick=()=>{i--;show();};
+  place();w.querySelector('.tuo').focus();
+  try{await S.demo(tok);}catch(e){}if(tok!==TS.tok)return;place();const im=w.querySelector('.tuim');if(im){im.classList.add('on');place();setTimeout(()=>{if(tok===TS.tok)place();},500);const ig=im.querySelector('img');if(ig&&!ig.complete)ig.onload=()=>{if(tok===TS.tok)place();};}if(TCUR)setTimeout(()=>{if(tok===TS.tok&&TCUR)TCUR.style.opacity=0;},900);}
+ TS.place=place;addEventListener('resize',place);show();}
 $('#tutob').onclick=e=>{e.preventDefault();if(!$('#tuw'))tuto();};
 {let seen=false;try{seen=!!localStorage.getItem('pg_tuto');}catch(e){seen=true;}if(!seen&&!/[?&](adresses|embed)=/.test(location.search)&&!navigator.webdriver)setTimeout(()=>{if(!$('#tuw'))tuto();},900);}
 $('#load').style.display='none';
