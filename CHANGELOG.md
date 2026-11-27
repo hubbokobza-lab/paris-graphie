@@ -21,6 +21,8 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 
 ### Ajouté
+- Coupe : calque « Eau » schématique (voies d'eau du plan de voirie de la Ville coupées par la ligne, niveau relevé sur le profil RGE ALTI, fond non représenté), dans la fenêtre, le PDF et le DXF (calque EAU).
+- Coupe : calque « PPRI (zones inondables) », masqué par défaut : zones réglementaires du PPRI de Paris en bande colorée au pied de la coupe (calque DXF PPRI_ZONES). Les cotes PHEC ne sont pas publiées en données ouvertes et ne sont pas tracées.
 - Coupe : les points A et B du plan de repérage se font glisser dans l'axe de la coupe pour l'allonger ou la raccourcir (15 m minimum) ; la coupe et le LiDAR sont recalculés au relâcher.
 - Mesure et tracé de coupe : Maj maintenue verrouille la direction du segment en cours (arrondie à l'horizontale, la verticale ou 45° si elle en est proche), comme dans un logiciel de dessin. Sur la carte et dans la fenêtre de coupe.
 - Bouton « Plan » à la place de « DXF » : il se déplie en DXF (géoréférencé, Lambert 93) et PDF ; on choisit le format avant de tracer le rectangle.
