@@ -275,7 +275,7 @@ async function savePdf(blob,nm,show){
  if(dls){try{await dls.save({filename:nm,data:blob});show('PDF enregistré.');}catch(er){show(er&&er.code==='declined'?'Enregistrement annulé.':'Enregistrement impossible ('+((er&&er.code)||'erreur')+').');}return;}
  const url=URL.createObjectURL(blob);
  try{const a=document.createElement('a');a.href=url;a.download=nm;document.body.appendChild(a);a.click();a.remove();}catch(e){}
- const full='https://hubbokobza-lab.github.io/paris-graphie/';
+ const full='https://paris-graphie.bouchaudarchitectes.com/';
  show((nm.endsWith('.dxf')?'DXF prêt':'PDF généré')+' : <a href="'+url+'" download="'+esc(nm)+'">enregistrer</a> · <a href="#" data-open="1">ouvrir</a>'+(INFRAME?'<br><span style="font-size:var(--fs-xs);opacity:.85">Si rien ne se passe, votre navigateur bloque le téléchargement dans le cadre de la page : <a href="'+full+'" target="_blank" rel="noopener">ouvrir la carte en plein écran</a>.</span>':''),u=>{
   const o=u.querySelector('[data-open]');if(o)o.onclick=ev=>{ev.preventDefault();const w=window.open(url,'_blank');if(!w){location.href=url;}};});
 }

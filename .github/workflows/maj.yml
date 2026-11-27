@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 concurrency:
   group: maj-donnees
@@ -65,6 +66,15 @@ jobs:
         continue-on-error: true
         run: |
           python pipeline/step_api.py ../site_neuf || { echo "::warning title=Accès IA non mis à jour::reprise de la version précédente"; [ -d ../site_actuel/api ] && cp -r ../site_actuel/api ../site_neuf/ && cp ../site_actuel/llms.txt ../site_neuf/ || true; }
+
+      - name: Domaine propre de GitHub Pages
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cur=$(gh api repos/${{ github.repository }}/pages -q .cname 2>/dev/null || true)
+          if [ "$cur" != "paris-graphie.bouchaudarchitectes.com" ]; then gh api -X PUT repos/${{ github.repository }}/pages -f cname=paris-graphie.bouchaudarchitectes.com && echo "domaine déclaré"; else echo "domaine déjà déclaré"; fi
+          gh api -X PUT repos/${{ github.repository }}/pages -F https_enforced=true 2>/dev/null && echo "HTTPS imposé" || echo "certificat HTTPS pas encore prêt"
 
       - name: Publication sur la branche gh-pages
         run: |
