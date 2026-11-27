@@ -21,9 +21,11 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - La fiche d'un bâtiment trouvé par la recherche a pour titre l'adresse recherchée (et non la première adresse du bâtiment), y compris dans le PDF.
 
 ### Corrigé
+- Mesure et tracé de coupe : avec Maj, la direction verrouillée est celle du segment tel qu'il était affiché avant l'appui (et non celle du premier déplacement suivant), pour qu'un segment vertical reste vertical.
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 
 ### Ajouté
+- Batterie de tests de bout en bout (`tests/batterie.py`, 39 contrôles sur ordinateur et téléphone) à lancer avant une grosse modification.
 - Mode `site` du robot : republication de la page seule sur les données en ligne, lancé automatiquement à chaque modification de l'interface.
 - Contrôle du site dans un navigateur sans écran avant chaque publication (ordinateur et téléphone) : en cas d'erreur, rien n'est publié.
 - Coupe : calque « Eau » schématique (voies d'eau du plan de voirie de la Ville coupées par la ligne, niveau relevé sur le profil RGE ALTI, fond non représenté), dans la fenêtre, le PDF et le DXF (calque EAU).

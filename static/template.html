@@ -1706,7 +1706,7 @@ function treeGeom(a){const h=a.h,t=a.t,z=a.z,K=TK[a.f]||TK.ovo,w=Math.max(1.2,h*
 /* ---------- magnétisme : sommets et arêtes des bâtiments, directions orthogonales ---------- */
 let SNAP=null;
 /* Maj maintenue : la direction du segment est verrouillée (arrondie à 45° si elle en est proche), comme dans un logiciel de dessin */
-const lockDir=(st_,sh,fx,fy,x,y)=>{if(!sh){st_.d=null;return null;}const dx=x-fx,dy=y-fy;if(!st_.d){if(Math.hypot(dx,dy)<1e-9)return null;let a=Math.atan2(dy,dx);const r=Math.round(a/(Math.PI/4))*Math.PI/4;if(Math.abs(a-r)<8*Math.PI/180)a=r;st_.d=[Math.cos(a),Math.sin(a)];}
+const lockDir=(st_,sh,fx,fy,x,y)=>{if(!sh){st_.d=null;st_.lp=[x,y,fx,fy];return null;}const dx=x-fx,dy=y-fy;if(!st_.d){/* direction du segment tel qu'il était affiché avant l'appui sur Maj */const lp=st_.lp&&st_.lp[2]===fx&&st_.lp[3]===fy&&Math.hypot(st_.lp[0]-fx,st_.lp[1]-fy)>1e-9?st_.lp:null,ex=lp?lp[0]-fx:dx,ey=lp?lp[1]-fy:dy;if(Math.hypot(ex,ey)<1e-9)return null;let a=Math.atan2(ey,ex);const r=Math.round(a/(Math.PI/4))*Math.PI/4;if(Math.abs(a-r)<8*Math.PI/180)a=r;st_.d=[Math.cos(a),Math.sin(a)];}
  const t=dx*st_.d[0]+dy*st_.d[1];return [fx+t*st_.d[0],fy+t*st_.d[1]];};
 const SHL={};const shW=(e,from,p)=>{if(!from){SHL.d=null;return p;}const q=lockDir(SHL,e.shiftKey,from[0],from[1],p[0],p[1]);if(!q)return p;SNAP={p:q,k:'o',from,sh:1};return q;};
 function snapW(w,from){const k=view.k,tv=11/k,te=8/k,[x,y]=w;let bv=null,dv=tv,be=null,de=te,dirs=[];

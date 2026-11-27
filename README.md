@@ -126,6 +126,7 @@ Les changements visibles pour les utilisateurs de la carte et de l'API sont cons
 
 - `pipeline/` : les scripts (un module `step_*.py` par famille de données, `run.py` pour le registre des étapes, `engine.py` pour leur exécution, `smoke.py` pour le contrôle avant publication).
 - `static/` : éléments figés (page `template.html`, méthodologie `methodes.json`, atlas historique calé, relief, fonds).
+- `tests/` : batterie de tests de bout en bout (`python tests/batterie.py <copie du site>`).
 - `api-worker/` : l'API (Cloudflare Worker).
 
 ## Droits

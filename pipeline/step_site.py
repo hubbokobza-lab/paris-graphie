@@ -6,7 +6,8 @@ import methodes
 # fichiers statiques publiés tels quels avec la page (LiDAR HD de l'outil Coupe : copc.js et laz-perf, licences MIT et Apache 2.0 ; aperçus du tutoriel)
 ASSETS = ('pg-copc.js', 'laz-perf.wasm', 'tuto-fiche.jpg', 'tuto-plan.jpg', 'tuto-coupe.jpg')
 
-def html():
+def html(hooks=False):
+    """hooks=True : accès de test (tests/batterie.py) aux outils internes ; jamais publié."""
     t = open(os.path.join(STATIC, 'template.html'), encoding='utf-8').read()
     e = open(os.path.join(STATIC, 'earcut.min.js'), encoding='utf-8').read()
     t = t.replace('<script src="https://cdn.jsdelivr.net/npm/earcut@2.2.4/dist/earcut.min.js"></script>', '<script>' + e + '</script>')
@@ -16,6 +17,7 @@ def html():
     t = t.replace('const METH=/*METH*/[];', 'const METH=' + json.dumps(methodes.load(), ensure_ascii=False) + ';')
     if not methodes.readme_ok(): print('::warning title=README::méthodes du README différentes de static/methodes.json (python pipeline/methodes.py)', flush=True)
     t = re.sub(r"const DV='\d+';", "const DV='%s';" % time.strftime('%Y%m%d%H%M'), t, count=1)
+    if hooks: t = t.replace('window.parisGraphie={', 'window.__ms=()=>MS;window.__t={tuto:()=>tuto()};window.__cut=(a,b,c,d)=>cutShow(llToW(a,b),llToW(c,d));window.parisGraphie={', 1)
     return t
 
 def write_page(out):
