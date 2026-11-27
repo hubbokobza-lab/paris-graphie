@@ -69,7 +69,7 @@ def main():
         if a.mode != 'full': log('pas de site existant : reconstruction complète'); a.mode = 'full'
     if a.mode == 'site':      # interface seulement : on republie les données telles quelles avec la nouvelle page
         if os.path.exists(a.out): shutil.rmtree(a.out)
-        shutil.copytree(a.site, a.out, ignore=shutil.ignore_patterns('.git', 'index.html'))
+        shutil.copytree(a.site, a.out, ignore=shutil.ignore_patterns('.git', 'index.html', 'CNAME'))
         step_site.write_page(a.out); return
     prev = State(a.site) if a.site else None
     # dates d'extraction par source (affichées dans le site et les PDF) et versions des étapes
