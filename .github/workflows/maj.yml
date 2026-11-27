@@ -4,12 +4,15 @@ on:
   schedule:
     - cron: '17 4 * * 1'          # chaque lundi vers 5 h (heure de Paris) : urbanisme et CVP
     - cron: '43 2 3 1,4,7,10 *'   # le 3 janvier, avril, juillet, octobre : reconstruction complète
+  push:                           # interface modifiée : nouvelle page seulement, données inchangées
+    branches: [main]
+    paths: ['static/**', 'pipeline/step_site.py', 'pipeline/methodes.py']
   workflow_dispatch:
     inputs:
       mode:
-        description: 'weekly (urbanisme et CVP) ou full (tout reconstruire)'
+        description: 'weekly (étapes dues), full (tout reconstruire) ou site (page seulement)'
         type: choice
-        options: [weekly, full]
+        options: [weekly, full, site]
         default: weekly
 
 permissions:
@@ -48,13 +51,19 @@ jobs:
         run: |
           MODE="${{ github.event.inputs.mode || 'weekly' }}"
           if [ "${{ github.event.schedule }}" = "43 2 3 1,4,7,10 *" ]; then MODE=full; fi
+          if [ "${{ github.event_name }}" = "push" ]; then MODE=site; fi
           echo "Mode : $MODE"
           python pipeline/run.py "$MODE" --site ../site_actuel --out ../site_neuf
+
+      - name: Navigateur de contrôle
+        run: pip install playwright && python -m playwright install --with-deps chromium
+
+      - name: Contrôle du site avant publication
+        run: python pipeline/smoke.py ../site_neuf
 
       - name: Accès pour les IA (api/ et llms.txt)
         continue-on-error: true
         run: |
-          pip install playwright && python -m playwright install --with-deps chromium
           python pipeline/step_api.py ../site_neuf || { echo "::warning title=Accès IA non mis à jour::reprise de la version précédente"; [ -d ../site_actuel/api ] && cp -r ../site_actuel/api ../site_neuf/ && cp ../site_actuel/llms.txt ../site_neuf/ || true; }
 
       - name: Publication sur la branche gh-pages

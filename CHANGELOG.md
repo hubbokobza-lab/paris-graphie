@@ -9,6 +9,9 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Chaîne de mise à jour réécrite autour d'un registre d'étapes (`pipeline/run.py`, `pipeline/engine.py`) : fréquence, sorties, dépendances et version déclarées pour chaque source ; reprise automatique des sorties du site précédent en cas d'échec d'une étape secondaire, y compris les rattachements par bâtiment quand la liste des bâtiments n'a pas changé ; les marques de recalcul unique deviennent des numéros de version.
+- Méthodologie des indicateurs en source unique (`static/methodes.json`), injectée dans la page et recopiée dans le README (`python pipeline/methodes.py`).
+- Version publique : un drapeau `PUB` dans la page remplace les suppressions de lignes à l'assemblage (DVF et noms Sirene exclus du site public).
 - Calques rangés en deux familles : « L'ouvrage » (volume, énergie et carbone, âge, histoire, sous-sol, ensoleillement : ce qui est construit, dure et se mesure) puis « L'usage et le droit » (usages, propriété, autorisations, patrimoine, PLU, occupants : comment on occupe, possède et réglemente).
 - La fiche et son PDF suivent le même ordre, avec les mêmes intertitres ; la rubrique « Usages, énergie et carbone » est scindée en « Énergie et carbone » et « Usages ».
 - Téléphone : la fiche d'un bâtiment s'ouvre à mi-hauteur (glisser vers le haut pour l'agrandir, vers le bas pour la réduire puis la fermer), la carte reste visible.
@@ -21,6 +24,8 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 
 ### Ajouté
+- Mode `site` du robot : republication de la page seule sur les données en ligne, lancé automatiquement à chaque modification de l'interface.
+- Contrôle du site dans un navigateur sans écran avant chaque publication (ordinateur et téléphone) : en cas d'erreur, rien n'est publié.
 - Coupe : calque « Eau » schématique (voies d'eau du plan de voirie de la Ville coupées par la ligne, niveau relevé sur le profil RGE ALTI, fond non représenté), dans la fenêtre, le PDF et le DXF (calque EAU).
 - Coupe : calque « PPRI (zones inondables) », masqué par défaut : zones réglementaires du PPRI de Paris en bande colorée au pied de la coupe (calque DXF PPRI_ZONES). Les cotes PHEC ne sont pas publiées en données ouvertes et ne sont pas tracées.
 - Coupe : les points A et B du plan de repérage se font glisser dans l'axe de la coupe pour l'allonger ou la raccourcir (15 m minimum) ; la coupe et le LiDAR sont recalculés au relâcher.
