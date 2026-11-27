@@ -21,6 +21,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - La fiche d'un bâtiment trouvé par la recherche a pour titre l'adresse recherchée (et non la première adresse du bâtiment), y compris dans le PDF.
 
 ### Corrigé
+- Cache des données : la version ajoutée aux adresses des fichiers dépend maintenant de leur contenu, et non de l'heure d'assemblage ; une republication de la page seule ne force plus les visiteurs à retélécharger les 7 Mo de données.
 - Mesure et tracé de coupe : avec Maj, la direction verrouillée est celle du segment tel qu'il était affiché avant l'appui (et non celle du premier déplacement suivant), pour qu'un segment vertical reste vertical.
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 

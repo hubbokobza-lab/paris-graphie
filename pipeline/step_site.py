@@ -6,7 +6,7 @@ import methodes
 # fichiers statiques publiés tels quels avec la page (LiDAR HD de l'outil Coupe : copc.js et laz-perf, licences MIT et Apache 2.0 ; aperçus du tutoriel)
 ASSETS = ('pg-copc.js', 'laz-perf.wasm', 'tuto-fiche.jpg', 'tuto-plan.jpg', 'tuto-coupe.jpg')
 
-def html(hooks=False):
+def html(hooks=False, dv=None):
     """hooks=True : accès de test (tests/batterie.py) aux outils internes ; jamais publié."""
     t = open(os.path.join(STATIC, 'template.html'), encoding='utf-8').read()
     e = open(os.path.join(STATIC, 'earcut.min.js'), encoding='utf-8').read()
@@ -16,7 +16,9 @@ def html(hooks=False):
     assert t.count('const METH=/*METH*/[];') == 1, 'emplacement de la méthodologie introuvable dans template.html'
     t = t.replace('const METH=/*METH*/[];', 'const METH=' + json.dumps(methodes.load(), ensure_ascii=False) + ';')
     if not methodes.readme_ok(): print('::warning title=README::méthodes du README différentes de static/methodes.json (python pipeline/methodes.py)', flush=True)
-    t = re.sub(r"const DV='\d+';", "const DV='%s';" % time.strftime('%Y%m%d%H%M'), t, count=1)
+    # DV : version des données dans les URL (cache navigateur). Elle ne change que si les données changent,
+    # pour qu'une simple republication de la page ne force pas à retélécharger 7 Mo.
+    t = re.sub(r"const DV='\w+';", "const DV='%s';" % (dv or time.strftime('%Y%m%d%H%M')), t, count=1)
     if hooks: t = t.replace('window.parisGraphie={', 'window.__ms=()=>MS;window.__t={tuto:()=>tuto()};window.__cut=(a,b,c,d)=>cutShow(llToW(a,b),llToW(c,d));window.parisGraphie={', 1)
     return t
 
@@ -25,7 +27,11 @@ def write_page(out):
     for f in glob.glob(os.path.join(STATIC, '*.json')):
         if not os.path.basename(f).startswith(('sources_', 'methodes')): shutil.copy(f, out)
     for f in ASSETS: shutil.copy(os.path.join(STATIC, f), out)
-    open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(html())
+    import hashlib
+    h = hashlib.sha1()
+    for f in sorted(os.listdir(out)):
+        if (f.endswith('.json') and f != 'maj.json') or f in ASSETS: h.update(f.encode()); h.update(open(os.path.join(out, f), 'rb').read())
+    open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(html(dv=h.hexdigest()[:12]))
     open(os.path.join(out, '.nojekyll'), 'w').write('')
 
 def run(st, out):
