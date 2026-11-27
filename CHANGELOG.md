@@ -13,6 +13,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Plan en PDF vectoriel A3, aux couleurs de la carte (calque thématique, calques superposés affichés, Seine, limites, noms de rues et numéros), avec échelle, nord, légende et sources. Non géoréférencé.
 - Fenêtre de coupe : export PDF vectoriel A3 à la place du SVG, nuage LiDAR compris (un point vectoriel par point LiDAR, opacité selon la profondeur), calques et profondeur affichés.
 - Fiche PDF : les coupes sur rue sont désormais vectorielles.
+- Coupe : bâtiments en blanc cassé (contour gris) au lieu de blocs gris, pour laisser voir le nuage LiDAR.
 - Tutoriel avec démonstration sur le 48 boulevard Haussmann : défilement et choix du calque de l'âge du bâti, zoom et ouverture de la fiche avec aperçu du PDF, plan PDF tracé avec aperçu, coupe tracée avec aperçu (LiDAR compris). La vue, le calque et la fiche d'origine sont rétablis à la fin.
 
 ## 2026-11-26
