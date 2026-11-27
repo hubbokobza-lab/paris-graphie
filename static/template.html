@@ -28,7 +28,7 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2
 #zx{font-size:10.5px;font-weight:700;letter-spacing:.03em}#zx.on{background:var(--ink);color:#fff}
 
 #card .pdfrow{margin:8px 0 10px}
-#card details.fsec{border-top:1px solid var(--line);margin:0}
+#card details.fsec{border-top:1px solid var(--line);margin:0}#card .ffam{margin:18px 0 4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
 #card details.fsec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:9px 0;font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--ink)}
 #card details.fsec>summary::-webkit-details-marker{display:none}
 #card details.fsec>summary .chev{width:8px;height:8px;border-right:1.6px solid var(--ink2);border-bottom:1.6px solid var(--ink2);transform:rotate(-45deg);transition:transform .15s;flex:none;margin-right:2px}
@@ -38,7 +38,7 @@ h2{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2
 #card .sub2{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);margin:10px 0 4px;font-weight:600}
 #card .lkr{margin:3px 0}
 
-details.lsec{border-top:1px solid var(--line);margin:0 4px}
+details.lsec{border-top:1px solid var(--line);margin:0 4px}.lfam{margin:22px 4px 2px;padding-top:2px}.lfam b{display:block;font-size:13px;font-weight:700;color:var(--ink)}.lfam span{display:block;font-size:11px;color:var(--ink2);margin-top:1px}.lfam:first-child{margin-top:6px}body.lqon .lfam{display:none}
 details.lsec>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:10px 4px;font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--ink)}
 details.lsec>summary::-webkit-details-marker{display:none}
 details.lsec>summary .chev{width:7px;height:7px;border-right:1.6px solid var(--ink2);border-bottom:1.6px solid var(--ink2);transform:rotate(-45deg);transition:transform .15s;flex:none}
@@ -434,15 +434,26 @@ const lastCls=A=>s=>{const y=A[s];if(!y)return 6;return y<1990?0:y<2000?1:y<2010
 const ORG={acc:'Ville de Paris',occ:'Calcul (Insee Sirene, Apur, CSTB)',own:'DGFiP (locaux des personnes morales)',vac:'Déduction (Insee Sirene, permis, Apur)',per:'Apur',yr:'Apur',reh:'Apur',sur:'Apur',hm:'Apur',hx:'Apur',niv:'CSTB (BDNB), Apur',typ:'Apur',ncm:'Apur',usg:'CSTB (BDNB)',log:'CSTB (BDNB)',soc:'CSTB (BDNB), RPLS',bur:'Déduction Apur et CSTB',dpe:'Ademe via CSTB',ges:'Ademe via CSTB',mur:'DGFiP via CSTB',co2:'Estimation Apur et CSTB',dos:'Ville de Paris',pc:'Ville de Paris',pd:'Ville de Paris',sf:'Ville de Paris',rc:'Ville de Paris',cvp:'Ville de Paris',pro:'Apur',pm:'DGFiP, Etalab',dv:'DGFiP, Etalab',sa:'Insee',ne:'Insee',se:'Insee',cl:'Insee',zo:'Ville de Paris',hp:'Ville de Paris',dh:'Ville de Paris',rs:'Ville de Paris',ar:'Ville de Paris',toit:'Apur',arr:'Ville de Paris',
 mh:'Apur',pp:'Apur',courbe:'IGN',lcz:'Cerema',veg:'Apur',p70:'BHVP',fem:'Ville de Paris',hot:'Atout France',tcf:'IDFM',osmm:'OpenStreetMap',boa0:'bouchaudarchitectes.com',boa1:'bouchaudarchitectes.com',boa2:'bouchaudarchitectes.com',cult:'Ministère de la Culture',culte:'OpenStreetMap',osms:'OpenStreetMap',bus:'IDFM',gare:'IDFM',acc:'IDFM',cu:'Ville de Paris',abnb:'Inside Airbnb',femp:'Ville de Paris',com:'Apur',cad:'DGFiP, IGN'};
 const orgOf=id=>ORG[id]||(/^at[m0-9]/.test(id)?'Michel Huard, Atlas historique de Paris':'Ville de Paris'),orgHtml=id=>'<small class="org">'+orgOf(id)+'</small>';
+/* deux familles : l'ouvrage (ce qui est construit, dure et se mesure) puis l'usage et le droit (ce qui relève du papier) */
+const FAM=['',"L'ouvrage","L'usage et le droit"];
+const SEC_ORD=['id','bati','ener','hist','sol','usage','own','aut','pat','plu','sir','dvf'];
+const SEC_FAM={bati:1,ener:1,hist:1,sol:1,usage:2,own:2,aut:2,pat:2,plu:2,sir:2,dvf:2};
 const CRIT=[
  {id:'neu',g:'Plan',name:'Plan neutre (aucun calque)',lab:['Bâtiment'],col:['#8b98a4'],cls:s=>0},
+ {id:'hm',g:'Volume',name:'Hauteur médiane',lab:HT_LAB,col:HT_COL,cls:heightCls(HM)},
+ {id:'hx',g:'Volume',name:'Hauteur maximale',lab:HT_LAB,col:HT_COL,cls:heightCls(HX)},
+ {id:'niv',g:'Volume',name:'Nombre de niveaux (fichiers fonciers, sinon estimé)',lab:['1 niveau (RDC)','2 (R+1)','3 à 4 (R+2, R+3)','5 à 6 (R+4, R+5)','7 (R+6)','8 (R+7)','9 à 10 (R+8, R+9)','11 et plus'],col:['#2f4a73','#3a6a9c','#3288bd','#66c2a5','#fee08b','#fdae61','#f46d43','#d53e4f'],cls:s=>{const n=nivOf(s);return n<=1?0:n===2?1:n<=4?2:n<=6?3:n===7?4:n===8?5:n<=10?6:7;}},
+ {id:'dpe',g:'Énergie et carbone',name:'DPE, étiquette énergie',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:DPE_COL,cls:s=>BD[s]},
+ {id:'ges',g:'Énergie et carbone',name:'DPE, étiquette climat (GES)',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:GES_COL,cls:s=>BG[s]},
+ {id:'mur',g:'Énergie et carbone',name:'Matériau des murs (fichiers fonciers)',lab:MAT_LAB,col:MAT_COL,cls:s=>BM[s]},
+ {id:'toit',g:'Énergie et carbone',name:'Toitures',lab:["Panneaux solaires","Végétalisée (≥ 10 m²)","Terrasse","Autre ou inconnue"],col:["#ffd166","#66c2a5","#3288bd",GRAY],cls:s=>SO[s]?0:VG[s]>=10?1:TE[s]?2:3},
+ {id:'co2',g:'Énergie et carbone',name:'Carbone d\'une reconstruction à neuf (ordre de grandeur)',lab:['Moins de 250 t CO₂e','250 à 500 t','500 à 1 000 t','1 000 à 2 500 t','Plus de 2 500 t'],col:['#ffffcc','#fed976','#fd8d3c','#e31a1c','#800026'],cls:s=>{const c=co2Of(s);return c<250?0:c<500?1:c<1000?2:c<2500?3:4;}},
  {id:'per',g:'Âge',name:'Période de construction',lab:PER_LAB,col:SPEC.concat([GRAY]),cls:s=>PMAP[PE[s]]??11},
  {id:'yr',g:'Âge',name:'Année de construction',lab:["Année connue","Non daté"],grad:true,col:[null,GRAY],cls:s=>AN[s]?0:1},
  {id:'reh',g:'Âge',name:'Réhabilitation',lab:REH_LAB,col:REH_COL,cls:s=>{const r=RE[s];if(r<1900)return 6;return r<1990?0:r<2000?1:r<2010?2:r<2015?3:r<2020?4:5;}},
  {id:'sur',g:'Âge',name:'Surélévation',lab:SUR_LAB,col:SUR_COL,cls:s=>{const r=SU[s];if(!r)return 4;return r<2010?0:r<2015?1:r<2020?2:3;}},
- {id:'hm',g:'Volume',name:'Hauteur médiane',lab:HT_LAB,col:HT_COL,cls:heightCls(HM)},
- {id:'hx',g:'Volume',name:'Hauteur maximale',lab:HT_LAB,col:HT_COL,cls:heightCls(HX)},
- {id:'niv',g:'Volume',name:'Nombre de niveaux (fichiers fonciers, sinon estimé)',lab:['1 niveau (RDC)','2 (R+1)','3 à 4 (R+2, R+3)','5 à 6 (R+4, R+5)','7 (R+6)','8 (R+7)','9 à 10 (R+8, R+9)','11 et plus'],col:['#2f4a73','#3a6a9c','#3288bd','#66c2a5','#fee08b','#fdae61','#f46d43','#d53e4f'],cls:s=>{const n=nivOf(s);return n<=1?0:n===2?1:n<=4?2:n<=6?3:n===7?4:n===8?5:n<=10?6:7;}},
+ {id:'rs',g:'Sous-sol et fouilles',name:'Risques du sous-sol',lab:['Aucun secteur','Carrières','Gypse','Zone inondable (PPRI)'],col:[GRAY,'#d4a373','#e5e5e5','#48cae4'],cls:s=>RS[s]},
+ {id:'ar',g:'Sous-sol et fouilles',name:'Fouilles à moins de 40 m',lab:['Aucune','1','2 à 3','4 à 9','10 et plus'],col:[GRAY,'#3a6a9c','#66c2a5','#fee08b','#f46d43'],cls:s=>{const n=ARN[s];return n===0?0:n===1?1:n<=3?2:n<=9?3:4;}},
  {id:'typ',g:'Usages',name:'Typologie du bâti (Apur)',lab:TY_LAB,col:TY_COL,cls:s=>TYP[s]},
  {id:'ncm',g:'Usages',name:'Commerces en rez-de-chaussée (BDCOM 2017)',lab:['Aucun','1','2','3 à 5','6 et plus'],col:['#3a4652','#ffd166','#fdae61','#f46d43','#d53e4f'],cls:s=>{const n=NCM[s];return n===0?0:n===1?1:n===2?2:n<=5?3:4;}},
  {id:'usg',g:'Usages',name:'Usage principal (BDNB)',lab:USG_LAB,col:['#3a4652','#66c2a5','#abdda4','#3288bd','#c77dff','#9a9aa8'],cls:s=>BU[s]},
@@ -451,11 +462,6 @@ const CRIT=[
  {id:'vac',g:'Usages',name:'Suspicion de vacance des bureaux (indice sur 5)',lab:['Hors champ (pas de bureaux, équipement, gare, monument historique, hôtel, lieu culturel, propriétaire public)','0 à 1 : occupation apparente','2 : départs notables','3 : vacance partielle ou aucune trace d\'occupant','4 : probablement vide','5 : neuf ou restructuré, sans occupant','Transformation en logements engagée'],col:[GRAY,'#2c7bb6','#abd9e9','#ffffbf','#fdae61','#d7191c','#9e6ebd'],cls:s=>vacOf(s).c},
  {id:'occ',g:'Usages',name:'Taux d\'occupation apparent des bureaux (calcul)',lab:['Hors champ ou non calculable','Moins de 25 %','25 à 50 %','50 à 80 %','80 % et plus'],col:[GRAY,'#d7191c','#fdae61','#abd9e9','#2c7bb6'],cls:s=>{if(!vacOf(s).c||vacOf(s).c===6)return 0;const o=occOf(s);return o&&o.ok?o.c:0;}},
  {id:'own',g:'Propriété',name:'Propriétaire principal (personnes morales)',lab:OWN_LAB,col:[GRAY,'#d95fa6','#66c2a5','#fee08b','#3288bd','#f46d43','#9c8a54'],cls:s=>OWN[s]},
- {id:'dpe',g:'Énergie et carbone',name:'DPE, étiquette énergie',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:DPE_COL,cls:s=>BD[s]},
- {id:'ges',g:'Énergie et carbone',name:'DPE, étiquette climat (GES)',lab:['Pas de DPE','A','B','C','D','E','F','G'],col:GES_COL,cls:s=>BG[s]},
- {id:'mur',g:'Énergie et carbone',name:'Matériau des murs (fichiers fonciers)',lab:MAT_LAB,col:MAT_COL,cls:s=>BM[s]},
- {id:'toit',g:'Énergie et carbone',name:'Toitures',lab:["Panneaux solaires","Végétalisée (≥ 10 m²)","Terrasse","Autre ou inconnue"],col:["#ffd166","#66c2a5","#3288bd",GRAY],cls:s=>SO[s]?0:VG[s]>=10?1:TE[s]?2:3},
- {id:'co2',g:'Énergie et carbone',name:'Carbone d\'une reconstruction à neuf (ordre de grandeur)',lab:['Moins de 250 t CO₂e','250 à 500 t','500 à 1 000 t','1 000 à 2 500 t','Plus de 2 500 t'],col:['#ffffcc','#fed976','#fd8d3c','#e31a1c','#800026'],cls:s=>{const c=co2Of(s);return c<250?0:c<500?1:c<1000?2:c<2500?3:4;}},
  {id:'acc',g:'Autorisations',name:"Autorisations accordées (nombre, toutes natures)",lab:["Aucune rattachée","1","2 à 3","4 à 6","7 à 12","13 et plus"],col:[GRAY,"#3a6a9c","#3288bd","#66c2a5","#fee08b","#f46d43"],cls:s=>{const n=NACC[s];return n===0?0:n===1?1:n<=3?2:n<=6?3:n<=12?4:5;}},
  {id:'dos',g:'Autorisations',name:"Dossiers d'urbanisme déposés (nombre, toutes décisions, refus compris)",lab:["Aucun rattaché","1","2 à 3","4 à 6","7 à 12","13 et plus"],col:[GRAY,"#3a6a9c","#3288bd","#66c2a5","#fee08b","#f46d43"],cls:s=>{const n=NT[s];return n===0?0:n===1?1:n<=3?2:n<=6?3:n<=12?4:5;}},
  {id:'pc',g:'Autorisations',name:'Dernier permis de construire accordé',lab:PC_LAB,col:REH_COL.slice(0,6).concat([GRAY]),cls:lastCls(LPC)},
@@ -464,18 +470,16 @@ const CRIT=[
  {id:'rc',g:'Autorisations',name:'Dossiers récents (6 mois)',lab:["Aucun","En cours d'instruction","Accordé","Refusé"],col:[GRAY,"#fee08b","#66c2a5","#d53e4f"],cls:s=>RC[s]},
  {id:'cvp',g:'Patrimoine',name:'Commission du Vieux Paris',lab:["Jamais examiné","Examiné, vœu émis","Examiné, sans résolution"],col:[GRAY,"#f46d43","#3288bd"],cls:s=>CK[s]},
  {id:'pro',g:'Patrimoine',name:'Protection patrimoniale',lab:['Aucune','Dans un périmètre de protection','Protégé par le PLU (bâtiment, volumétrie, parcelle signalée)','Monument historique ou immeuble protégé (Apur)'],col:[GRAY,'#e9c46a','#f46d43','#d53e4f'],cls:s=>{const f=PF[s];return f&3?3:f&116?2:f&8?1:0;}},
- {id:'pm',g:'Marché (DVF 2021-2025)',name:'Prix médian au m² (logements)',lab:["Pas de vente de logement","Moins de 7 000 €","7 000 à 9 000 €","9 000 à 11 000 €","11 000 à 13 000 €","13 000 à 16 000 €","16 000 € et plus"],col:[GRAY,"#2c7bb6","#abd9e9","#ffffbf","#fdae61","#f46d43","#a50026"],cls:s=>{const p=PM[s];return p===0?0:p<7000?1:p<9000?2:p<11000?3:p<13000?4:p<16000?5:6;}},
- {id:'dv',g:'Marché (DVF 2021-2025)',name:'Nombre de ventes (2021-2025)',lab:["Aucune vente","1","2","3 à 5","6 à 10","11 et plus"],col:[GRAY,"#3a6a9c","#3288bd","#66c2a5","#fee08b","#f46d43"],cls:s=>{const n=DN[s];return n===0?0:n===1?1:n===2?2:n<=5?3:n<=10?4:5;}},
- {id:'sa',g:'Occupants (Sirene)',name:'Activité dominante',lab:["Aucun établissement actif","Bureaux, conseil, finance, numérique","Immobilier","Commerce","Hôtellerie, restauration","Santé et social","Enseignement","Administration, associations, culture, loisirs","Construction, industrie, transport, services aux bâtiments","Services personnels et autres"],col:[GRAY,"#3a6a9c","#8c6bb1","#f46d43","#fdae61","#66c2a5","#abd9e9","#d95fa6","#9c8a54","#c9c9c9"],cls:s=>SAC[s]},
- {id:'ne',g:'Occupants (Sirene)',name:"Établissements actifs (nombre)",lab:["Aucun","1","2 à 5","6 à 15","16 à 40","41 à 100","Plus de 100 (domiciliations probables)"],col:[GRAY,"#3a6a9c","#3288bd","#66c2a5","#fee08b","#f46d43","#a50026"],cls:s=>{const n=SNE[s];return n===0?0:n===1?1:n<=5?2:n<=15?3:n<=40?4:n<=100?5:6;}},
- {id:'se',g:'Occupants (Sirene)',name:'Effectif salarié estimé (indicatif)',lab:["Non renseigné ou nul","1 à 9","10 à 49","50 à 199","200 à 999","1 000 et plus"],col:[GRAY,"#3a6a9c","#66c2a5","#fee08b","#fdae61","#d53e4f"],cls:s=>{const n=SEF[s];return n===0?0:n<10?1:n<50?2:n<200?3:n<1000?4:5;}},
- {id:'cl',g:'Occupants (Sirene)',name:'Établissements fermés depuis 2024',lab:["Aucun","1","2 à 3","4 à 9","10 et plus"],col:[GRAY,"#fee08b","#fdae61","#f46d43","#a50026"],cls:s=>{const n=SCL[s];return n===0?0:n===1?1:n<=3?2:n<=9?3:4;}},
  {id:'zo',g:'Urbanisme (PLU)',name:'Zone du PLU',lab:['Hors zone','UG : urbaine générale','UGSU : urbaine générale, services urbains','UV : urbaine verte','N : naturelle','PSMV : secteur sauvegardé','Autre'],col:[GRAY,'#4f8fd6','#7a6bd6','#3fae7a','#7a9a3a','#c9824a','#9a9aa8'],cls:s=>ZO[s]},
  {id:'hp',g:'Urbanisme (PLU)',name:'Plafond de hauteur du PLU',lab:['Pas de plafond renseigné','18 m','25 m','31 m','37 m','Autre'],col:[GRAY,'#6fc3a0','#e3d36b','#f0a24c','#d9544d','#9a9aa8'],cls:s=>{const h=HP[s];return h===0?0:h===18?1:h===25?2:h===31?3:h===37?4:5;}},
  {id:'dh',g:'Urbanisme (PLU)',name:'Marge sous le plafond (indicatif)',lab:['Pas de plafond renseigné','Dépasse le plafond','Moins de 3 m de marge','3 à 9 m de marge','9 m et plus de marge'],col:[GRAY,'#d53e4f','#f46d43','#fee08b','#66c2a5'],cls:s=>{const h=HP[s];if(!h)return 0;const m=h-HX[s]/10;return m<0?1:m<3?2:m<9?3:4;}},
  {id:'arr',g:'Urbanisme (PLU)',name:'Arrondissement',lab:ARR_LAB,col:ARR_COL,cls:s=>ARR[s]>=1&&ARR[s]<=20?ARR[s]-1:20},
- {id:'rs',g:'Sous-sol et fouilles',name:'Risques du sous-sol',lab:['Aucun secteur','Carrières','Gypse','Zone inondable (PPRI)'],col:[GRAY,'#d4a373','#e5e5e5','#48cae4'],cls:s=>RS[s]},
- {id:'ar',g:'Sous-sol et fouilles',name:'Fouilles à moins de 40 m',lab:['Aucune','1','2 à 3','4 à 9','10 et plus'],col:[GRAY,'#3a6a9c','#66c2a5','#fee08b','#f46d43'],cls:s=>{const n=ARN[s];return n===0?0:n===1?1:n<=3?2:n<=9?3:4;}},
+ {id:'sa',g:'Occupants (Sirene)',name:'Activité dominante',lab:["Aucun établissement actif","Bureaux, conseil, finance, numérique","Immobilier","Commerce","Hôtellerie, restauration","Santé et social","Enseignement","Administration, associations, culture, loisirs","Construction, industrie, transport, services aux bâtiments","Services personnels et autres"],col:[GRAY,"#3a6a9c","#8c6bb1","#f46d43","#fdae61","#66c2a5","#abd9e9","#d95fa6","#9c8a54","#c9c9c9"],cls:s=>SAC[s]},
+ {id:'ne',g:'Occupants (Sirene)',name:"Établissements actifs (nombre)",lab:["Aucun","1","2 à 5","6 à 15","16 à 40","41 à 100","Plus de 100 (domiciliations probables)"],col:[GRAY,"#3a6a9c","#3288bd","#66c2a5","#fee08b","#f46d43","#a50026"],cls:s=>{const n=SNE[s];return n===0?0:n===1?1:n<=5?2:n<=15?3:n<=40?4:n<=100?5:6;}},
+ {id:'se',g:'Occupants (Sirene)',name:'Effectif salarié estimé (indicatif)',lab:["Non renseigné ou nul","1 à 9","10 à 49","50 à 199","200 à 999","1 000 et plus"],col:[GRAY,"#3a6a9c","#66c2a5","#fee08b","#fdae61","#d53e4f"],cls:s=>{const n=SEF[s];return n===0?0:n<10?1:n<50?2:n<200?3:n<1000?4:5;}},
+ {id:'cl',g:'Occupants (Sirene)',name:'Établissements fermés depuis 2024',lab:["Aucun","1","2 à 3","4 à 9","10 et plus"],col:[GRAY,"#fee08b","#fdae61","#f46d43","#a50026"],cls:s=>{const n=SCL[s];return n===0?0:n===1?1:n<=3?2:n<=9?3:4;}},
+ {id:'pm',g:'Marché (DVF 2021-2025)',name:'Prix médian au m² (logements)',lab:["Pas de vente de logement","Moins de 7 000 €","7 000 à 9 000 €","9 000 à 11 000 €","11 000 à 13 000 €","13 000 à 16 000 €","16 000 € et plus"],col:[GRAY,"#2c7bb6","#abd9e9","#ffffbf","#fdae61","#f46d43","#a50026"],cls:s=>{const p=PM[s];return p===0?0:p<7000?1:p<9000?2:p<11000?3:p<13000?4:p<16000?5:6;}},
+ {id:'dv',g:'Marché (DVF 2021-2025)',name:'Nombre de ventes (2021-2025)',lab:["Aucune vente","1","2","3 à 5","6 à 10","11 et plus"],col:[GRAY,"#3a6a9c","#3288bd","#66c2a5","#fee08b","#f46d43"],cls:s=>{const n=DN[s];return n===0?0:n===1?1:n===2?2:n<=5?3:n<=10?4:5;}},
 ];
 for(const c of CRIT){c.k=new Uint8Array(N);for(let s=0;s<N;s++)c.k[s]=c.cls(s);c.cnt=new Float64Array(c.lab.length);c.ha=new Float64Array(c.lab.length);for(let s=0;s<N;s++){c.cnt[c.k[s]]++;c.ha[c.k[s]]+=area[s]/1e4;}c.pal=c.col.map(h=>h?pack(h):0);}
 
@@ -602,8 +606,8 @@ function buildLegend(){
 }
 function syncRows(){document.querySelectorAll('#legend .row,#legend .hb').forEach(r=>r.classList.toggle('off',!st.en[+r.dataset.i]));}
 $('#reset').onclick=()=>{st.en=st.en.map(()=>true);syncRows();recolor();};
-{const box=$('#crit');let g='';const slot=x=>{if(!x)return;const s=document.createElement('div');s.className='ovslot';s.dataset.g=x;box.appendChild(s);};for(const c of CRIT){if(c.id==='neu')continue;if(c.g!==g){slot(g);g=c.g;const d=document.createElement('div');d.className='g';d.textContent=g;box.appendChild(d);}
- const b=document.createElement('button');b.type='button';b.dataset.id=c.id;b.innerHTML='<span class="dot"></span><span class="cn">'+c.name+'</span>'+orgHtml(c.id);b.onclick=()=>setCrit(st.crit===c?CRIT[0]:c);box.appendChild(b);}slot(g);{const d=document.createElement('div');d.className='g';d.textContent='Histoire';box.appendChild(d);slot('Histoire');}}
+{const box=$('#crit');let g='';const slot=x=>{if(!x)return;const s=document.createElement('div');s.className='ovslot';s.dataset.g=x;box.appendChild(s);};for(const c of CRIT){if(c.id==='neu')continue;if(c.g!==g){slot(g);if(g==='Âge'){const d=document.createElement('div');d.className='g';d.textContent='Histoire';box.appendChild(d);slot('Histoire');}g=c.g;const fm={'Volume':1,'Usages':2}[g];if(fm){const f=document.createElement('div');f.className='lfam';f.innerHTML='<b>'+FAM[fm]+'</b><span>'+(fm===1?'Ce qui est construit, dure et se mesure':'Comment on occupe, possède et réglemente')+'</span>';box.appendChild(f);}const d=document.createElement('div');d.className='g';d.textContent=g;box.appendChild(d);}
+ const b=document.createElement('button');b.type='button';b.dataset.id=c.id;b.innerHTML='<span class="dot"></span><span class="cn">'+c.name+'</span>'+orgHtml(c.id);b.onclick=()=>setCrit(st.crit===c?CRIT[0]:c);box.appendChild(b);}slot(g);}
 
 let ready=false;
 /* filtres */
@@ -1067,13 +1071,15 @@ function cardModel(s,c){
    it('Toiture : '+(SO[s]?'panneaux solaires':VG[s]>=10?'végétalisée':TE[s]?'terrasse':'autre ou inconnue')+(IG[s]?' ; immeuble de grande hauteur':''),'apur')];
   sec('bati','Bâtiment',h,items);}
  // 3. Usages, énergie et carbone
- {const B=D&&D.n&&D.n[s],R=bdnbRows(s,B),K=D&&D.k&&D.k[s];
-  let h=R.map(r=>row(r[0],esc(String(r[1])))).join('')+'<div class="mot"><span class="k">Carbone d\'une reconstruction (ordre de grandeur) : </span>'+co2Txt(s)+'</div>';
-  const items=[...R.map(r=>it(r[0]+' : '+r[1],r[2])),it('Carbone d\'une reconstruction à neuf (ordre de grandeur) : '+co2Txt(s),'co2')];
+ {const B=D&&D.n&&D.n[s],RA=bdnbRows(s,B),K=D&&D.k&&D.k[s],EN=r=>/^(Murs|Toiture|DPE|Chauffage)/.test(r[0]),RE_=RA.filter(EN),R=RA.filter(r=>!EN(r));
+  {const h=RE_.map(r=>row(r[0],esc(String(r[1])))).join('')+'<div class="mot"><span class="k">Carbone d\'une reconstruction (ordre de grandeur) : </span>'+co2Txt(s)+'</div>';
+   sec('ener','Énergie et carbone',h,[...RE_.map(r=>it(r[0]+' : '+r[1],r[2])),it('Carbone d\'une reconstruction à neuf (ordre de grandeur) : '+co2Txt(s),'co2')]);}
+  let h=R.map(r=>row(r[0],esc(String(r[1])))).join('');
+  const items=R.map(r=>it(r[0]+' : '+r[1],r[2]));
   if(K&&K.length){h+=sub('Commerces en rez-de-chaussée ('+K.length+')')+'<div class="k" style="margin:-2px 0 6px">Base des commerces de l\'Apur (BDCOM), relevé de 2017</div>'+K.slice(0,40).map(e=>'<div class="dm" style="margin:3px 0"><i class="sw2" style="display:inline-block;vertical-align:-1px;margin-right:6px;background:'+COM_COL[Math.max(0,(e[0]||7)-1)]+'"></i><b>'+esc(e[1])+'</b><span class="k">'+(e[5]?' · '+esc(e[5]):'')+(e[2]?' · '+esc(e[2]):'')+(e[4]?' · '+esc(e[4]):'')+'</span></div>').join('')+(K.length>40?'<div class="k">… et '+(K.length-40)+' autres</div>':'');
    items.push(...K.slice(0,60).map(e=>it('Commerce : '+e[1]+(e[5]?', '+e[5]:'')+(e[2]?', '+e[2]:'')+(e[3]?', '+e[3]:'')+(e[4]?', '+e[4]:''),'com')));}
   for(const [,tt,X] of XTRA){const T=X&&X[s];if(T&&T.length){h+=sub(tt);for(const [k,l] of T){h+='<div class="dm">'+esc(l)+'</div>';items.push(it(l,k));}}}
-  sec('usage','Usages, énergie et carbone',h,items);}
+  sec('usage','Usages',h,items);}
  // 4. Autorisations d'urbanisme
  {const L=D&&D.b&&D.b[s];let h='',items=[];
   if(NT[s]&&L){h=L.slice(0,60).map(e=>{const dec=e[3]>=0?D.d[e[3]]:'En instruction';const cl=/^(Favorable|Accord)/.test(dec)?'ok':/^(Défavorable|Rejet|Irrecevable)/.test(dec)?'no':'nt';
@@ -1178,6 +1184,7 @@ function cardModel(s,c){
     items.push(it('Propriétaire : '+t+(o[2]?' (SIREN '+o[2]+')':''),'own',u));}
    h+='<div class="k" style="margin-top:4px">Personnes morales propriétaires au 1er janvier '+(D.oan||'')+' (DGFiP). Les particuliers n\'y figurent pas. Aucune adresse électronique ni téléphone n\'est publié : la fiche entreprise donne le siège et les dirigeants.</div>';
    sec('own','Propriétaires',h,items,O.filter(o=>o[4]).length);}}
+ S.forEach(x=>{x.f=SEC_FAM[x.id]||0;});S.sort((a,b)=>SEC_ORD.indexOf(a.id)-SEC_ORD.indexOf(b.id));
  return S;
 }
 async function showCard(s,pin){
@@ -1197,7 +1204,7 @@ async function showCard(s,pin){
  let out=(ad.length?'<div class="t">'+esc(ad[0])+'</div>':'<div class="t">Pas d\'adresse rattachée</div><div class="k adl">Annexe, cour ou bâtiment sans numéro dans la Base Adresse Nationale</div>')
   +'<div class="sb">'+(AN[s]?'Construit en '+AN[s]:'Date de construction inconnue')+' · Paris '+(ARR[s]?ARR[s]+'e':'')+(ad.length>1?' · '+ad.length+' adresses':'')+'</div>'+legendHtml(s)
   +'<div class="pdfrow"><button id="pdfb" type="button" class="pdfb">Exporter la fiche en PDF</button> <span id="pdfm" class="k"></span></div>';
- out+=M.map(x=>'<details class="fsec" data-id="'+x.id+'"'+(SEC_OPEN.has(x.id)?' open':'')+'><summary><span class="chev"></span>'+esc(x.h)+(x.n?'<span class="gn">'+nf.format(x.n)+'</span>':'')+'</summary><div class="fbody">'+x.html+'</div></details>').join('');
+ out+=M.map((x,i)=>(x.f&&x.f!==(M[i-1]||{}).f?'<div class="ffam">'+FAM[x.f]+'</div>':'')+'<details class="fsec" data-id="'+x.id+'"'+(SEC_OPEN.has(x.id)?' open':'')+'><summary><span class="chev"></span>'+esc(x.h)+(x.n?'<span class="gn">'+nf.format(x.n)+'</span>':'')+'</summary><div class="fbody">'+x.html+'</div></details>').join('');
  body(out);
  cb.querySelectorAll('details.fsec').forEach(d=>d.addEventListener('toggle',()=>{d.open?SEC_OPEN.add(d.dataset.id):SEC_OPEN.delete(d.dataset.id);}));
 }
@@ -1418,11 +1425,12 @@ function ovTip(x,y){
 /* rubriques repliables du panneau */
 {const box=$('#crit'),kids=[...box.children];let cur=null;const LS=(()=>{try{return JSON.parse(localStorage.getItem('pg_open')||'null');}catch(e){return null;}})()||['Âge'];
  const save=()=>{try{localStorage.setItem('pg_open',JSON.stringify([...document.querySelectorAll('details.lsec[open]')].map(d=>d.dataset.g)));}catch(e){}};
- for(const k of kids){if(k.classList.contains('g')){cur=document.createElement('details');cur.className='lsec';cur.dataset.g=k.textContent;if(LS.includes(k.textContent))cur.open=true;
+ for(const k of kids){if(k.classList.contains('lfam')){cur=null;continue;}if(k.classList.contains('g')){cur=document.createElement('details');cur.className='lsec';cur.dataset.g=k.textContent;if(LS.includes(k.textContent))cur.open=true;
    cur.innerHTML='<summary><span class="chev"></span>'+esc(k.textContent)+'<span class="lsn"></span></summary>';box.insertBefore(cur,k);k.remove();cur.addEventListener('toggle',save);continue;}
   if(cur)cur.appendChild(k);}
  for(const d of document.querySelectorAll('#scroll > details.lsec'))d.addEventListener('toggle',save);
  for(const d of document.querySelectorAll('#scroll > details.lsec'))if(LS.includes(d.dataset.g))d.open=true;
+ {const so=box.querySelector('details.lsec[data-g="Sous-sol et fouilles"]'),en=document.querySelector('#scroll > details.lsec[data-g="Ensoleillement"]');if(so&&en)so.after(en);}
 }
 /* recherche de calques, avec tolérance (accents, fautes de frappe, synonymes) */
 {const nz=t=>String(t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
@@ -2276,7 +2284,7 @@ function extHtml(s,A,U){
 }
 function docModel(s,c){
  const ad=c.A&&c.A[s]||[],M=c.M||cardModel(s,{A:c.A,P:c.P,D:c.D,C:c.C,SR:c.SR,AT:c.atl});
- const sec=M.filter(x=>x.items.length).map(x=>({id:x.id,h:x.h+(x.n?' ('+nf.format(x.n)+')':''),items:x.items}));
+ const sec=M.filter(x=>x.items.length).map(x=>({id:x.id,f:x.f,h:x.h+(x.n?' ('+nf.format(x.n)+')':''),items:x.items}));
  sec.push({id:'src',h:'Sources et licences',items:[{t:'Toutes les données proviennent de jeux de données ouverts (licence ODbL ou Licence Ouverte, selon le producteur). Les dossiers d\'urbanisme sont rattachés au bâtiment par leur adresse ou leur localisation : le rattachement est approximatif et ne remplace ni un extrait cadastral, ni une note de renseignements d\'urbanisme.',s:'',u:''},
   ...srcList().map(x=>({t:x[0],s:'',u:x[1]}))]});
  return {title:ad[0]||'Bâtiment sans adresse rattachée',sub:'Paris '+(ARR[s]?ARR[s]+'e':'')+(ad.length>1?' · '+(ad.length-1)+' autre'+(ad.length>2?'s':'')+' adresse'+(ad.length>2?'s':''):''),sec};
@@ -2386,8 +2394,9 @@ function makePdf(M_,IMG,HIST,COUP){
    cur.ops.push('q '+gw.toFixed(2)+' 0 0 '+gh.toFixed(2)+' '+x.toFixed(2)+' '+(yt-gh).toFixed(2)+' cm /Ih'+i+' Do Q');
    const ty=yt-gh-11;cur.ops.push('BT /F2 8.5 Tf 0.10 0.28 0.41 rg '+x.toFixed(2)+' '+ty.toFixed(2)+' Td ('+enc(im.cap)+') Tj ET');if(im.u)cur.ln.push([x,ty-2,x+wid(im.cap,8.5,true),ty+9,im.u]);
    if(col===1||i===HIST.length-1)y=yt-gh-24;});};
- for(const S_ of M_.sec){
+ let fam0=0;for(const S_ of M_.sec){
   newPage();
+  if(S_.f&&S_.f!==fam0){fam0=S_.f;put(FAM[S_.f],9,true,'0.45 0.45 0.45',0,null,0,1.2);y-=4;}
   put(S_.h.toUpperCase(),13,true,'0.10 0.28 0.41',0,null,0,1.2);
   y-=4;cur.ops.push('0.75 0.81 0.85 RG 0.7 w '+MG+' '+y.toFixed(2)+' m '+(PW-MG)+' '+y.toFixed(2)+' l S');y-=12;
   if(S_.id==='hist')hist();

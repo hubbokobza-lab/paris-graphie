@@ -9,6 +9,8 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Calques rangés en deux familles : « L'ouvrage » (volume, énergie et carbone, âge, histoire, sous-sol, ensoleillement : ce qui est construit, dure et se mesure) puis « L'usage et le droit » (usages, propriété, autorisations, patrimoine, PLU, occupants : comment on occupe, possède et réglemente).
+- La fiche et son PDF suivent le même ordre, avec les mêmes intertitres ; la rubrique « Usages, énergie et carbone » est scindée en « Énergie et carbone » et « Usages ».
 - Téléphone : la fiche d'un bâtiment s'ouvre à mi-hauteur (glisser vers le haut pour l'agrandir, vers le bas pour la réduire puis la fermer), la carte reste visible.
 - Coupe sur téléphone : en portrait, les calques passent derrière un bouton « Calques » et une invitation propose de tourner le téléphone ; en paysage, la coupe occupe tout l'écran et les calques s'ouvrent en volet.
 - Tutoriel : bulle réduite au titre sur téléphone (« Voir plus » pour le texte et l'aperçu) ; le rectangle du plan et la ligne de coupe sont éclairés pendant la démonstration ; le curseur se recale sur les boutons qui se déplacent (volet, fiche).
