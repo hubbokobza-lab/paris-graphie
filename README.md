@@ -130,6 +130,10 @@ Les changements visibles pour les utilisateurs de la carte et de l'API sont cons
 - `tests/` : batterie de tests de bout en bout (`python tests/batterie.py <copie du site>`).
 - `api-worker/` : l'API (Cloudflare Worker).
 
+## Audience
+
+La page compte ses visites avec Cloudflare Web Analytics : sans cookie, sans identifiant, sans suivi d'un site à l'autre. Seuls les chargements de page sont comptés ; les fiches ouvertes et les recherches faites ensuite ne sont pas transmises.
+
 ## Droits
 
 Bibliothèques tierces publiées avec le site : [copc.js](https://github.com/connormanning/copc.js) (licence MIT) et [laz-perf](https://github.com/hobuinc/laz-perf) (licence Apache 2.0), pour lire le LiDAR HD dans l'outil Coupe.

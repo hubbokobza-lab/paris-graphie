@@ -9,6 +9,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Coupe : boutons zoom + et − retirés (zoom au pincement à deux doigts, ou Ctrl + molette) ; « revenir à toute la coupe » n'apparaît qu'une fois zoomé ; le dessin défile de nouveau dans les deux sens au doigt.
 - Nouveau design publié par défaut (l'ancien reste accessible par `?essai=0` le temps de la transition) : accueil avec un seul champ d'adresse, charte de l'agence, typographie plus grande.
 - Tutoriel : proposé sur l'accueil (« Découvrir l'outil en 4 étapes ») et lancé à la première visite quand on choisit d'explorer la carte (pas quand on cherche une adresse).
 - Mini-cartes des quartiers dans le panneau : mêmes couleurs que le calque lié.
@@ -40,6 +41,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 
 ### Ajouté
+- Mesure d'audience sans cookie ni identifiant (Cloudflare Web Analytics), limitée aux chargements de page.
 - Lien partageable : l'adresse de la page suit la fiche ouverte (`?b=longitude,latitude` de l'immeuble, stable d'une mise à jour à l'autre, et `&c=` pour le calque affiché) ; bouton « Partager » dans la fiche (copie du lien, ou partage du téléphone).
 - Coupe : calque « Profil du bâti (LiDAR, hachuré) » : silhouette réelle des bâtiments coupés d'après les points « bâtiment » du LiDAR HD, hachurée jusqu'au terrain, à l'écran et dans le PDF.
 - Fiche PDF : « Potentiel de surélévation (indicatif) » pour chaque coupe sur rue : faîtage relevé (LiDAR HD, à défaut hauteur maximale Apur) comparé à l'enveloppe du PLU au même endroit, marge en mètres et en niveaux de 3 m ; avertissement en tête si l'immeuble est protégé.
