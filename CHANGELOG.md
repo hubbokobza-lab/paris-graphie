@@ -34,11 +34,16 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - La fiche d'un bâtiment trouvé par la recherche a pour titre l'adresse recherchée (et non la première adresse du bâtiment), y compris dans le PDF.
 
 ### Corrigé
+- Dépôt : les anciens fichiers produits (page, données, notice) qui traînaient à la racine de la branche principale sont retirés ; le site publié vient uniquement de la branche gh-pages. C'est là que figuraient les balises de référencement, jamais publiées par l'assemblage actuel.
 - Cache des données : la version ajoutée aux adresses des fichiers dépend maintenant de leur contenu, et non de l'heure d'assemblage ; une republication de la page seule ne force plus les visiteurs à retélécharger les 7 Mo de données.
 - Mesure et tracé de coupe : avec Maj, la direction verrouillée est celle du segment tel qu'il était affiché avant l'appui (et non celle du premier déplacement suivant), pour qu'un segment vertical reste vertical.
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 
 ### Ajouté
+- Lien partageable : l'adresse de la page suit la fiche ouverte (`?b=longitude,latitude` de l'immeuble, stable d'une mise à jour à l'autre, et `&c=` pour le calque affiché) ; bouton « Partager » dans la fiche (copie du lien, ou partage du téléphone).
+- Coupe : calque « Profil du bâti (LiDAR, hachuré) » : silhouette réelle des bâtiments coupés d'après les points « bâtiment » du LiDAR HD, hachurée jusqu'au terrain, à l'écran et dans le PDF.
+- Fiche PDF : « Potentiel de surélévation (indicatif) » pour chaque coupe sur rue : faîtage relevé (LiDAR HD, à défaut hauteur maximale Apur) comparé à l'enveloppe du PLU au même endroit, marge en mètres et en niveaux de 3 m ; avertissement en tête si l'immeuble est protégé.
+- Référencement : description, balises de partage (Open Graph, image dédiée), données structurées et lien canonique publiés avec la page ; contenu lisible sans JavaScript ; `robots.txt` et `sitemap.xml`.
 - Coupe : zoom et déplacement du dessin (boutons, Ctrl + molette ou pincement du pavé tactile, pincement à deux doigts sur téléphone et tablette, glisser une fois zoomé) ; la mesure reste à un doigt pendant que deux doigts zooment.
 - Essai de design pour les clients de l'agence, activé par `?essai=1` (retiré par `?essai=0`) : accueil dépouillé avec un seul champ d'adresse, signature de l'agence, titres en minuscules et plus grands, gammes de couleurs dérivées de la charte (ocre pour l'ancien, bleus pour le récent ; hauteurs du sombre au clair), méthodes de calcul derrière un « i » dans la fiche, règles des gabarits masquées par défaut dans la coupe. Le design par défaut est inchangé.
 - Batterie de tests de bout en bout (`tests/batterie.py`, 39 contrôles sur ordinateur et téléphone) à lancer avant une grosse modification.

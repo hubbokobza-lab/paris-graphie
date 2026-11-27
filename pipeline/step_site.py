@@ -4,7 +4,8 @@ from core import *
 import methodes
 
 # fichiers statiques publiés tels quels avec la page (LiDAR HD de l'outil Coupe : copc.js et laz-perf, licences MIT et Apache 2.0 ; aperçus du tutoriel)
-ASSETS = ('pg-copc.js', 'laz-perf.wasm', 'tuto-fiche.jpg', 'tuto-plan.jpg', 'tuto-coupe.jpg')
+ASSETS = ('pg-copc.js', 'laz-perf.wasm', 'tuto-fiche.jpg', 'tuto-plan.jpg', 'tuto-coupe.jpg', 'partage.jpg')
+SITE_URL = 'https://hubbokobza-lab.github.io/paris-graphie/'
 
 SRC = os.path.join(STATIC, 'src')
 
@@ -45,6 +46,11 @@ def write_page(out):
         if (f.endswith('.json') and f != 'maj.json') or f in ASSETS: h.update(f.encode()); h.update(open(os.path.join(out, f), 'rb').read())
     open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(html(dv=h.hexdigest()[:12]))
     open(os.path.join(out, '.nojekyll'), 'w').write('')
+    # référencement : robots.txt et plan du site (la page, la notice pour les IA, l'index de l'API)
+    open(os.path.join(out, 'robots.txt'), 'w').write('User-agent: *\nAllow: /\nSitemap: %ssitemap.xml\n' % SITE_URL)
+    today = time.strftime('%Y-%m-%d')
+    urls = [SITE_URL, SITE_URL + 'llms.txt'] + ([SITE_URL + 'api/'] if os.path.isdir(os.path.join(out, 'api')) else [])
+    open(os.path.join(out, 'sitemap.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join('<url><loc>%s</loc><lastmod>%s</lastmod></url>\n' % (u, today) for u in urls) + '</urlset>\n')
 
 def run(st, out):
     os.makedirs(out, exist_ok=True)

@@ -3,12 +3,35 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Paris-graphie</title>
+<title>Paris-graphie, la carte des immeubles de Paris · Bouchaud Architectes</title>
+<meta name="description" content="Carte interactive des immeubles de Paris : âge du bâti, patrimoine protégé, PLU, urbanisme, usages et DPE, issus de données ouvertes. Un outil de Bouchaud Architectes, avec API et serveur MCP.">
+<link rel="canonical" href="https://hubbokobza-lab.github.io/paris-graphie/">
+<link rel="alternate" type="text/plain" href="llms.txt" title="Notice pour les IA">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Paris-graphie, la carte des immeubles de Paris">
+<meta property="og:description" content="Âge du bâti, patrimoine, PLU, urbanisme et usages sur une seule carte, à partir de données ouvertes. Un outil de Bouchaud Architectes.">
+<meta property="og:url" content="https://hubbokobza-lab.github.io/paris-graphie/">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Paris-graphie, Bouchaud Architectes">
+<meta property="og:image" content="https://hubbokobza-lab.github.io/paris-graphie/partage.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Paris-graphie : carte des immeubles de Paris colorés par période de construction">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f1a24">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Paris-graphie","url":"https://hubbokobza-lab.github.io/paris-graphie/","description":"Carte interactive des immeubles de Paris intra-muros, construite à partir de données ouvertes : âge du bâti, hauteur, usages, DPE, patrimoine, PLU, autorisations d'urbanisme. API JSON et serveur MCP disponibles.","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","inLanguage":"fr","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"author":{"@type":"Organization","name":"Bouchaud Architectes","url":"https://www.bouchaudarchitectes.com/"},"publisher":{"@type":"Organization","name":"Bouchaud Architectes","url":"https://www.bouchaudarchitectes.com/"},"sameAs":["https://www.bouchaudarchitectes.com/hors-piste/paris-graphie","https://github.com/hubbokobza-lab/paris-graphie"],"contactPoint":{"@type":"ContactPoint","email":"h.bokobza@bouchaudarchitectes.com","contactType":"customer support"}}
+</script>
 <style>
 /*CSS*/
 </style>
 </head>
 <body>
+<noscript><div style="max-width:720px;margin:40px auto;padding:0 20px;font-family:sans-serif;color:#1A486A;background:#F9FAFB">
+<h1>Paris-graphie, la carte des immeubles de Paris</h1>
+<p>Un outil de Bouchaud Architectes, construit à partir de données ouvertes : pour chaque immeuble de Paris, l'âge du bâti, la hauteur, les usages, le DPE, le patrimoine protégé, les règles du PLU bioclimatique, les autorisations d'urbanisme et la Commission du Vieux Paris. Fiche PDF par immeuble, export de plans DXF et PDF, coupes avec gabarits du PLU et nuage LiDAR HD de l'IGN.</p>
+<p>La carte nécessite JavaScript. <a href="https://www.bouchaudarchitectes.com/hors-piste/paris-graphie">Présentation</a> · <a href="llms.txt">Notice pour les IA</a> · <a href="https://github.com/hubbokobza-lab/paris-graphie">Code et méthodes</a></p>
+</div></noscript>
 <div id="map"><canvas id="cv"></canvas><canvas id="lb"></canvas></div>
 <div id="load"><div id="loadmsg">Chargement de l'emprise bâtie…</div><div class="bar"><i id="loadbar"></i></div></div>
 

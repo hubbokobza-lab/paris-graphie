@@ -3,7 +3,7 @@ if(ESSAI){
  // signature de l'agence en tête du panneau
  {const h=$('#panel header h1');if(h&&!$('#psig')){const d=document.createElement('div');d.id='psig';d.textContent='Bouchaud Architectes';h.before(d);}}
  // accueil : le titre, une phrase, un champ d'adresse ; la carte se découvre ensuite
- const direct=/[?&](adresses|embed|q|adr)=/.test(location.search)||location.hash.length>1||(navigator.webdriver&&!/[?&]accueil=1/.test(location.search));   // robots de contrôle : sans accueil, sauf ?accueil=1
+ const direct=/[?&](adresses|embed|q|adr|b)=/.test(location.search)||location.hash.length>1||(navigator.webdriver&&!/[?&]accueil=1/.test(location.search));   // robots de contrôle : sans accueil, sauf ?accueil=1
  if(!direct){
   const a=document.createElement('div');a.id='acc';a.setAttribute('role','dialog');a.setAttribute('aria-label','Accueil');
   a.innerHTML='<div class="accb"><div class="accs">Bouchaud Architectes</div><h2>Paris-graphie</h2><p>Les immeubles de Paris, un par un : âge, hauteurs, règles d\'urbanisme, patrimoine.</p>'

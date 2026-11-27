@@ -207,6 +207,9 @@ function makePdf(M_,IMG,HIST,COUP){
  }
  if(COUP&&COUP.length){newPage();put('COUPES SUR RUE',13,true,'0.10 0.28 0.41',0,null,0,1.2);y-=4;cur.ops.push('0.75 0.81 0.85 RG 0.7 w '+MG+' '+y.toFixed(2)+' m '+(PW-MG)+' '+y.toFixed(2)+' l S');y-=12;
   put(COUP.note,8,false,'0.45 0.45 0.45',0,null,10);
+  if(COUP.elev){y-=4;put('Potentiel de surélévation (indicatif)',10,true,'0.10 0.28 0.41',0,null,6);
+   if(COUP.elev.prot)put('Attention : '+COUP.elev.prot+'. Une surélévation y est très encadrée, voire exclue ; l\'avis de l\'architecte des Bâtiments de France ou de la Ville (Commission du Vieux Paris) est à prévoir avant toute étude.',8.5,true,'0.70 0.19 0.25',0,null,8);
+   for(const l of COUP.elev.lines)put(l,8.5,false,'0.15 0.15 0.15',0,null,6);put(COUP.elev.note,7.5,false,'0.45 0.45 0.45',0,null,12);}
   COUP.forEach((c,i)=>{let w=LW,h=w*c.vb[1]/c.vb[0];const hm=PH-2*MG-70;if(h>hm){h=hm;w=h*c.vb[0]/c.vb[1];}if(y-h-30<MG+20)newPage();y-=h;cur.ops.push(c.vec(VGS,[MG+(LW-w)/2,y,w,h]).ops);y-=6;put(c.cap,8,false,'0.25 0.25 0.25',0,null,14);});}
  const hist=()=>{if(!(HIST&&HIST.length))return;
   y-=10;put('Extraits des plans de Michel Huard (paris-atlas-historique.fr), calés automatiquement sur le plan actuel : l\'immeuble est cerclé et entouré de rouge. Précision indicative, de l\'ordre de 5 à 15 m. Chaque titre renvoie à la page de la carte.',8,false,'0.45 0.45 0.45',0,null,8);
@@ -260,14 +263,24 @@ $('#srcb').onclick=e=>{const o=$('#srct').hidden;$('#srct').hidden=!o;e.currentT
 }
 $('#methb').onclick=e=>{const b=$('#metht'),o=b.hidden;if(o&&!b.innerHTML)b.innerHTML='<div class="k" style="margin-top:6px">Les indicateurs ci-dessous sont calculés par Paris-graphie à partir des données sources. Ce sont des ordres de grandeur, à vérifier.</div>'+METH.map(m=>'<b>'+esc(m.indicateur)+'</b>'+esc(m.methode)).join('');b.hidden=!o;e.currentTarget.setAttribute('aria-expanded',o);ftOpen('#metht',o);};
 let PCTX=null;
-cb.addEventListener('click',async e=>{if(e.target&&e.target.id==='pdfb'&&PCTX&&(PF[PCTX.s]&3))await loadMhd();
+cb.addEventListener('click',async e=>{if(e.target&&e.target.id==='shb'&&PCTX){permalink(PCTX.s);const url=location.href,ad=(PCTX.A&&PCTX.A[PCTX.s]&&PCTX.A[PCTX.s][0])||'Immeuble',m=$('#pdfm');
+  if(navigator.share&&isMob()){try{await navigator.share({title:ad+' · Paris-graphie',url});}catch(_){}}
+  else{try{await navigator.clipboard.writeText(url);if(m)m.textContent='Lien copié';}catch(_){if(m)m.innerHTML='<input value="'+esc(url)+'" style="width:100%" onclick="this.select()" readonly>';}}return;}
+ if(e.target&&e.target.id==='pdfb'&&PCTX&&(PF[PCTX.s]&3))await loadMhd();
  if(e.target.id!=='pdfb'||!PCTX)return;
  const m=$('#pdfm');
  try{
   const HIST=await histCaptures(PCTX.s,PCTX.atl).catch(()=>[]);const COUP=[];
   {const FC=await facadeCuts(PCTX.s).catch(()=>[]);
    for(let i=0;i<FC.length;i++){const c=FC[i];m.textContent='Coupe sur rue '+(i+1)+' / '+FC.length+' (terrain, PLU, arbres'+(CUTOFF.has('lidar')?'':', LiDAR HD')+')…';
-    try{const r=await cutShow(c.A,c.B,{headless:true}),J={vec:r.vec,vb:r.svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/).slice(1).map(Number)};J.cap='Coupe '+(i+1)+' : perpendiculaire à la façade sur '+(c.st||'rue')+' (façade de '+fr(c.L,0)+' m), de l\'immeuble en face (A) jusqu\'au fond de la parcelle (B), '+fr(r.L,0)+' m ; voie d\'environ '+(c.w?fr(c.w,1)+' m':'?')+' entre limites de parcelles'+(r.lid?' ; '+r.lid.toLocaleString('fr-FR')+' points LiDAR HD':'')+'. On regarde vers la gauche du trait A-B (flèches rouges du plan de repérage).';COUP.push(J);}catch(e){}}
+    try{const r=await cutShow(c.A,c.B,{headless:true,s:PCTX.s}),J={elev:r.elev,st:c.st,vec:r.vec,vb:r.svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/).slice(1).map(Number)};J.cap='Coupe '+(i+1)+' : perpendiculaire à la façade sur '+(c.st||'rue')+' (façade de '+fr(c.L,0)+' m), de l\'immeuble en face (A) jusqu\'au fond de la parcelle (B), '+fr(r.L,0)+' m ; voie d\'environ '+(c.w?fr(c.w,1)+' m':'?')+' entre limites de parcelles'+(r.lid?' ; '+r.lid.toLocaleString('fr-FR')+' points LiDAR HD':'')+'. On regarde vers la gauche du trait A-B (flèches rouges du plan de repérage).';COUP.push(J);}catch(e){}}
+   {/* surélévation, indicatif : faîtage relevé comparé à l'enveloppe du PLU, coupe par coupe ; avertissement si l'immeuble est protégé */
+    const f=PF[PCTX.s],prot=f&1?'monument historique':f&2?'immeuble protégé':f&4?'bâtiment protégé par le PLU':f&32?'volumétrie à conserver (PLU)':f&16?'bâtiment moderne signalé (PLU)':f&64?'parcelle signalée (PLU)':f&8?'dans un périmètre de protection de monument historique':'';
+    const L_=[];COUP.forEach((c,i)=>{const e=c.elev;if(!e)return;const hs=fr(e.ridge-e.ground,1);
+     if(e.allowed==null){L_.push('Coupe '+(i+1)+' ('+(c.st||'rue')+') : faîtage relevé à '+fr(e.ridge,1)+' m NVP ('+e.src+'), soit '+hs+' m au-dessus du sol ; pas d\'enveloppe du PLU calculée sur cette coupe.');return;}
+     const d=e.delta,n=Math.floor(d/3);
+     L_.push('Coupe '+(i+1)+' ('+(c.st||'rue')+') : faîtage relevé à '+fr(e.ridge,1)+' m NVP ('+e.src+'), soit '+hs+' m au-dessus du sol ; enveloppe du PLU jusqu\'à '+fr(e.allowed,1)+' m NVP sur l\'emprise coupée ; '+(d>=1?'marge d\'environ '+fr(d,1)+' m'+(n>=1?', soit '+n+' niveau'+(n>1?'x':'')+' de 3 m':', inférieure à un niveau'):d>-1?'pas de marge':'le faîtage dépasse déjà l\'enveloppe de '+fr(-d,1)+' m')+'.');});
+    if(L_.length)COUP.elev={lines:L_,prot,note:'Indicatif, sans valeur réglementaire : enveloppe du PLU bioclimatique estimée (gabarit-enveloppe sur voie, plafond des hauteurs, hauteur maximale constructible ; la plus basse s\'applique), comparée au point le plus haut du bâtiment sur la coupe (faîtage, et non hauteur moyenne de la toiture). Ne tient compte ni des prospects sur cour, ni des règles de volumétrie, ni de la structure existante.'};}
    COUP.note='Coupes vectorielles tracées automatiquement perpendiculairement à chaque façade sur rue (bords de l\'emprise Apur donnant sur un espace hors parcelle cadastrale), de l\'immeuble d\'en face jusqu\'au fond de la parcelle. Calques et profondeur visible ('+(LDg<1?Math.round(LDg*100)+' cm':fr(LDg,LDg<10?1:0)+' m')+' derrière le plan) repris des réglages de la fenêtre Coupe. Méthodes et sources de chaque élément : voir « Coupe » dans les méthodes de calcul de Paris-graphie. Estimation sans valeur réglementaire.';}
   m.textContent='Assemblage du PDF…';
   const M_=docModel(PCTX.s,PCTX),IMG=captureParcel(PCTX.s),blob=makePdf(M_,(IMG&&(IMG.layer=st.crit.id==='neu'?'':st.crit.name,IMG.leg=(()=>{const L=legendOf(PCTX.s);if(!L)return null;const c=L.c;return {name:c.name,items:c.grad?[[L.col,'Année de construction : '+L.lab,true]]:c.lab.map((lb,i)=>[c.col[i]||'#999',lb,i===L.i])};})(),IMG)),HIST,COUP),url=URL.createObjectURL(blob);

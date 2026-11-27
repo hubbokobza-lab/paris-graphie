@@ -263,3 +263,4 @@ body.essai #cutw .cuttb button{color:#dbe3e9;border-color:#33475a}body.essai #cu
 #cutw .cutsvg svg.zoomed{cursor:grab}#cutw .cutsvg.grab svg{cursor:grabbing}#cutw .cutsvg.meas svg{cursor:crosshair}
 #cutw .cutsvg svg{touch-action:pan-y}#cutw .cutsvg svg.zoomed,#cutw .cutsvg.meas svg{touch-action:none}
 @media (orientation:landscape) and (max-height:540px){#cutw .cuttb{margin:0 0 4px;gap:4px}#cutw .cuttb button{height:32px;padding:0 8px}#cutw .cuttb button span{display:none}#cutw .cutsvg{height:calc(100% - 42px)!important}}
+#card .pdfrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#card .shb{all:unset;cursor:pointer;box-sizing:border-box;padding:9px 14px;border:1px solid var(--bg2);border-radius:6px;font-size:var(--fs-m);font-weight:600;color:var(--ink)}#card .shb:hover{background:var(--soft)}

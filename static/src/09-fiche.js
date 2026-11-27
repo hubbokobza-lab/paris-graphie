@@ -272,8 +272,13 @@ function cardModel(s,c){
  S.forEach(x=>{x.f=SEC_FAM[x.id]||0;});S.sort((a,b)=>SEC_ORD.indexOf(a.id)-SEC_ORD.indexOf(b.id));
  return S;
 }
+/* lien partageable : ?b=longitude,latitude de l'immeuble (stable d'une mise à jour à l'autre) et &c=calque affiché */
+function permalink(s){try{const u=new URL(location.href);u.searchParams.delete('adresses');u.searchParams.delete('accueil');
+ if(s<0){u.searchParams.delete('b');u.searchParams.delete('c');}else{const [lo,la]=bldLonLat(s);u.searchParams.set('b',lo.toFixed(6)+','+la.toFixed(6));if(st.crit&&st.crit.id!=='neu')u.searchParams.set('c',st.crit.id);else u.searchParams.delete('c');}
+ const q=u.searchParams.toString().replace(/%2C/g,','),t=u.pathname+(q?'?'+q:'')+u.hash;if(t!==location.pathname+location.search+location.hash)history.replaceState(null,'',t);}catch(e){}}
 async function showCard(s,pin){
- if(s<0){card.hidden=true;cardFor=-1;document.body.classList.remove('cardon','cardv');return;}
+ if(s<0){card.hidden=true;cardFor=-1;document.body.classList.remove('cardon','cardv');permalink(-1);return;}
+ if(pin)permalink(s);
  card.hidden=false;if(cardFor!==s)card.classList.remove('big');document.body.classList.toggle('cardv',!isMob());card.classList.toggle('pin',!!pin);cardFor=s;
  if(isMob()){document.body.classList.add('cardon');card.scrollTop=0;if(pin){const bx=(bbox[4*s]+bbox[4*s+2])/2,by=(bbox[4*s+1]+bbox[4*s+3])/2,[,sy]=w2s(bx,by);if(sy>innerHeight*.34||sy<40){view.cx=bx;view.cy=by-innerHeight*.31/view.k;draw();}}}
  const lim=pin?60:3;
@@ -288,7 +293,7 @@ async function showCard(s,pin){
  PCTX={s,A,P,D,C,SR,atl:AT,M};
  let out=(ad.length?'<div class="t">'+esc(ad[0])+'</div>':'<div class="t">Pas d\'adresse rattachée</div><div class="k adl">Annexe, cour ou bâtiment sans numéro dans la Base Adresse Nationale</div>')
   +'<div class="sb">'+(AN[s]?'Construit en '+AN[s]:'Date de construction inconnue')+' · Paris '+(ARR[s]?ARR[s]+'e':'')+(ad.length>1?' · '+ad.length+' adresses':'')+'</div>'+legendHtml(s)
-  +'<div class="pdfrow"><button id="pdfb" type="button" class="pdfb">Exporter la fiche en PDF</button> <span id="pdfm" class="k"></span></div>';
+  +'<div class="pdfrow"><button id="pdfb" type="button" class="pdfb">Exporter la fiche en PDF</button><button id="shb" type="button" class="shb" title="Copier un lien vers cette fiche">Partager</button> <span id="pdfm" class="k"></span></div>';
  out+=M.map((x,i)=>(x.f&&x.f!==(M[i-1]||{}).f?'<div class="ffam">'+FAM[x.f]+'</div>':'')+'<details class="fsec" data-id="'+x.id+'"'+(SEC_OPEN.has(x.id)?' open':'')+'><summary><span class="chev"></span>'+esc(x.h)+(x.n?'<span class="gn">'+nf.format(x.n)+'</span>':'')+'</summary><div class="fbody">'+x.html+'</div></details>').join('');
  body(out);
  cb.querySelectorAll('details.fsec').forEach(d=>d.addEventListener('toggle',()=>{d.open?SEC_OPEN.add(d.dataset.id):SEC_OPEN.delete(d.dataset.id);}));

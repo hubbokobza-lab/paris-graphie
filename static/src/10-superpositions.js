@@ -264,7 +264,7 @@ function ovTip(x,y){
  let tmr=0;inp.addEventListener('input',()=>{clearTimeout(tmr);tmr=setTimeout(run,120);});
  inp.addEventListener('keydown',e=>{if(e.key==='Escape'){inp.value='';run();}});
 }
-{const f=setCrit;setCrit=function(c){f(c);openActive();};document.addEventListener('change',e=>{if(e.target.closest&&e.target.closest('.ovgrp'))setTimeout(openActive,0);});}
+{const f=setCrit;setCrit=function(c){f(c);openActive();if(cardFor>=0&&card.classList.contains('pin'))permalink(cardFor);};document.addEventListener('change',e=>{if(e.target.closest&&e.target.closest('.ovgrp'))setTimeout(openActive,0);});}
 function openActive(){const b=document.querySelector('#crit button.on');if(b){const d=b.closest('details.lsec');if(d)d.open=true;}
  document.querySelectorAll('details.lsec').forEach(d=>{const n=d.querySelectorAll('button.on').length+[...d.querySelectorAll('.ovgrp input[type=checkbox]:not(.gck)')].filter(c=>c.checked).length;const s=d.querySelector('.lsn');if(s)s.textContent=n?n+' actif'+(n>1?'s':''):'';});}
 

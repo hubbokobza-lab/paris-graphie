@@ -1,1 +1,7 @@
 __pycache__/
+
+# fichiers produits par le robot : ils vivent sur la branche gh-pages
+/*.json
+/index.html
+/llms.txt
+/api/

@@ -110,6 +110,7 @@ window.parisGraphie={analyse,toCsv,bldRow,dumpStreets,sources:()=>({methodologie
  $('#alc').onclick=()=>{const u=URL.createObjectURL(new Blob([toCsv(ROWS)],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='paris-graphie-adresses.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),2000);};
  const P=new URLSearchParams(location.search);
  if(P.get('adresses')){$('#alt').value=P.get('adresses').split('|').join('\n');box.hidden=false;run();}
+ if(P.get('c')){const c=CRIT.find(x=>x.id===P.get('c'));if(c)setTimeout(()=>{setCrit(c);const b=document.querySelector('#scroll button[data-id="'+c.id+'"]');const d=b&&b.closest('details.lsec');if(d)d.open=true;},250);}
  if(P.get('b')){const [lo,la]=P.get('b').split(',').map(Number);if(isFinite(lo)&&isFinite(la)){const [x,y]=llToW(lo,la);setTimeout(()=>goTo({t:'',x:x*2,y:y*2,k:7}),300);}}
 }
 new ResizeObserver(()=>{const first=W===1;resize();if(first)fit();draw();}).observe(cv);
