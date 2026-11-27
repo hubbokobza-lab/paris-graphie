@@ -99,7 +99,7 @@ const OVL=[
  {id:'mob',n:'Comptages de trafic (vélo, voiture, etc.)',k:'pt',cols:['#7fb2d6','#4cc9f0','#ffd166','#ef476f'],lab:['Moins de 500 vélos par jour ou pas de comptage vélo','500 à 1 500 vélos par jour','1 500 à 4 000 vélos par jour','Plus de 4 000 vélos par jour']}]}
 ];
 const OVO=[];for(const g of OVL)for(const o of g.items){o.on=false;o.d=null;OVO.push(o);}
-const BASEOV=[{id:'trot',n:'Trottoirs',k:'poly',a:.5,cols:['#c3c9cf'],lab:['Emprise des trottoirs (plan de voirie)'],minK:.45,base:true},{id:'tpl',n:'Terre-pleins',k:'poly',a:.55,cols:['#9fb59a'],lab:['Terre-plein'],minK:.45,base:true}];
+const BASEOV=[{id:'trot',n:'Trottoirs',k:'poly',a:.11,noline:true,cols:['#c3c9cf'],lab:['Emprise des trottoirs (plan de voirie)'],minK:.45,base:true},{id:'tpl',n:'Terre-pleins',k:'poly',a:.14,noline:true,cols:['#9fb59a'],lab:['Terre-plein'],minK:.45,base:true}];
 for(const o of BASEOV.slice().reverse()){o.on=true;o.d=null;OVO.unshift(o);}
 ORG.trot=ORG.tpl='Ville de Paris';
 function decPath(p){const n=p.length>>1,a=new Float64Array(n*2);let x=p[0],y=p[1];a[0]=x/10;a[1]=y/10;for(let i=1;i<n;i++){x+=p[2*i];y+=p[2*i+1];a[2*i]=x/10;a[2*i+1]=y/10;}return a;}
@@ -147,7 +147,7 @@ function drawOv(){
   if(!o.on||!o.d||(o.minK&&k<o.minK&&o.d.k!=='pt'))continue;const d=o.d;
   if(o.atlas){lx.globalAlpha=o.a;if(d.bg){const b=d.bg;lx.beginPath();lx.moveTo(b[0],b[1]);for(let i=2;i<8;i+=2)lx.lineTo(b[i],b[i+1]);lx.closePath();lx.fillStyle=ATLBG;lx.fill();}eachP(d,(P,i)=>{lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');});lx.globalAlpha=1;continue;}
   if(d.k==='poly'&&o.a===0){lx.globalAlpha=Math.min(.55,.25+(k-.7)*.2);lx.lineWidth=.8/k;lx.strokeStyle=o.cols[0];eachP(d,P=>lx.stroke(P));lx.globalAlpha=1;continue;}
-  if(d.k==='poly'){eachP(d,(P,i)=>{if(o.hatch){lx.globalAlpha=o.hal?.06:.13;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');lx.globalAlpha=1;lx.fillStyle=hatchPat(o.cols[i],o.hatch[i],k,o.hsp,o.hal);lx.fill(P,'evenodd');}else{lx.globalAlpha=o.a;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');}lx.globalAlpha=Math.min(1,o.a+.4);lx.lineWidth=.9/k;lx.strokeStyle=o.cols[i];lx.stroke(P);});}
+  if(d.k==='poly'){eachP(d,(P,i)=>{if(o.hatch){lx.globalAlpha=o.hal?.06:.13;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');lx.globalAlpha=1;lx.fillStyle=hatchPat(o.cols[i],o.hatch[i],k,o.hsp,o.hal);lx.fill(P,'evenodd');}else{lx.globalAlpha=o.a;lx.fillStyle=o.cols[i];lx.fill(P,'evenodd');}if(o.noline)return;lx.globalAlpha=Math.min(1,o.a+.4);lx.lineWidth=.9/k;lx.strokeStyle=o.cols[i];lx.stroke(P);});lx.globalAlpha=1;}
   else if(d.k==='line'){lx.globalAlpha=.95;eachP(d,(P,i)=>{lx.lineWidth=(o.lw?o.lw[i]:o.lwa||1.7)/k;lx.strokeStyle=o.cols[i];lx.stroke(P);});}
   else pts=true;
  }

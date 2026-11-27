@@ -9,6 +9,12 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Nouveau design publié par défaut (l'ancien reste accessible par `?essai=0` le temps de la transition) : accueil avec un seul champ d'adresse, charte de l'agence, typographie plus grande.
+- Tutoriel : proposé sur l'accueil (« Découvrir l'outil en 4 étapes ») et lancé à la première visite quand on choisit d'explorer la carte (pas quand on cherche une adresse).
+- Mini-cartes des quartiers dans le panneau : mêmes couleurs que le calque lié.
+- Trottoirs et terre-pleins : sans contour, une zone à peine plus claire que le fond.
+- Coupe à l'écran sur fond sombre, comme la carte (les exports PDF et DXF restent sur fond blanc) ; nuage LiDAR aux couleurs de la charte (ocre pour le sol, verts sourds, gris-bleus pour le bâti, bleu pour l'eau) ; règles des gabarits masquées par défaut une première fois, puis selon le choix de chacun ; le bandeau des règles rend sa place quand elles sont masquées.
+- Coupe : barre d'outils toujours visible au-dessus du dessin (mesurer, effacer, zoom arrière, zoom avant, tout voir, DXF, PDF), au lieu du volet des calques.
 - Code de la page découpé en fichiers par domaine (`static/page.html`, `static/src/style.css`, `static/src/01-socle.js` à `18-tutoriel.js`), assemblés à la publication ; comportement inchangé.
 - Base graphique : variables pour les couleurs d'interface, cinq tailles de texte (les plus petites relevées à 11,5 px) et des niveaux de superposition nommés ; focus clavier visible ; animations coupées si le système le demande.
 - Panneau : texte d'accueil raccourci, champs de recherche homogènes, rubrique des projets Bouchaud repliée au démarrage, source des couches placée sous leur libellé, pied réduit à une ligne (sources et méthodes s'ouvrent dans la liste).
@@ -33,6 +39,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 
 ### Ajouté
+- Coupe : zoom et déplacement du dessin (boutons, Ctrl + molette ou pincement du pavé tactile, pincement à deux doigts sur téléphone et tablette, glisser une fois zoomé) ; la mesure reste à un doigt pendant que deux doigts zooment.
 - Essai de design pour les clients de l'agence, activé par `?essai=1` (retiré par `?essai=0`) : accueil dépouillé avec un seul champ d'adresse, signature de l'agence, titres en minuscules et plus grands, gammes de couleurs dérivées de la charte (ocre pour l'ancien, bleus pour le récent ; hauteurs du sombre au clair), méthodes de calcul derrière un « i » dans la fiche, règles des gabarits masquées par défaut dans la coupe. Le design par défaut est inchangé.
 - Batterie de tests de bout en bout (`tests/batterie.py`, 39 contrôles sur ordinateur et téléphone) à lancer avant une grosse modification.
 - Mode `site` du robot : republication de la page seule sur les données en ligne, lancé automatiquement à chaque modification de l'interface.

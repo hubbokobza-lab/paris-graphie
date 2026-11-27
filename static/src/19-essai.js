@@ -3,17 +3,20 @@ if(ESSAI){
  // signature de l'agence en tête du panneau
  {const h=$('#panel header h1');if(h&&!$('#psig')){const d=document.createElement('div');d.id='psig';d.textContent='Bouchaud Architectes';h.before(d);}}
  // accueil : le titre, une phrase, un champ d'adresse ; la carte se découvre ensuite
- const direct=/[?&](adresses|embed|q|adr)=/.test(location.search)||location.hash.length>1;
+ const direct=/[?&](adresses|embed|q|adr)=/.test(location.search)||location.hash.length>1||(navigator.webdriver&&!/[?&]accueil=1/.test(location.search));   // robots de contrôle : sans accueil, sauf ?accueil=1
  if(!direct){
   const a=document.createElement('div');a.id='acc';a.setAttribute('role','dialog');a.setAttribute('aria-label','Accueil');
   a.innerHTML='<div class="accb"><div class="accs">Bouchaud Architectes</div><h2>Paris-graphie</h2><p>Les immeubles de Paris, un par un : âge, hauteurs, règles d\'urbanisme, patrimoine.</p>'
    +'<div class="acci"><input id="accq" type="search" placeholder="Saisissez une adresse" aria-label="Rechercher une adresse" autocomplete="off" spellcheck="false"></div>'
-   +'<button id="acce" type="button">Explorer la carte</button></div>';
+   +'<div class="accl"><button id="acce" type="button">Explorer la carte</button><button id="acct" type="button">Découvrir l\'outil en 4 étapes</button></div></div>';
   document.body.appendChild(a);
   const close=()=>{a.classList.add('out');setTimeout(()=>a.remove(),350);};
   const q=$('#accq');setTimeout(()=>q.focus(),50);
   q.addEventListener('input',()=>{const v=q.value;close();if(isMob())$('#panel').classList.remove('min');const t=$('#q');t.value=v;t.focus();t.dispatchEvent(new Event('input',{bubbles:true}));});
-  $('#acce').onclick=close;a.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  /* tutoriel : à la première visite, quand on choisit d'explorer la carte (pas quand on cherche une adresse : on veut sa fiche) ; toujours proposé sur l'accueil */
+  let seen=false;try{seen=!!localStorage.getItem('pg_tuto');}catch(e){seen=true;}
+  $('#acce').onclick=()=>{close();if(!seen&&!navigator.webdriver)setTimeout(()=>{if(!$('#tuw'))tuto();},450);};
+  $('#acct').onclick=()=>{close();setTimeout(()=>{if(!$('#tuw'))tuto();},400);};a.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
  }
  // fiche : le chiffre seul ; la méthode (« calcul : … ») passe derrière un « i »
  const cb=$('#cb');if(cb){let busy=false;new MutationObserver(()=>{if(busy)return;busy=true;
@@ -22,7 +25,6 @@ if(ESSAI){
    const rest=document.createTextNode(t.nodeValue.slice(m.index+m[0].length));t.nodeValue=t.nodeValue.slice(0,m.index)+' ';t.after(i,rest);}
   busy=false;}).observe(cb,{childList:true,subtree:true});}
  // coupe : règles des gabarits masquées par défaut (hauteurs et gabarits visibles)
- try{if(!sessionStorage.getItem('pg_essai_r')){CUTOFF.add('regles');sessionStorage.setItem('pg_essai_r','1');}}catch(e){}
+ try{if(!localStorage.getItem('pg_regles_v')){CUTOFF.add('regles');localStorage.setItem('pg_regles_v','1');localStorage.setItem('pg_cutoff',[...CUTOFF].join(','));}}catch(e){CUTOFF.add('regles');}   /* une fois : ensuite le choix de chacun est gardé */
  // lien pour revenir au design actuel
- {const f=$('#ftr');if(f){const s=document.createElement('div');s.className='essl';s.innerHTML='Essai de design · <a href="?essai=0">revenir au design actuel</a>';f.after(s);}}
 }

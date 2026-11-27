@@ -77,7 +77,8 @@ function miniMap(c,L){const Q=QSTAT[c.id];if(!Q||!quartIdx())return;
  const cv=document.createElement('canvas'),W=260,Hh=190,dpr=window.devicePixelRatio||1;cv.width=W*dpr;cv.height=Hh*dpr;cv.style.width=W+'px';cv.style.height=Hh+'px';box.appendChild(cv);
  let a=1e9,b=1e9,c2=-1e9,d=-1e9;for(const q of BASE.q)for(const r of q.rings)for(const p of r){a=Math.min(a,p[0]);b=Math.min(b,p[1]);c2=Math.max(c2,p[0]);d=Math.max(d,p[1]);}
  const k=Math.min((W-8)/(c2-a),(Hh-8)/(d-b)),ox=(W-(c2-a)*k)/2,oy=(Hh-(d-b)*k)/2,X=x=>ox+(x-a)*k,Y=y=>Hh-oy-(y-b)*k;
- const RAMP=['#f7fbff','#c6dbef','#6baed6','#2171b5','#08306b'],colOf=v=>{if(v==null)return '#3a4652';const t=hi>lo?Math.max(0,Math.min(.999,(v-lo)/(hi-lo))):.5;return RAMP[Math.floor(t*RAMP.length)];};
+ /* même gamme que le calque lié (classes ordonnées) ; bleus par défaut */
+ const CR=(c.grad?SPEC:(c.col||[]).filter(h=>h&&h!==GRAY)),RAMP=CR.length>=3?CR:['#f7fbff','#c6dbef','#6baed6','#2171b5','#08306b'],colOf=v=>{if(v==null)return '#3a4652';const t=hi>lo?Math.max(0,Math.min(.999,(v-lo)/(hi-lo))):.5;return RAMP[Math.floor(t*RAMP.length)];};
  const g=cv.getContext('2d');g.scale(dpr,dpr);g.lineWidth=.5;g.strokeStyle='rgba(0,0,0,.35)';
  BASE.q.forEach((q,i)=>{g.fillStyle=colOf(V[i]);for(const r of q.rings){g.beginPath();r.forEach((p,j)=>j?g.lineTo(X(p[0]),Y(p[1])):g.moveTo(X(p[0]),Y(p[1])));g.closePath();g.fill();g.stroke();}});
  const fm=v=>v==null?'données insuffisantes':Q.yr?String(Math.round(v)):(Q.u==='%'?(Math.round(v*10)/10).toString().replace('.',','):nf.format(Math.round(Q.u===' m'?v*10:v)/(Q.u===' m'?10:1)))+Q.u;

@@ -92,6 +92,15 @@ with sync_playwright() as p:
  # coupe sur la Seine (eau)
  pg.evaluate("__cut(2.3375,48.8612,2.3325,48.8565)");pg.wait_for_timeout(12000)
  ok(pg.evaluate("document.querySelectorAll('#cutw [data-ly=eau] rect').length")>0,'coupe : eau sur la Seine');pg.click('#cutx')
+ # zoom de la coupe
+ pg.evaluate("__cut(2.3300,48.8728,2.3312,48.8745)");pg.wait_for_timeout(9000)
+ v0=pg.evaluate("document.querySelector('#cutw .cutsvg svg').getAttribute('viewBox')");pg.click('#cutzi');pg.wait_for_timeout(300)
+ ok(pg.evaluate("document.querySelector('#cutw .cutsvg svg').getAttribute('viewBox')")!=v0,'coupe : zoom avant');pg.click('#cutzr');pg.click('#cutx')
+ # accueil (premier écran)
+ pg.goto(URL+'?accueil=1');pg.wait_for_function("!!(window.parisGraphie&&document.querySelector('#crit details.lsec'))",timeout=90000);pg.wait_for_timeout(1000)
+ ok(pg.is_visible('#acc'),'accueil affiché');pg.type('#accq','65 bis rue la');pg.wait_for_timeout(1500)
+ ok(not pg.is_visible('#acc') and pg.evaluate("document.querySelector('#q').value").startswith('65 bis'),'accueil : la saisie passe à la recherche')
+ pg.goto(URL);pg.wait_for_function("!!(window.parisGraphie&&document.querySelector('#crit details.lsec'))",timeout=90000);pg.wait_for_timeout(1000)
  # tutoriel
  pg.evaluate("__t.tuto()");pg.wait_for_timeout(6000);st_=0
  for i in range(4):
