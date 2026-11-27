@@ -2580,7 +2580,7 @@ setCrit(CRIT[0]);ready=true;
 }
 /* ---------- tutoriel des premières visites : 4 étapes, bouton Passer, relançable depuis le pied de page ---------- */
 const TUTO=[
- {el:['#scroll'],h:'Une adresse, des calques',p:'Tapez une adresse pour centrer la carte sur un immeuble. Dans la liste, choisissez un calque, ici l\'âge du bâti : les bâtiments se colorent selon ce critère et la légende s\'affiche. Un clic sur un bâtiment ouvre sa fiche.',demo:tuD1},
+ {el:[isMob()?'#panel':'#scroll'],h:'Une adresse, des calques',p:'Tapez une adresse pour centrer la carte sur un immeuble. Dans la liste, choisissez un calque, ici l\'âge du bâti : les bâtiments se colorent selon ce critère et la légende s\'affiche. Un clic sur un bâtiment ouvre sa fiche.',demo:tuD1},
  {el:['#pdfb'],h:'La fiche PDF',p:'Dans la fiche d\'un bâtiment, le bouton « Exporter la fiche en PDF » produit un dossier complet : carte, données sourcées, autorisations, plans historiques et coupes sur rue tracées automatiquement, de l\'immeuble d\'en face jusqu\'au fond de la parcelle.',img:'tuto-fiche.jpg',demo:tuD2},
  {el:['#zoom','#zpm'],h:'Le plan, en DXF ou en PDF',p:'Le bouton Plan propose deux formats avant de tracer un rectangle : DXF géoréférencé en Lambert 93 (un calque par couche, pour ArchiCAD, AutoCAD ou QGIS) ou PDF vectoriel aux couleurs de la carte, calques affichés compris.',img:'tuto-plan.jpg',demo:tuD3},
  {el:['#zoom'],h:'La coupe',p:'Le bouton Coupe permet de tracer une ligne de A vers B : terrain IGN, bâti, gabarits du PLU avec leurs règles, arbres selon leur essence et nuage de points LiDAR HD, avec un curseur de profondeur, un plan de repérage et la mesure. Export DXF et PDF vectoriel.',img:'tuto-coupe.jpg',demo:tuD4}];
@@ -2602,37 +2602,43 @@ function tCutLine(s){s=TS.big??s;let n=0,mx=0,my=0;for(let e=edgS[s];e<edgS[s+1]
  for(let e=edgS[s];e<edgS[s+1];e+=2){const a=edg[e],x=pos[2*a]-mx,y=pos[2*a+1]-my;sxx+=x*x;syy+=y*y;sxy+=x*y;}const th=.5*Math.atan2(2*sxy,sxx-syy),ux=-Math.sin(th),uy=Math.cos(th);
  let h=0;for(let e=edgS[s];e<edgS[s+1];e+=2){const a=edg[e];h=Math.max(h,Math.abs((pos[2*a]-mx)*ux+(pos[2*a+1]-my)*uy));}h+=28;
  const A=[mx-ux*h,my-uy*h],B=[mx+ux*h,my+uy*h];return uy>=0?{A,B}:{A:B,B:A};}
-async function tZoom(){const s=await tBuilding();if(s<0)return -1;const g=TS.big??s,k=Math.min(6,Math.max(2.3,260/Math.max(bbox[4*g+2]-bbox[4*g],bbox[4*g+3]-bbox[4*g+1]))),bx=(bbox[4*g]+bbox[4*g+2])/2,by=(bbox[4*g+1]+bbox[4*g+3])/2,pw=isMob()?0:340-422;
- if(Math.abs(view.k-k)>.05||Math.hypot(view.cx-(bx-pw/2/k),view.cy-(by-(isMob()?innerHeight*.28:Hh*.17)/k))>3)await flyView(k,bx-pw/2/k,by-(isMob()?innerHeight*.28:Hh*.17)/k);return s;}
+function tInside(s){const [x0,y0,x1,y1]=[bbox[4*s],bbox[4*s+1],bbox[4*s+2],bbox[4*s+3]];let best=null,bd=-1;for(let i=1;i<8;i++)for(let j=1;j<8;j++){const x=x0+(x1-x0)*i/8,y=y0+(y1-y0)*j/8;if(pick(x,y)!==s)continue;const d=Math.min(i,8-i)+Math.min(j,8-j);if(d>bd){bd=d;best=[x,y];}}return tW2s(...(best||[(x0+x1)/2,(y0+y1)/2]));}
+async function tZoom(card){const s=await tBuilding();if(s<0)return -1;const g=TS.big??s,sz=Math.max(bbox[4*g+2]-bbox[4*g],bbox[4*g+3]-bbox[4*g+1]),bx=(bbox[4*g]+bbox[4*g+2])/2,by=(bbox[4*g+1]+bbox[4*g+3])/2,pw=isMob()?0:340-422;
+ // sur téléphone : zoom qui laisse voir la coupe entière ; immeuble au-dessus du volet de la fiche, ou sous la bulle du tutoriel
+ const k=isMob()?Math.min(4,Math.max(1.5,innerWidth*.72/85)):Math.min(6,Math.max(2.3,260/sz)),off=isMob()?(card?Hh*.3:-Hh*.12):Hh*.17,cy=by-off/k;
+ if(Math.abs(view.k-k)>.05||Math.hypot(view.cx-(bx-pw/2/k),view.cy-cy)>3)await flyView(k,bx-pw/2/k,cy);return s;}
+// volet du téléphone : ouvert / fermé par le bouton du panneau, comme le ferait l'utilisateur
+async function tSheet(open,tok){if(!isMob())return;const p=$('#panel'),mn=p.classList.contains('min');if(open===!mn)return;const t=tPos('#tog');if(t){await tMove(t[0],t[1],500);await tClick();}if(tok!==TS.tok)return;p.classList.toggle('min',!open);syncTog();await tSleep(450);TS.place&&TS.place();}
 async function tuD1(tok){const sc=$('#scroll'),b=$('#scroll button[data-id="per"]'),sec=b&&b.closest('details'),sm=sec&&sec.querySelector('summary');if(!b)return;
- if(!isMob()&&sc&&sec&&sm){if(sec.open)sec.open=false;await tSleep(60);await tMove(innerWidth*.6,innerHeight*.55,500);const p0=tPos(sc);if(p0)await tMove(p0[0],p0[1]);if(tok!==TS.tok)return;
-  // défilement jusqu'au dossier « Âge »
-  const r=sm.getBoundingClientRect(),r0=sc.getBoundingClientRect();sc.scrollTo({top:sc.scrollTop+r.top-r0.top-r0.height*.3,behavior:'smooth'});await tSleep(900);if(tok!==TS.tok)return;
-  // clic sur le dossier pour le déplier
-  let p=tPos(sm);if(p)await tMove(p[0]-50,p[1]);await tClick();if(tok!==TS.tok)return;sec.open=true;await tSleep(450);if(tok!==TS.tok)return;
-  // clic sur « Période de construction »
-  p=tPos(b);if(p)await tMove(p[0]-40,p[1]);await tClick();}
- else if(sec)sec.open=true;
- if(tok!==TS.tok)return;if(st.crit.id!=='per')b.click();}
+ if(sec&&sec.open)sec.open=false;await tSleep(60);
+ if(isMob()){await tMove(innerWidth*.5,innerHeight*.45,400);await tSheet(true,tok);}else{await tMove(innerWidth*.6,innerHeight*.55,500);const p0=tPos(sc);if(p0)await tMove(p0[0],p0[1]);}
+ if(tok!==TS.tok)return;
+ if(sc&&sm){// défilement jusqu'au dossier « Âge »
+  const r=sm.getBoundingClientRect(),r0=sc.getBoundingClientRect();sc.scrollTo({top:sc.scrollTop+r.top-r0.top-r0.height*.25,behavior:'smooth'});await tSleep(900);if(tok!==TS.tok)return;
+  // clic sur le dossier pour le déplier, puis sur « Période de construction »
+  let p=tPos(sm);if(p)await tMove(p[0],p[1]);await tClick();if(tok!==TS.tok)return;sec.open=true;await tSleep(450);if(tok!==TS.tok)return;
+  p=tPos(b);if(p)await tMove(p[0],p[1]);await tClick();}
+ if(tok!==TS.tok)return;if(st.crit.id!=='per')b.click();
+ if(isMob()){await tSleep(900);if(tok!==TS.tok)return;await tSheet(false,tok);}}
 async function tuD2(tok){if(st.crit.id!=='per'){const b=$('#scroll button[data-id="per"]');if(b)b.click();}
- const s=await tZoom();if(s<0||tok!==TS.tok)return;const bc=tW2s((bbox[4*s]+bbox[4*s+2])/2,(bbox[4*s+1]+bbox[4*s+3])/2);await tMove(bc[0],bc[1]);await tClick();if(tok!==TS.tok)return;
- sel=s;await showCard(s,true);draw();await tSleep(450);if(tok!==TS.tok)return;const p=tPos('#pdfb');if(p){await tMove(p[0],p[1]);await tClick();}}
-async function tuD3(tok){const s=await tZoom();if(s<0||tok!==TS.tok)return;sel=s;if(cardFor>=0){await showCard(-1);}draw();TS.place&&TS.place();
+ await tSheet(false,tok);const s=await tZoom(1);if(s<0||tok!==TS.tok)return;const bc=tInside(s);await tMove(bc[0],bc[1]);await tClick();if(tok!==TS.tok)return;
+ sel=s;await showCard(s,true);draw();await tSleep(450);if(tok!==TS.tok)return;const pb=$('#pdfb');if(pb){pb.scrollIntoView({block:'nearest',behavior:'smooth'});await tSleep(500);}TS.place&&TS.place();const p=tPos('#pdfb');if(p){await tMove(p[0],p[1]);await tClick();}}
+async function tuD3(tok){await tSheet(false,tok);const s=await tZoom();if(s<0||tok!==TS.tok)return;sel=s;if(cardFor>=0){await showCard(-1);}draw();TS.place&&TS.place();
  let p=tPos('#zp');if(p){await tMove(p[0],p[1]);await tClick();}if(tok!==TS.tok)return;zpMenu(true);TS.place&&TS.place();await tSleep(250);
  // le bandeau se déplie : on montre DXF, puis on choisit PDF
  p=tPos('#zx');if(p)await tMove(p[0],p[1],500);await tSleep(500);p=tPos('#zpp');if(p){await tMove(p[0],p[1],450);await tClick();}if(tok!==TS.tok)return;
  $('#zp').classList.add('on');$('#zpp').classList.add('on');const m=15,g=TS.big??s,a=[bbox[4*g]-m,bbox[4*g+3]+m],b=[bbox[4*g+2]+m,bbox[4*g+1]-m];XP={a,b:a,fmt:'pdf',demo:1};const pa=tW2s(...a);await tMove(pa[0],pa[1],500);
  const t0=performance.now();await new Promise(r=>{const f=()=>{if(tok!==TS.tok||!XP)return r();const u=Math.min(1,(performance.now()-t0)/1100);XP.b=[a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u];const q=tW2s(...XP.b),c=tCur();c.style.transition='none';c.style.left=q[0]+'px';c.style.top=q[1]+'px';draw();if(u<1)requestAnimationFrame(f);else r();};requestAnimationFrame(f);});}
-async function tuD4(tok){if(XP&&XP.demo){XP=null;$('#zp').classList.remove('on');}const s=await tZoom();if(s<0||tok!==TS.tok)return;sel=s;if(cardFor>=0)await showCard(-1);draw();TS.place&&TS.place();
+async function tuD4(tok){if(XP&&XP.demo){XP=null;$('#zp').classList.remove('on');}await tSheet(false,tok);const s=await tZoom();if(s<0||tok!==TS.tok)return;sel=s;if(cardFor>=0)await showCard(-1);draw();TS.place&&TS.place();
  if(!TS.cut){const F=await facadeCuts(s).catch(()=>[]);const sy=c=>(c.A[1]-c.B[1])/Math.hypot(c.A[0]-c.B[0],c.A[1]-c.B[1]);F.sort((p,q)=>sy(p)-sy(q));const F2=F.filter(c=>F.length&&sy(c)<sy(F[0])+.5).sort((p,q)=>p.L-q.L);TS.cut=F2[0]||F[0]||tCutLine(s);/* petite façade sur la rue La Fayette (au sud), coupe perpendiculaire */}
  let p=tPos('#zc');if(p){await tMove(p[0],p[1]);await tClick();}if(tok!==TS.tok)return;$('#zc').classList.add('on');const {A,B}=TS.cut;XC={a:A,b:A,demo:1};const pa=tW2s(...A);await tMove(pa[0],pa[1],600);
  const t0=performance.now();await new Promise(r=>{const f=()=>{if(tok!==TS.tok||!XC)return r();const u=Math.min(1,(performance.now()-t0)/1200);XC.b=[A[0]+(B[0]-A[0])*u,A[1]+(B[1]-A[1])*u];const q=tW2s(...XC.b),c=tCur();c.style.transition='none';c.style.left=q[0]+'px';c.style.top=q[1]+'px';draw();if(u<1)requestAnimationFrame(f);else r();};requestAnimationFrame(f);});}
 function tCleanStep(){$('#zpp').classList.remove('on');if(XP&&XP.demo){XP=null;$('#zp').classList.remove('on');}zpMenu(false);if(XC&&XC.demo){XC=null;$('#zc').classList.remove('on');}draw();}
 function tuto(){let i=0;const hl=document.createElement('div'),w=document.createElement('div'),bk=document.createElement('div');hl.id='tuhl';w.id='tuw';bk.id='tublk';w.setAttribute('role','dialog');w.setAttribute('aria-label','Tutoriel');document.body.append(bk,hl,w);
- TS.save={crit:st.crit,k:view.k,cx:view.cx,cy:view.cy,sel,card:cardFor};TS.tok++;
+ TS.save={crit:st.crit,k:view.k,cx:view.cx,cy:view.cy,sel,card:cardFor,min:$('#panel').classList.contains('min')};TS.tok++;
  const kd=e=>{if(e.key==='Escape')end();};addEventListener('keydown',kd);
  const end=async()=>{TS.tok++;removeEventListener('resize',place);removeEventListener('keydown',kd);w.remove();bk.remove();hl.style.opacity=0;if(TCUR)TCUR.style.opacity=0;tCleanStep();
-  const S0=TS.save;if(S0){if(st.crit!==S0.crit)setCrit(S0.crit);sel=S0.sel;await showCard(S0.card>=0?S0.card:-1,S0.card>=0);await flyView(S0.k,S0.cx,S0.cy,900);}hl.remove();try{localStorage.setItem('pg_tuto','1');}catch(e){}};
+  const S0=TS.save;if(S0){if(isMob()){$('#panel').classList.toggle('min',S0.min);syncTog();}if(st.crit!==S0.crit)setCrit(S0.crit);sel=S0.sel;await showCard(S0.card>=0?S0.card:-1,S0.card>=0);await flyView(S0.k,S0.cx,S0.cy,900);}hl.remove();try{localStorage.setItem('pg_tuto','1');}catch(e){}};
  function place(){const S=TUTO[i],rs=S.el.map(q=>$(q)).filter(e=>e&&e.getBoundingClientRect().width>0).map(e=>e.getBoundingClientRect());
   let r={left:innerWidth/2-90,top:innerHeight/2-90,right:innerWidth/2+90,bottom:innerHeight/2+90};if(rs.length)r={left:Math.min(...rs.map(r=>r.left)),top:Math.min(...rs.map(r=>r.top)),right:Math.max(...rs.map(r=>r.right)),bottom:Math.min(innerHeight-8,Math.max(...rs.map(r=>r.bottom)))};
   const pd=6;Object.assign(hl.style,{left:(r.left-pd)+'px',top:(r.top-pd)+'px',width:(r.right-r.left+2*pd)+'px',height:(r.bottom-r.top+2*pd)+'px',opacity:rs.length?1:0});
