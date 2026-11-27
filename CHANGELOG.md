@@ -21,6 +21,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 
 ### Ajouté
+- Mesure et tracé de coupe : Maj maintenue verrouille la direction du segment en cours (arrondie à l'horizontale, la verticale ou 45° si elle en est proche), comme dans un logiciel de dessin. Sur la carte et dans la fenêtre de coupe.
 - Bouton « Plan » à la place de « DXF » : il se déplie en DXF (géoréférencé, Lambert 93) et PDF ; on choisit le format avant de tracer le rectangle.
 - Plan en PDF vectoriel A3, aux couleurs de la carte (calque thématique, calques superposés affichés, Seine, limites, noms de rues et numéros), avec échelle, nord, légende et sources. Non géoréférencé.
 - Fenêtre de coupe : export PDF vectoriel A3 à la place du SVG, nuage LiDAR compris (un point vectoriel par point LiDAR, opacité selon la profondeur), calques et profondeur affichés.
