@@ -9,6 +9,13 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Code de la page découpé en fichiers par domaine (`static/page.html`, `static/src/style.css`, `static/src/01-socle.js` à `18-tutoriel.js`), assemblés à la publication ; comportement inchangé.
+- Base graphique : variables pour les couleurs d'interface, cinq tailles de texte (les plus petites relevées à 11,5 px) et des niveaux de superposition nommés ; focus clavier visible ; animations coupées si le système le demande.
+- Panneau : texte d'accueil raccourci, champs de recherche homogènes, rubrique des projets Bouchaud repliée au démarrage, source des couches placée sous leur libellé, pied réduit à une ligne (sources et méthodes s'ouvrent dans la liste).
+- Barre d'outils de la carte : deux groupes (outils : Plan, Coupe, Mesure, avec icône et libellé ; navigation : zoom, recadrage, plein écran), cibles agrandies sur téléphone (zoom au pincement).
+- Fiche : les lignes sans valeur ne s'affichent plus dans la fenêtre (elles restent dans le PDF).
+- Coupe : règles des gabarits rangées en bandeau au-dessus du dessin, sans chevauchement, reliées à leur gabarit par un trait de rappel ; bouton « Masquer le plan » qui rend aussi la place du plan de repérage.
+- Performance : classes des critères calculées à la première utilisation (démarrage environ deux fois plus rapide, plus longue tâche ramenée de 0,85 à 0,3 s) ; noms de rues et numéros (1 Mo) chargés seulement au zoom ou avant un export.
 - Chaîne de mise à jour réécrite autour d'un registre d'étapes (`pipeline/run.py`, `pipeline/engine.py`) : fréquence, sorties, dépendances et version déclarées pour chaque source ; reprise automatique des sorties du site précédent en cas d'échec d'une étape secondaire, y compris les rattachements par bâtiment quand la liste des bâtiments n'a pas changé ; les marques de recalcul unique deviennent des numéros de version.
 - Méthodologie des indicateurs en source unique (`static/methodes.json`), injectée dans la page et recopiée dans le README (`python pipeline/methodes.py`).
 - Version publique : un drapeau `PUB` dans la page remplace les suppressions de lignes à l'assemblage (DVF et noms Sirene exclus du site public).

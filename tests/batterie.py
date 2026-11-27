@@ -82,7 +82,9 @@ with sync_playwright() as p:
  f,sz,h=dl(pg,lambda:pg.click('#cutd'),'coupe.dxf');ok(f and sz>10000,'coupe DXF (%s octets)'%sz)
  f,sz,h=dl(pg,lambda:pg.click('#cuts'),'coupe.pdf');ok(f and h[:4]==b'%PDF','coupe PDF (%s octets)'%sz)
  pg.locator('#abdrag [data-ab=B] circle').nth(1).scroll_into_view_if_needed();pg.wait_for_timeout(300);hb=pg.locator('#abdrag [data-ab=B] circle').nth(1).bounding_box();L0=pg.inner_text('#cutw .alh b')
- pg.mouse.move(hb['x']+4,hb['y']+4);pg.mouse.down();pg.mouse.move(hb['x']-40,hb['y']+4,steps=5);pg.mouse.up();pg.wait_for_timeout(9000)
+ pg.mouse.move(hb['x']+4,hb['y']+4);pg.mouse.down();pg.mouse.move(hb['x']-40,hb['y']+4,steps=5);pg.mouse.up()
+ try: pg.wait_for_function("!/Recalcul/.test(document.querySelector('#cutw .alh b').textContent)",timeout=90000)
+ except Exception: pass
  ok(pg.inner_text('#cutw .alh b')!=L0 and 'Coupe A-B' in pg.inner_text('#cutw .alh b'),'coupe : poignée B (%s → %s)'%(L0,pg.inner_text('#cutw .alh b')))
  pg.click('#cutm');sv=pg.locator('#cutw .cutsvg svg').bounding_box();pg.mouse.move(sv['x']+200,sv['y']+120);pg.mouse.down();pg.keyboard.down('Shift');pg.mouse.move(sv['x']+205,sv['y']+40,steps=5);pg.mouse.up();pg.keyboard.up('Shift');pg.wait_for_timeout(300)
  ok(pg.evaluate("document.querySelectorAll('#cutw .cutsvg svg .msr, #cutw .cutsvg svg [data-ms]').length>=0"),'coupe : mesure')

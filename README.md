@@ -125,7 +125,7 @@ Les changements visibles pour les utilisateurs de la carte et de l'API sont cons
 ## Contenu du dépôt
 
 - `pipeline/` : les scripts (un module `step_*.py` par famille de données, `run.py` pour le registre des étapes, `engine.py` pour leur exécution, `smoke.py` pour le contrôle avant publication).
-- `static/` : éléments figés (page `template.html`, méthodologie `methodes.json`, atlas historique calé, relief, fonds).
+- `static/` : la page (`page.html`, feuille de style et code dans `src/`, un fichier par domaine : socle, géométrie, critères, légende et panneau, WebGL, libellés, héliodon, interactions, fiche, calques superposés, exports, PDF vectoriel, coupe, DXF, recherche, fiche PDF, analyse et API, tutoriel ; assemblés dans l'ordre des noms par `pipeline/step_site.py`), méthodologie `methodes.json`, atlas historique calé, relief, fonds.
 - `tests/` : batterie de tests de bout en bout (`python tests/batterie.py <copie du site>`).
 - `api-worker/` : l'API (Cloudflare Worker).
 

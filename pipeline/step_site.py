@@ -6,14 +6,26 @@ import methodes
 # fichiers statiques publiés tels quels avec la page (LiDAR HD de l'outil Coupe : copc.js et laz-perf, licences MIT et Apache 2.0 ; aperçus du tutoriel)
 ASSETS = ('pg-copc.js', 'laz-perf.wasm', 'tuto-fiche.jpg', 'tuto-plan.jpg', 'tuto-coupe.jpg')
 
+SRC = os.path.join(STATIC, 'src')
+
+def template():
+    """Page source : static/page.html + static/src/style.css + static/src/*.js (dans l'ordre des noms).
+    Les fichiers JS partagent une même portée (une fonction asynchrone qui enveloppe le tout) : l'ordre compte,
+    chaque fichier peut utiliser ce que les précédents définissent."""
+    page = open(os.path.join(STATIC, 'page.html'), encoding='utf-8').read()
+    css = open(os.path.join(SRC, 'style.css'), encoding='utf-8').read().rstrip('\n')
+    js = ''.join(open(f, encoding='utf-8').read() for f in sorted(glob.glob(os.path.join(SRC, '*.js'))))
+    assert page.count('/*CSS*/') == 1 and page.count('/*JS*/') == 1
+    return page.replace('/*CSS*/', css).replace('/*JS*/', '<script>\n(async function(){\n"use strict";\n' + js + '})();')
+
 def html(hooks=False, dv=None):
     """hooks=True : accès de test (tests/batterie.py) aux outils internes ; jamais publié."""
-    t = open(os.path.join(STATIC, 'template.html'), encoding='utf-8').read()
+    t = template()
     e = open(os.path.join(STATIC, 'earcut.min.js'), encoding='utf-8').read()
     t = t.replace('<script src="https://cdn.jsdelivr.net/npm/earcut@2.2.4/dist/earcut.min.js"></script>', '<script>' + e + '</script>')
-    assert t.count('const PUB=false;') == 1, 'drapeau PUB introuvable dans template.html'
+    assert t.count('const PUB=false;') == 1, 'drapeau PUB introuvable dans static/src'
     t = t.replace('const PUB=false;', 'const PUB=true;')
-    assert t.count('const METH=/*METH*/[];') == 1, 'emplacement de la méthodologie introuvable dans template.html'
+    assert t.count('const METH=/*METH*/[];') == 1, 'emplacement de la méthodologie introuvable dans static/src'
     t = t.replace('const METH=/*METH*/[];', 'const METH=' + json.dumps(methodes.load(), ensure_ascii=False) + ';')
     if not methodes.readme_ok(): print('::warning title=README::méthodes du README différentes de static/methodes.json (python pipeline/methodes.py)', flush=True)
     # DV : version des données dans les URL (cache navigateur). Elle ne change que si les données changent,
