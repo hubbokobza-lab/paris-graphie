@@ -1860,14 +1860,19 @@ async function cutShow(A,B,opt={}){
   for(const b of Bt){ap([[X(b.t0),Y(b.zb)],[X(b.t1),Y(b.zb)],[X(b.t1),Y(b.zb+b.hm)],[X(b.t0),Y(b.zb+b.hm)]],true);if(b.hx>b.hm+.5)ap([[X(b.t0),Y(b.zb+b.hx)],[X(b.t1),Y(b.zb+b.hx)]]);}
   ap(T.map(p=>[X(p[0]),Y(p[1])]));for(const g of G)ap(g.pts.map(p=>[X(p[0]),Y(p[1])]));for(const P of [...NIV,...PLAF,...HMC])ap(P.map(p=>[X(p[0]),Y(p[1])]));
   if(PLAN)for(const [,r] of PLAN.DXP)ap(r.map(([t,d])=>[X(t),PD(d)]),true);ap([[X(0),PD(0)],[X(L),PD(0)]]);
+  // points LiDAR affichés, indexés par cases de 8 unités SVG
+  let LGI=null,LGK='';const lgrid=()=>{const key=(LIDP?LIDP.t.length:0)+'|'+LDg;if(LGK===key)return LGI;LGK=key;LGI=null;if(!LIDP||CUTOFF.has('lidar'))return null;const m=new Map();
+   for(let i=0;i<LIDP.t.length;i++){if(LIDP.d[i]>LDg||LIDP.d[i]<-PTOL)continue;const x=X(LIDP.t[i]*LIDK),y=Y(LIDP.z[i]),c=Math.floor(x/8)+':'+Math.floor(y/8);let a=m.get(c);if(!a)m.set(c,a=[]);a.push(x,y);}return LGI=m;};
   let mk=null;const snapS=(p,from)=>{const s_=sv(),sc_=s_.getScreenCTM().a||1,tv=10/sc_,te=7/sc_;let bv=null,dv=tv,be=null,de=te;
    for(const q of SV){const d=Math.hypot(q[0]-p.x,q[1]-p.y);if(d<dv){dv=d;bv=q;}}
    if(bv)return {x:bv[0],y:bv[1],k:'v'};
+   const lg=lgrid();if(lg){let bl=null,dl=Math.min(tv,8);const cx=Math.floor(p.x/8),cy=Math.floor(p.y/8);for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++){const a=lg.get((cx+i)+':'+(cy+j));if(!a)continue;for(let k=0;k<a.length;k+=2){const d=Math.hypot(a[k]-p.x,a[k+1]-p.y);if(d<dl){dl=d;bl=[a[k],a[k+1]];}}}
+    if(bl){if(from){const dx=bl[0]-from.x,dy=bl[1]-from.y,an=Math.atan2(Math.abs(dy),Math.abs(dx));if(an<2*Math.PI/180)return {x:bl[0],y:from.y,k:'l'};if(an>88*Math.PI/180)return {x:from.x,y:bl[1],k:'l'};}return {x:bl[0],y:bl[1],k:'l'};}}
    if(from){const dx=p.x-from.x,dy=p.y-from.y,L_=Math.hypot(dx,dy);if(L_>2/sc_){const an=Math.atan2(Math.abs(dy),Math.abs(dx));if(an<5*Math.PI/180)return {x:p.x,y:from.y,k:'o'};if(an>85*Math.PI/180)return {x:from.x,y:p.y,k:'o'};}}
    for(const [a,b] of SG){const vx=b[0]-a[0],vy=b[1]-a[1],l2=vx*vx+vy*vy;if(!l2)continue;const u=Math.max(0,Math.min(1,((p.x-a[0])*vx+(p.y-a[1])*vy)/l2)),px=a[0]+u*vx,py=a[1]+u*vy,d=Math.hypot(px-p.x,py-p.y);if(d<de){de=d;be=[px,py];}}
    return be?{x:be[0],y:be[1],k:'e'}:{x:p.x,y:p.y,k:''};};
   const showMk=q=>{if(!gm)return;if(!mk){mk=el('g',{});gm.append(mk);}mk.innerHTML='';if(!q.k)return;const c='#d4462f';
-   if(q.k==='v')mk.append(el('rect',{x:q.x-3.5,y:q.y-3.5,width:7,height:7,fill:'none',stroke:c,'stroke-width':1.2}));else if(q.k==='e')mk.append(el('path',{d:'M'+(q.x-3.5)+' '+(q.y-3.5)+' l7 7 m0 -7 l-7 7',stroke:c,'stroke-width':1.2}));else mk.append(el('text',{x:q.x+5,y:q.y-5,fill:c,'font-size':9,'font-weight':700},'⊥'));};
+   if(q.k==='v')mk.append(el('rect',{x:q.x-3.5,y:q.y-3.5,width:7,height:7,fill:'none',stroke:c,'stroke-width':1.2}));else if(q.k==='l')mk.append(el('circle',{cx:q.x,cy:q.y,r:3.5,fill:'none',stroke:c,'stroke-width':1.2}));else if(q.k==='e')mk.append(el('path',{d:'M'+(q.x-3.5)+' '+(q.y-3.5)+' l7 7 m0 -7 l-7 7',stroke:c,'stroke-width':1.2}));else mk.append(el('text',{x:q.x+5,y:q.y-5,fill:c,'font-size':9,'font-weight':700},'⊥'));};
   const loc=(e,from)=>{const s_=sv(),pt=s_.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=snapS(pt.matrixTransform(s_.getScreenCTM().inverse()),from);showMk(q);return q;};
   const val=p=>p.y<=Ht?{k:'c',t:(p.x-ox)/sc,z:zmin+(oy-p.y)/sc}:{k:'p',t:(p.x-ox)/sc,d:(PY-p.y)/sc};
   const el=(n,at,tx)=>{const e=document.createElementNS(NS,n);for(const k in at)e.setAttribute(k,at[k]);if(tx)e.textContent=tx;return e;};
@@ -1880,7 +1885,7 @@ async function cutShow(A,B,opt={}){
   const up=e=>{if(!on||!a0)return;const p=loc(e,a0);if(Math.hypot(p.x-a0.x,p.y-a0.y)<2)tmp.remove();else draw_(a0,p,tmp);a0=null;tmp=null;};
   const clr=()=>{if(gm)gm.innerHTML='';mk=null;a0=null;tmp=null;};const esc_=e=>{if(e.key==='Escape'&&on)clr();};box.querySelector('#cutmx').onclick=clr;
   bm.onclick=()=>{on=!on;bm.classList.toggle('on',on);box.querySelector('#cutmx').hidden=!on;const s_=sv();s_.style.cursor=on?'crosshair':'';s_.style.touchAction=on?'none':'';if(on&&!gm){gm=el('g',{id:'meas'});s_.append(gm);s_.addEventListener('pointerdown',down);s_.addEventListener('pointermove',move);s_.addEventListener('pointerup',up);s_.addEventListener('pointercancel',up);addEventListener('keydown',esc_);}
-   box.querySelector('#cutms').textContent=on?'Mesure : faites glisser d\'un point à l\'autre sur la coupe (distance, horizontal, vertical, pente) ou sur le plan ; le dessin ne défile plus, faites défiler la fenêtre en dehors. « Effacer » (ou Échap) retire les mesures.':'';};}
+   box.querySelector('#cutms').textContent=on?'Mesure : faites glisser d\'un point à l\'autre (aimant : sommets, arêtes, points LiDAR, horizontales et verticales) sur la coupe (distance, horizontal, vertical, pente) ou sur le plan ; le dessin ne défile plus, faites défiler la fenêtre en dehors. « Effacer » (ou Échap) retire les mesures.':'';};}
  if(opt.headless){if(!CUTOFF.has('lidar'))await loadLid();return {svg:svgOn(),L,lid:LIDP?LIDP.t.length:0};}
 }
 /* ---------- export DXF géoréférencé (Lambert 93, EPSG:2154), un calque par couche ---------- */
