@@ -33,6 +33,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 
 ### Ajouté
+- Essai de design pour les clients de l'agence, activé par `?essai=1` (retiré par `?essai=0`) : accueil dépouillé avec un seul champ d'adresse, signature de l'agence, titres en minuscules et plus grands, gammes de couleurs dérivées de la charte (ocre pour l'ancien, bleus pour le récent ; hauteurs du sombre au clair), méthodes de calcul derrière un « i » dans la fiche, règles des gabarits masquées par défaut dans la coupe. Le design par défaut est inchangé.
 - Batterie de tests de bout en bout (`tests/batterie.py`, 39 contrôles sur ordinateur et téléphone) à lancer avant une grosse modification.
 - Mode `site` du robot : republication de la page seule sur les données en ligne, lancé automatiquement à chaque modification de l'interface.
 - Contrôle du site dans un navigateur sans écran avant chaque publication (ordinateur et téléphone) : en cas d'erreur, rien n'est publié.

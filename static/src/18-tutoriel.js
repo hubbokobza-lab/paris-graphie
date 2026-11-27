@@ -81,5 +81,5 @@ function tuto(){let i=0;const hl=document.createElement('div'),w=document.create
   try{await S.demo(tok);}catch(e){}if(tok!==TS.tok)return;place();const im=w.querySelector('.tuim');if(im){im.classList.add('on');place();setTimeout(()=>{if(tok===TS.tok)place();},500);const ig=im.querySelector('img');if(ig&&!ig.complete)ig.onload=()=>{if(tok===TS.tok)place();};}if(TCUR)setTimeout(()=>{if(tok===TS.tok&&TCUR)TCUR.style.opacity=0;},900);}
  TS.place=place;addEventListener('resize',place);show();}
 $('#tutob').onclick=e=>{e.preventDefault();if(!$('#tuw'))tuto();};
-{let seen=false;try{seen=!!localStorage.getItem('pg_tuto');}catch(e){seen=true;}if(!seen&&!/[?&](adresses|embed)=/.test(location.search)&&!navigator.webdriver)setTimeout(()=>{if(!$('#tuw'))tuto();},900);}
+{let seen=false;try{seen=!!localStorage.getItem('pg_tuto');}catch(e){seen=true;}if(!seen&&!ESSAI&&!/[?&](adresses|embed)=/.test(location.search)&&!navigator.webdriver)setTimeout(()=>{if(!$('#tuw'))tuto();},900);}
 $('#load').style.display='none';

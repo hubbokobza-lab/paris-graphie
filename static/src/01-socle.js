@@ -1,5 +1,8 @@
 const $=s=>document.querySelector(s);const isMob=()=>innerWidth<=760||(innerWidth<=1024&&innerHeight>innerWidth);
 const nf=new Intl.NumberFormat('fr-FR');
+/* essai de design pour les clients de l'agence : ?essai=1 l'active (mémorisé), ?essai=0 le retire */
+const ESSAI=(()=>{const m=location.search.match(/[?&]essai=([01])/);try{if(m)localStorage.setItem('pg_essai',m[1]);return localStorage.getItem('pg_essai')==='1';}catch(e){return !!m&&m[1]==='1';}})();
+if(ESSAI)document.body.classList.add('essai');
 const tick=()=>new Promise(r=>setTimeout(r,0));
 function prog(msg,p){$('#loadmsg').textContent=msg;$('#loadbar').style.width=(p*100)+'%';}
 function fail(msg){$('#loadmsg').textContent=msg;$('#load .bar').style.display='none';}

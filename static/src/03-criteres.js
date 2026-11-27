@@ -95,6 +95,12 @@ const SEC_ORD=['id','bati','ener','hist','sol','usage','own','aut','pat','plu','
 const SEC_FAM={bati:1,ener:1,hist:1,sol:1,usage:2,own:2,aut:2,pat:2,plu:2,sir:2,dvf:2};
 /* PUB : version publique (true sur le site publié, fixé par step_site) ; sans DVF et sans noms Sirene */
 const PUB=false;
+/* essai : gammes dérivées de la charte (ocre pour l'ancien, gris-bleu, bleu pour le récent ; hauteurs du sombre au clair) */
+if(ESSAI){const ramp=(st,n)=>Array.from({length:n},(_,i)=>{const t=n<2?0:i/(n-1)*(st.length-1),k=Math.min(st.length-2,Math.floor(t)),u=t-k,a=hexRgb(st[k]),b=hexRgb(st[k+1]);return '#'+[0,1,2].map(j=>Math.round(a[j]+(b[j]-a[j])*u).toString(16).padStart(2,'0')).join('');});
+ const AGE=['#8a6a3e','#b8925c','#dcc39a','#ece4d3','#c4d3df','#86a7c2','#4f7ca3'];
+ SPEC.splice(0,SPEC.length,...ramp(AGE,SPEC.length));
+ const fix=(A,stops)=>{const n=A.length-(A[A.length-1]===GRAY?1:0);A.splice(0,n,...ramp(stops,n));};
+ fix(HT_COL,['#2e4559','#4f7193','#86a7c2','#c4d3df','#f4f7f9']);fix(REH_COL,['#c4d3df','#86a7c2','#4f7ca3','#2f5f8a']);fix(SUR_COL,['#c4d3df','#86a7c2','#4f7ca3','#2f5f8a']);}
 const CRIT=[
  {id:'neu',g:'Plan',name:'Plan neutre (aucun calque)',lab:['Bâtiment'],col:['#8b98a4'],cls:s=>0},
  {id:'hm',g:'Volume',name:'Hauteur médiane',lab:HT_LAB,col:HT_COL,cls:heightCls(HM)},
