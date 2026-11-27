@@ -1,5 +1,5 @@
 // API Paris-graphie (Bouchaud Architectes) : lit les fichiers publiés chaque semaine par le robot sur GitHub Pages.
-const SITE = 'https://paris-graphie.bouchaudarchitectes.com/';
+const SITE = 'https://hubbokobza-lab.github.io/paris-graphie/';
 const LON0 = 2.2255, LAT0 = 48.8162, KX = 111320 * Math.cos(LAT0 * Math.PI / 180), KY = 110574;
 const CORS = { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET, POST, OPTIONS', 'access-control-allow-headers': 'content-type, mcp-session-id, mcp-protocol-version' };
 const J = (o, st = 200, cache = true) => new Response(JSON.stringify(o, null, 1), { status: st, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': cache ? 'public, max-age=600' : 'no-store', ...CORS } });

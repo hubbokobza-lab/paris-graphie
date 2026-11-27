@@ -41,7 +41,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 
 ### Ajouté
-- Domaine propre : https://paris-graphie.bouchaudarchitectes.com/ (alias déclaré dans la zone DNS de bouchaudarchitectes.com, fichier CNAME publié avec le site) ; l'ancienne adresse en github.io y redirige.
+- Domaine propre en préparation : alias paris-graphie.bouchaudarchitectes.com déclaré dans la zone DNS de bouchaudarchitectes.com et fichier CNAME publié avec le site ; les liens de la page restent sur l'adresse github.io tant que le domaine n'est pas confirmé dans les réglages GitHub Pages.
 - Mesure d'audience sans cookie ni identifiant (Cloudflare Web Analytics), limitée aux chargements de page.
 - Lien partageable : l'adresse de la page suit la fiche ouverte (`?b=longitude,latitude` de l'immeuble, stable d'une mise à jour à l'autre, et `&c=` pour le calque affiché) ; bouton « Partager » dans la fiche (copie du lien, ou partage du téléphone).
 - Coupe : calque « Profil du bâti (LiDAR, hachuré) » : silhouette réelle des bâtiments coupés d'après les points « bâtiment » du LiDAR HD, hachurée jusqu'au terrain, à l'écran et dans le PDF.

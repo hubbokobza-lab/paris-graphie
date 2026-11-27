@@ -8,7 +8,7 @@ def slug(s):
 
 DROP = {'Hauteur médiane', 'Hauteur maximale', 'Nombre de niveaux (fichiers fonciers, sinon estimé)'}   # doublons des valeurs chiffrées
 
-def run(site, base='https://paris-graphie.bouchaudarchitectes.com/'):
+def run(site, base='https://hubbokobza-lab.github.io/paris-graphie/'):
     from playwright.sync_api import sync_playwright
     class Q(http.server.SimpleHTTPRequestHandler):
         def log_message(self, *a): pass

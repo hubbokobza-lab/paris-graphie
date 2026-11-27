@@ -15,7 +15,7 @@ os.makedirs(RAW, exist_ok=True)
 LON0, LAT0, Q = 2.2255, 48.8162, 5e-6
 KX = 111320 * math.cos(math.radians(LAT0)); KY = 110574
 DT = {'B': 'u1', 'H': '<u2', 'h': '<i2', 'I': '<u4'}
-UA = {'User-Agent': 'paris-graphie-maj/1.0 (+https://paris-graphie.bouchaudarchitectes.com/)'}
+UA = {'User-Agent': 'paris-graphie-maj/1.0 (+https://hubbokobza-lab.github.io/paris-graphie/)'}
 
 def log(*a): print(time.strftime('%H:%M:%S'), *a, flush=True)
 

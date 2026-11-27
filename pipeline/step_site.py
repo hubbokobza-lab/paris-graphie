@@ -5,7 +5,7 @@ import methodes
 
 # fichiers statiques publiés tels quels avec la page (LiDAR HD de l'outil Coupe : copc.js et laz-perf, licences MIT et Apache 2.0 ; aperçus du tutoriel)
 ASSETS = ('pg-copc.js', 'laz-perf.wasm', 'tuto-fiche.jpg', 'tuto-plan.jpg', 'tuto-coupe.jpg', 'partage.jpg')
-SITE_URL = 'https://paris-graphie.bouchaudarchitectes.com/'
+SITE_URL = 'https://hubbokobza-lab.github.io/paris-graphie/'
 
 SRC = os.path.join(STATIC, 'src')
 
