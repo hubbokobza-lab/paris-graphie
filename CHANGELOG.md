@@ -9,6 +9,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Tutoriel : bulle réduite au titre sur téléphone (« Voir plus » pour le texte et l'aperçu) ; le rectangle du plan et la ligne de coupe sont éclairés pendant la démonstration ; le curseur se recale sur les boutons qui se déplacent (volet, fiche).
 - Tutoriel sur téléphone : le volet des calques s'ouvre et se ferme au bon moment (bouton du panneau), le dossier Âge se déplie avant le choix du calque, le zoom laisse voir l'immeuble et la coupe entre la bulle et le volet ; le curseur vise exactement les boutons et un point situé dans l'emprise de l'immeuble.
 - La fiche d'un bâtiment trouvé par la recherche a pour titre l'adresse recherchée (et non la première adresse du bâtiment), y compris dans le PDF.
 
