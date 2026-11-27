@@ -1189,7 +1189,10 @@ async function showCard(s,pin){
  body(baseInfo(s,undefined,null)+'<div class="k" style="margin-top:8px">Chargement…</div>');
  const [D,C,SR,,AT]=await Promise.all([loadArr(ARR[s]),CN[s]?loadCvp():null,(SNE[s]||SCL[s])?loadSir(ARR[s]):null,(PF[s]&3)?loadMhd():null,loadAtl(),Promise.race([walkFor(s),new Promise(r=>setTimeout(r,3500))])]);
  if(cardFor!==s)return;
- const A=D?D.a:{},P=D?D.p:{},M=cardModel(s,{A,P,D,C,SR,AT}),ad=A&&A[s]||[];
+ const A=D?D.a:{},P=D?D.p:{};
+ // l'adresse recherchée passe en tête (titre de la fiche et du PDF)
+ if(ADPREF&&ADPREF.s===s&&A&&A[s]){const i=A[s].findIndex(a=>nz(a)===nz(ADPREF.t));if(i>0)A[s]=[A[s][i],...A[s].filter((_,k)=>k!==i)];}
+ const M=cardModel(s,{A,P,D,C,SR,AT}),ad=A&&A[s]||[];
  PCTX={s,A,P,D,C,SR,atl:AT,M};
  let out=(ad.length?'<div class="t">'+esc(ad[0])+'</div>':'<div class="t">Pas d\'adresse rattachée</div><div class="k adl">Annexe, cour ou bâtiment sans numéro dans la Base Adresse Nationale</div>')
   +'<div class="sb">'+(AN[s]?'Construit en '+AN[s]:'Date de construction inconnue')+' · Paris '+(ARR[s]?ARR[s]+'e':'')+(ad.length>1?' · '+ad.length+' adresses':'')+'</div>'+legendHtml(s)
@@ -1324,7 +1327,7 @@ async function loadOv(o){
  }
  o.d=d;return d;
 }
-let mark=null;
+let mark=null,ADPREF=null;
 const HPC={};
 function hatchPat(col,ty,k,sp,al){sp=sp||9;al=al||1;const key=col+ty+dpr+sp+al;let p=HPC[key];
  if(!p){const s=Math.round(sp*dpr),c=document.createElement('canvas');c.width=c.height=s;const x=c.getContext('2d');x.globalAlpha=al;x.strokeStyle=col;x.fillStyle=col;x.lineWidth=(al<1?1:1.4)*dpr;x.lineCap='square';
@@ -1766,6 +1769,7 @@ async function cutData(A,B){
  const Bt=[];
  for(let s=0;s<N;s++){if(bbox[4*s+2]<x0||bbox[4*s]>x1||bbox[4*s+3]<y0||bbox[4*s+1]>y1)continue;const ts=[];
   for(let e=edgS[s];e<edgS[s+1];e+=2){const a_=edg[e],b_=edg[e+1];const t=segX([pos[2*a_],pos[2*a_+1]],[pos[2*b_],pos[2*b_+1]]);if(t!=null)ts.push(t);}
+  if(ts.length%2){let r=[],q=[],pv=-1;for(let e=edgS[s];e<edgS[s+1];e+=2){const a_=edg[e],b_=edg[e+1];if(a_!==pv){if(q.length)r.push(q);q=[pos[2*a_],pos[2*a_+1]];}else q.push(pos[2*a_],pos[2*a_+1]);pv=b_;}if(q.length)r.push(q);if(pip(r,ax,ay))ts.push(0);else ts.push(L);}
   if(ts.length<2)continue;ts.sort((p,q)=>p-q);const hm=HM[s]/10,hx=HX[s]/10;if(!(hm>0))continue;
   for(let i=0;i+1<ts.length;i+=2){const t0=ts[i],t1=ts[i+1];if(t1-t0<.3)continue;const zb=Math.min(zAt(t0),zAt(t1));Bt.push({s,t0,t1,zb,hm,hx:Math.max(hm,hx||hm),an:AN[s]});}}
  // parcelles cadastrales coupées : leur réunion donne les îlots, les intervalles entre elles les voies
@@ -2149,7 +2153,7 @@ function goTo(r){
  mark={x:wx,y:wy};
  let s=pick(wx,wy);
  if(s<0)for(const [dx,dy] of [[2,0],[-2,0],[0,2],[0,-2],[4,4],[-4,4],[4,-4],[-4,-4],[8,0],[-8,0],[0,8],[0,-8]]){s=pick(wx+dx,wy+dy);if(s>=0)break;}
- if(s>=0){sel=s;showCard(s,true);}else{sel=-1;showCard(-1);}
+ if(s>=0){ADPREF={s,t:r.t};sel=s;showCard(s,true);}else{sel=-1;showCard(-1);}
  draw();
 }
 qi.addEventListener('input',suggest);qi.addEventListener('focus',()=>{loadAddr();if(qi.value)suggest();});
@@ -2576,22 +2580,30 @@ setCrit(CRIT[0]);ready=true;
 }
 /* ---------- tutoriel des premières visites : 4 étapes, bouton Passer, relançable depuis le pied de page ---------- */
 const TUTO=[
- {el:['#scroll'],h:'Une adresse, des calques',p:'Tapez une adresse pour centrer la carte sur l\'immeuble. Dans la liste, choisissez un calque, ici l\'âge du bâti : les bâtiments se colorent selon ce critère et la légende s\'affiche. Un clic sur un bâtiment ouvre sa fiche.',demo:tuD1},
+ {el:['#scroll'],h:'Une adresse, des calques',p:'Tapez une adresse pour centrer la carte sur un immeuble. Dans la liste, choisissez un calque, ici l\'âge du bâti : les bâtiments se colorent selon ce critère et la légende s\'affiche. Un clic sur un bâtiment ouvre sa fiche.',demo:tuD1},
  {el:['#pdfb'],h:'La fiche PDF',p:'Dans la fiche d\'un bâtiment, le bouton « Exporter la fiche en PDF » produit un dossier complet : carte, données sourcées, autorisations, plans historiques et coupes sur rue tracées automatiquement, de l\'immeuble d\'en face jusqu\'au fond de la parcelle.',img:'tuto-fiche.jpg',demo:tuD2},
  {el:['#zoom'],h:'Le plan, en DXF ou en PDF',p:'Le bouton Plan propose deux formats avant de tracer un rectangle : DXF géoréférencé en Lambert 93 (un calque par couche, pour ArchiCAD, AutoCAD ou QGIS) ou PDF vectoriel aux couleurs de la carte, calques affichés compris.',img:'tuto-plan.jpg',demo:tuD3},
  {el:['#zoom'],h:'La coupe',p:'Le bouton Coupe permet de tracer une ligne de A vers B : terrain IGN, bâti, gabarits du PLU avec leurs règles, arbres selon leur essence et nuage de points LiDAR HD, avec un curseur de profondeur, un plan de repérage et la mesure. Export DXF et PDF vectoriel.',img:'tuto-coupe.jpg',demo:tuD4}];
 function flyView(k1,cx1,cy1,ms=1100){return new Promise(r=>{const k0=view.k,cx0=view.cx,cy0=view.cy,t0=performance.now();const st_=()=>{const u=Math.min(1,(performance.now()-t0)/ms),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;view.k=k0*Math.pow(k1/k0,e);view.cx=cx0+(cx1-cx0)*e;view.cy=cy0+(cy1-cy0)*e;draw();if(u<1)requestAnimationFrame(st_);else r();};requestAnimationFrame(st_);});}
-/* démonstration : toujours le même immeuble (48 boulevard Haussmann), aperçus pré-calculés */
+/* démonstration : toujours le même immeuble (65 rue La Fayette, projet de Bouchaud Architectes), aperçus pré-calculés */
 const TS={tok:0,save:null,s:-1,cut:null};const tSleep=ms=>new Promise(r=>setTimeout(r,ms));
 let TCUR=null;const tCur=()=>{if(!TCUR){TCUR=document.createElement('div');TCUR.id='tcur';TCUR.innerHTML='<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M5 3l14 8-6.2 1.7L9.6 19z" fill="#fff" stroke="#0f1a24" stroke-width="1.4" stroke-linejoin="round"/></svg>';document.body.appendChild(TCUR);}return TCUR;};
 async function tMove(x,y,ms=650){const c=tCur();c.style.transition='left '+ms+'ms cubic-bezier(.4,0,.2,1),top '+ms+'ms cubic-bezier(.4,0,.2,1),opacity .2s';c.style.opacity=1;c.style.left=x+'px';c.style.top=y+'px';await tSleep(ms+40);}
 async function tClick(){const c=tCur();c.classList.remove('clk');void c.offsetWidth;c.classList.add('clk');await tSleep(400);}
 const tPos=q=>{const e=typeof q==='string'?$(q):q;if(!e)return null;const r=e.getBoundingClientRect();return r.width?[r.left+r.width/2,r.top+r.height/2]:null;};
 const tW2s=(x,y)=>[(x-view.cx)*view.k+W/2,Hh/2-(y-view.cy)*view.k];
-async function tBuilding(){if(TS.s>=0)return TS.s;const [wx,wy]=llToW(2.33055,48.87395),cand=[];for(const [dx,dy] of [[0,0],[6,0],[-6,0],[0,6],[0,-6],[12,12],[-12,-12],[20,0],[-20,0]]){const c=pick(wx+dx,wy+dy);if(c>=0&&!cand.includes(c))cand.push(c);}
- let s=cand[0]??-1;try{const D_=await loadArr(ARR[s]);const ok=cand.find(c=>ARR[c]===ARR[s]&&D_&&D_.a&&D_.a[c]&&D_.a[c].length);if(ok!=null)s=ok;}catch(e){}return TS.s=s;}
-async function tZoom(){const s=await tBuilding();if(s<0)return -1;const k=2.3,bx=(bbox[4*s]+bbox[4*s+2])/2,by=(bbox[4*s+1]+bbox[4*s+3])/2,pw=isMob()?0:340-422;
- if(Math.abs(view.k-k)>.05||Math.hypot(view.cx-(bx-pw/2/k),view.cy-(by-(isMob()?innerHeight*.28:-Hh*.17)/k))>3)await flyView(k,bx-pw/2/k,by-(isMob()?innerHeight*.28:-Hh*.17)/k);return s;}
+async function tBuilding(){if(TS.s>=0)return TS.s;let wx,wy;
+ // 65 rue La Fayette (Paris 9e), projet de Bouchaud Architectes, retrouvé dans la base d'adresses
+ try{const A_=await loadAddr(),st_=A_&&A_.find(e=>/^rue la fayette$/.test(e.z)),e=st_&&st_.a.find(a=>nz(a[0])==='65');if(e){wx=e[1]/2;wy=e[2]/2;}}catch(e){}
+ if(wx==null)[wx,wy]=llToW(2.34635,48.87595);let s=pick(wx,wy);if(s<0)for(const [dx,dy] of [[3,0],[-3,0],[0,3],[0,-3],[6,6],[-6,-6]]){s=pick(wx+dx,wy+dy);if(s>=0)break;}
+ TS.big=s;if(s>=0)ADPREF={s,t:'65 Rue La Fayette'};return TS.s=s;}
+// coupe transversale de démonstration : perpendiculaire au grand axe de l'édifice, par son centre
+function tCutLine(s){s=TS.big??s;let n=0,mx=0,my=0;for(let e=edgS[s];e<edgS[s+1];e+=2){const a=edg[e];mx+=pos[2*a];my+=pos[2*a+1];n++;}mx/=n;my/=n;let sxx=0,syy=0,sxy=0;
+ for(let e=edgS[s];e<edgS[s+1];e+=2){const a=edg[e],x=pos[2*a]-mx,y=pos[2*a+1]-my;sxx+=x*x;syy+=y*y;sxy+=x*y;}const th=.5*Math.atan2(2*sxy,sxx-syy),ux=-Math.sin(th),uy=Math.cos(th);
+ let h=0;for(let e=edgS[s];e<edgS[s+1];e+=2){const a=edg[e];h=Math.max(h,Math.abs((pos[2*a]-mx)*ux+(pos[2*a+1]-my)*uy));}h+=28;
+ const A=[mx-ux*h,my-uy*h],B=[mx+ux*h,my+uy*h];return uy>=0?{A,B}:{A:B,B:A};}
+async function tZoom(){const s=await tBuilding();if(s<0)return -1;const g=TS.big??s,k=Math.min(6,Math.max(2.3,260/Math.max(bbox[4*g+2]-bbox[4*g],bbox[4*g+3]-bbox[4*g+1]))),bx=(bbox[4*g]+bbox[4*g+2])/2,by=(bbox[4*g+1]+bbox[4*g+3])/2,pw=isMob()?0:340-422;
+ if(Math.abs(view.k-k)>.05||Math.hypot(view.cx-(bx-pw/2/k),view.cy-(by-(isMob()?innerHeight*.28:Hh*.17)/k))>3)await flyView(k,bx-pw/2/k,by-(isMob()?innerHeight*.28:Hh*.17)/k);return s;}
 async function tuD1(tok){const sc=$('#scroll'),b=$('#scroll button[data-id="per"]');if(!b)return;
  if(!isMob()&&sc){await tMove(innerWidth*.6,innerHeight*.55,500);const p0=tPos(sc);if(p0)await tMove(p0[0],p0[1]);if(tok!==TS.tok)return;
   const r=b.getBoundingClientRect(),r0=sc.getBoundingClientRect();sc.scrollTo({top:sc.scrollTop+r.top-r0.top-r0.height*.35,behavior:'smooth'});await tSleep(900);if(tok!==TS.tok)return;
@@ -2602,10 +2614,10 @@ async function tuD2(tok){if(st.crit.id!=='per'){const b=$('#scroll button[data-i
  sel=s;await showCard(s,true);draw();await tSleep(450);if(tok!==TS.tok)return;const p=tPos('#pdfb');if(p){await tMove(p[0],p[1]);await tClick();}}
 async function tuD3(tok){const s=await tZoom();if(s<0||tok!==TS.tok)return;sel=s;if(cardFor>=0){await showCard(-1);}draw();TS.place&&TS.place();
  let p=tPos('#zp');if(p){await tMove(p[0],p[1]);await tClick();}if(tok!==TS.tok)return;zpMenu(true);await tSleep(250);p=tPos('#zpp');if(p){await tMove(p[0],p[1]);await tClick();}if(tok!==TS.tok)return;
- zpMenu(false);$('#zp').classList.add('on');const m=15,a=[bbox[4*s]-m,bbox[4*s+3]+m],b=[bbox[4*s+2]+m,bbox[4*s+1]-m];XP={a,b:a,fmt:'pdf',demo:1};const pa=tW2s(...a);await tMove(pa[0],pa[1],500);
+ zpMenu(false);$('#zp').classList.add('on');const m=15,g=TS.big??s,a=[bbox[4*g]-m,bbox[4*g+3]+m],b=[bbox[4*g+2]+m,bbox[4*g+1]-m];XP={a,b:a,fmt:'pdf',demo:1};const pa=tW2s(...a);await tMove(pa[0],pa[1],500);
  const t0=performance.now();await new Promise(r=>{const f=()=>{if(tok!==TS.tok||!XP)return r();const u=Math.min(1,(performance.now()-t0)/1100);XP.b=[a[0]+(b[0]-a[0])*u,a[1]+(b[1]-a[1])*u];const q=tW2s(...XP.b),c=tCur();c.style.transition='none';c.style.left=q[0]+'px';c.style.top=q[1]+'px';draw();if(u<1)requestAnimationFrame(f);else r();};requestAnimationFrame(f);});}
 async function tuD4(tok){if(XP&&XP.demo){XP=null;$('#zp').classList.remove('on');}const s=await tZoom();if(s<0||tok!==TS.tok)return;sel=s;if(cardFor>=0)await showCard(-1);draw();TS.place&&TS.place();
- if(!TS.cut){const F=await facadeCuts(s).catch(()=>[]);TS.cut=F[0]||{A:[bbox[4*s]-20,(bbox[4*s+1]+bbox[4*s+3])/2],B:[bbox[4*s+2]+20,(bbox[4*s+1]+bbox[4*s+3])/2]};}
+ if(!TS.cut){const F=await facadeCuts(s).catch(()=>[]);F.sort((p,q)=>(p.A[1]-p.B[1])/Math.hypot(p.A[0]-p.B[0],p.A[1]-p.B[1])-(q.A[1]-q.B[1])/Math.hypot(q.A[0]-q.B[0],q.A[1]-q.B[1]));TS.cut=F[0]||tCutLine(s);/* façade sur la rue La Fayette, au sud */}
  let p=tPos('#zc');if(p){await tMove(p[0],p[1]);await tClick();}if(tok!==TS.tok)return;$('#zc').classList.add('on');const {A,B}=TS.cut;XC={a:A,b:A,demo:1};const pa=tW2s(...A);await tMove(pa[0],pa[1],600);
  const t0=performance.now();await new Promise(r=>{const f=()=>{if(tok!==TS.tok||!XC)return r();const u=Math.min(1,(performance.now()-t0)/1200);XC.b=[A[0]+(B[0]-A[0])*u,A[1]+(B[1]-A[1])*u];const q=tW2s(...XC.b),c=tCur();c.style.transition='none';c.style.left=q[0]+'px';c.style.top=q[1]+'px';draw();if(u<1)requestAnimationFrame(f);else r();};requestAnimationFrame(f);});}
 function tCleanStep(){if(XP&&XP.demo){XP=null;$('#zp').classList.remove('on');zpMenu(false);}if(XC&&XC.demo){XC=null;$('#zc').classList.remove('on');}draw();}
