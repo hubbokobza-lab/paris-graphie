@@ -9,6 +9,8 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Tutoriel sur téléphone : aux étapes plan et coupe, le panneau des calques s'efface et la fenêtre du tutoriel passe en haut, pour laisser voir le rectangle et le trait de coupe.
+- Aperçus du tutoriel (fiche, plan, coupe) refaits avec le nouveau design ; script tests/apercus.py pour les régénérer.
 - Aides réduites à une ligne, le détail derrière un « ? » : tracé de coupe, export de plan, mesure sur la carte ; dans la fenêtre de coupe, bouton « ? » vers « Comment chaque élément est calculé », replié par défaut sur téléphone et tablette.
 - Coupe : boutons zoom + et − retirés (zoom au pincement à deux doigts, ou Ctrl + molette) ; « revenir à toute la coupe » n'apparaît qu'une fois zoomé ; le dessin défile de nouveau dans les deux sens au doigt.
 - Nouveau design publié par défaut (l'ancien reste accessible par `?essai=0` le temps de la transition) : accueil avec un seul champ d'adresse, charte de l'agence, typographie plus grande.

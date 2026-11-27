@@ -270,3 +270,6 @@ body.essai #cutw .cuttb button{color:#dbe3e9;border-color:#33475a}body.essai #cu
 #xmsg .xmore{margin-top:6px;font-size:var(--fs-s);line-height:1.45;opacity:.9;max-width:520px}
 #xmsg .xmore[hidden]{display:none}
 @media(max-width:760px),(max-width:1024px) and (orientation:portrait){#xmsg{font-size:var(--fs-s);padding:7px 10px;max-width:calc(100vw - 80px);left:12px;transform:none;top:10px}#xmsg .xq{width:26px;height:26px}#xmsg .msb{margin-left:6px}}
+
+/* tutoriel sur téléphone : étapes plan et coupe, la carte seule */
+body.tumap #panel{transform:translateY(110%)!important;transition:transform .35s ease;pointer-events:none}

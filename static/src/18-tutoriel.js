@@ -2,8 +2,8 @@
 const TUTO=[
  {el:[isMob()?'#panel':'#scroll'],h:'Une adresse, des calques',p:'Tapez une adresse pour centrer la carte sur un immeuble. Dans la liste, choisissez un calque, ici l\'âge du bâti : les bâtiments se colorent selon ce critère et la légende s\'affiche. Un clic sur un bâtiment ouvre sa fiche.',demo:tuD1},
  {el:['#pdfb'],h:'La fiche PDF',p:'Dans la fiche d\'un bâtiment, le bouton « Exporter la fiche en PDF » produit un dossier complet : carte, données sourcées, autorisations, plans historiques et coupes sur rue tracées automatiquement, de l\'immeuble d\'en face jusqu\'au fond de la parcelle.',img:'tuto-fiche.jpg',demo:tuD2},
- {el:['#zoom','#zpm'],h:'Le plan, en DXF ou en PDF',p:'Le bouton Plan propose deux formats avant de tracer un rectangle : DXF géoréférencé en Lambert 93 (un calque par couche, pour ArchiCAD, AutoCAD ou QGIS) ou PDF vectoriel aux couleurs de la carte, calques affichés compris.',img:'tuto-plan.jpg',demo:tuD3},
- {el:['#zoom'],h:'La coupe',p:'Le bouton Coupe permet de tracer une ligne de A vers B : terrain IGN, bâti, gabarits du PLU avec leurs règles, arbres selon leur essence et nuage de points LiDAR HD, avec un curseur de profondeur, un plan de repérage et la mesure. Export DXF et PDF vectoriel.',img:'tuto-coupe.jpg',demo:tuD4}];
+ {el:['#zoom','#zpm'],map:1,h:'Le plan, en DXF ou en PDF',p:'Le bouton Plan propose deux formats avant de tracer un rectangle : DXF géoréférencé en Lambert 93 (un calque par couche, pour ArchiCAD, AutoCAD ou QGIS) ou PDF vectoriel aux couleurs de la carte, calques affichés compris.',img:'tuto-plan.jpg',demo:tuD3},
+ {el:['#zoom'],map:1,h:'La coupe',p:'Le bouton Coupe permet de tracer une ligne de A vers B : terrain IGN, bâti, gabarits du PLU avec leurs règles, arbres selon leur essence et nuage de points LiDAR HD, avec un curseur de profondeur, un plan de repérage et la mesure. Export DXF et PDF vectoriel.',img:'tuto-coupe.jpg',demo:tuD4}];
 function flyView(k1,cx1,cy1,ms=1100){return new Promise(r=>{const k0=view.k,cx0=view.cx,cy0=view.cy,t0=performance.now();const st_=()=>{const u=Math.min(1,(performance.now()-t0)/ms),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;view.k=k0*Math.pow(k1/k0,e);view.cx=cx0+(cx1-cx0)*e;view.cy=cy0+(cy1-cy0)*e;draw();if(u<1)requestAnimationFrame(st_);else r();};requestAnimationFrame(st_);});}
 /* démonstration : toujours le même immeuble (65 bis rue La Fayette, projet de Bouchaud Architectes), aperçus pré-calculés */
 const TS={tok:0,save:null,s:-1,cut:null};const tSleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -60,20 +60,20 @@ function tCleanStep(){TS.focus=null;$('#zpp').classList.remove('on');if(XP&&XP.d
 function tuto(){let i=0;const hl=document.createElement('div'),w=document.createElement('div'),bk=document.createElement('div');hl.id='tuhl';w.id='tuw';bk.id='tublk';w.setAttribute('role','dialog');w.setAttribute('aria-label','Tutoriel');document.body.append(bk,hl,w);
  TS.save={crit:st.crit,k:view.k,cx:view.cx,cy:view.cy,sel,card:cardFor,min:$('#panel').classList.contains('min')};TS.tok++;
  const kd=e=>{if(e.key==='Escape')end();};addEventListener('keydown',kd);
- const end=async()=>{TS.tok++;removeEventListener('resize',place);removeEventListener('keydown',kd);w.remove();bk.remove();hl.style.opacity=0;if(TCUR)TCUR.style.opacity=0;tCleanStep();
+ const end=async()=>{TS.tok++;document.body.classList.remove('tumap');removeEventListener('resize',place);removeEventListener('keydown',kd);w.remove();bk.remove();hl.style.opacity=0;if(TCUR)TCUR.style.opacity=0;tCleanStep();
   const S0=TS.save;if(S0){if(isMob()){$('#panel').classList.toggle('min',S0.min);syncTog();}if(st.crit!==S0.crit)setCrit(S0.crit);sel=S0.sel;await showCard(S0.card>=0?S0.card:-1,S0.card>=0);await flyView(S0.k,S0.cx,S0.cy,900);}hl.remove();try{localStorage.setItem('pg_tuto','1');}catch(e){}};
  const hlTo=(r,on)=>{const pd=6;Object.assign(hl.style,{left:(r.left-pd)+'px',top:(r.top-pd)+'px',width:(r.right-r.left+2*pd)+'px',height:(r.bottom-r.top+2*pd)+'px',opacity:on?1:0});};TS.hl=()=>{if(TS.focus){const r=TS.focus();if(r){hl.style.transition='none';hlTo(r,1);}}};
  function place(){const S=TUTO[i],fr_=TS.focus&&TS.focus(),rs=fr_?[fr_]:S.el.map(q=>$(q)).filter(e=>e&&e.getBoundingClientRect().width>0).map(e=>e.getBoundingClientRect());hl.style.transition='';
   let r={left:innerWidth/2-90,top:innerHeight/2-90,right:innerWidth/2+90,bottom:innerHeight/2+90};if(rs.length)r={left:Math.min(...rs.map(r=>r.left)),top:Math.min(...rs.map(r=>r.top)),right:Math.max(...rs.map(r=>r.right)),bottom:Math.min(innerHeight-8,Math.max(...rs.map(r=>r.bottom)))};
   const pd=6;hlTo(r,rs.length);
   const ww=w.offsetWidth,wh=w.offsetHeight,M=12;let x,y;
-  if(innerWidth<640){x=(innerWidth-ww)/2;y=r.top>innerHeight/2?M:innerHeight-wh-M;}
+  if(innerWidth<640){x=(innerWidth-ww)/2;y=S.map||r.top>innerHeight/2?M:innerHeight-wh-M;}
   else if(S.img&&w.querySelector('.tuim.on')){x=Math.min(Math.max(M,r.left-ww-M-pd),innerWidth-ww-M);if(x+ww>r.left-pd&&r.left>ww+2*M)x=r.left-ww-M-pd;y=innerHeight-wh-M;}
   else if(r.left-M-ww>M){x=r.left-M-ww-pd;y=Math.min(Math.max(M,r.top),innerHeight-wh-M);}
   else if(r.right+M+ww<innerWidth-M){x=r.right+M+pd;y=Math.min(Math.max(M,r.top),innerHeight-wh-M);}
   else{x=(innerWidth-ww)/2;y=Math.min(innerHeight-wh-M,r.bottom+M+pd);}
   Object.assign(w.style,{left:Math.max(M,x)+'px',top:Math.max(M,y)+'px'});}
- async function show(){const S=TUTO[i],tok=++TS.tok;tCleanStep();
+ async function show(){const S=TUTO[i],tok=++TS.tok;tCleanStep();document.body.classList.toggle('tumap',!!S.map&&isMob());
   w.innerHTML='<div class="tun">'+TUTO.map((_,k)=>'<span'+(k===i?' class="on"':'')+'>'+(k+1)+'</span>').join('')+'</div><h4>'+S.h+'</h4>'+(isMob()?'<button class="tumo" type="button" aria-expanded="false">Voir plus</button>':'')+'<div class="tumore"><p>'+S.p+'</p>'+(S.img?'<div class="tuim"><img alt="Aperçu" src="'+S.img+'" onerror="this.parentNode.remove()"></div>':'')+'</div><div class="tub"><button class="tus" type="button">Passer</button><span>'+(i?'<button class="tup" type="button">Précédent</button>':'')+'<button class="tuo" type="button">'+(i<TUTO.length-1?'Suivant':'Terminer')+'</button></span></div>';
   const mo=w.querySelector('.tumo');if(mo)mo.onclick=()=>{const o=w.classList.toggle('more');mo.textContent=o?'Voir moins':'Voir plus';mo.setAttribute('aria-expanded',o?'true':'false');place();setTimeout(place,480);};
   w.querySelector('.tus').onclick=end;w.querySelector('.tuo').onclick=()=>{if(i<TUTO.length-1){i++;show();}else end();};const pv=w.querySelector('.tup');if(pv)pv.onclick=()=>{i--;show();};

@@ -32,7 +32,7 @@ def html(hooks=False, dv=None):
     # DV : version des données dans les URL (cache navigateur). Elle ne change que si les données changent,
     # pour qu'une simple republication de la page ne force pas à retélécharger 7 Mo.
     t = re.sub(r"const DV='\w+';", "const DV='%s';" % (dv or time.strftime('%Y%m%d%H%M')), t, count=1)
-    if hooks: t = t.replace('window.parisGraphie={', 'window.__ms=()=>MS;window.__t={tuto:()=>tuto()};window.__cut=(a,b,c,d)=>cutShow(llToW(a,b),llToW(c,d));window.parisGraphie={', 1)
+    if hooks: t = t.replace('window.parisGraphie={', 'window.__ms=()=>MS;window.__t={tuto:()=>tuto(),tcut:()=>TS.cut&&cutShow(TS.cut.A,TS.cut.B),sel:()=>sel};window.__cut=(a,b,c,d)=>cutShow(llToW(a,b),llToW(c,d));window.parisGraphie={', 1)
     return t
 
 def write_page(out):
