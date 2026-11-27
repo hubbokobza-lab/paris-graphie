@@ -2604,10 +2604,15 @@ function tCutLine(s){s=TS.big??s;let n=0,mx=0,my=0;for(let e=edgS[s];e<edgS[s+1]
  const A=[mx-ux*h,my-uy*h],B=[mx+ux*h,my+uy*h];return uy>=0?{A,B}:{A:B,B:A};}
 async function tZoom(){const s=await tBuilding();if(s<0)return -1;const g=TS.big??s,k=Math.min(6,Math.max(2.3,260/Math.max(bbox[4*g+2]-bbox[4*g],bbox[4*g+3]-bbox[4*g+1]))),bx=(bbox[4*g]+bbox[4*g+2])/2,by=(bbox[4*g+1]+bbox[4*g+3])/2,pw=isMob()?0:340-422;
  if(Math.abs(view.k-k)>.05||Math.hypot(view.cx-(bx-pw/2/k),view.cy-(by-(isMob()?innerHeight*.28:Hh*.17)/k))>3)await flyView(k,bx-pw/2/k,by-(isMob()?innerHeight*.28:Hh*.17)/k);return s;}
-async function tuD1(tok){const sc=$('#scroll'),b=$('#scroll button[data-id="per"]');if(!b)return;
- if(!isMob()&&sc){await tMove(innerWidth*.6,innerHeight*.55,500);const p0=tPos(sc);if(p0)await tMove(p0[0],p0[1]);if(tok!==TS.tok)return;
-  const r=b.getBoundingClientRect(),r0=sc.getBoundingClientRect();sc.scrollTo({top:sc.scrollTop+r.top-r0.top-r0.height*.35,behavior:'smooth'});await tSleep(900);if(tok!==TS.tok)return;
-  const p=tPos(b);if(p)await tMove(p[0]-40,p[1]);await tClick();}
+async function tuD1(tok){const sc=$('#scroll'),b=$('#scroll button[data-id="per"]'),sec=b&&b.closest('details'),sm=sec&&sec.querySelector('summary');if(!b)return;
+ if(!isMob()&&sc&&sec&&sm){if(sec.open)sec.open=false;await tSleep(60);await tMove(innerWidth*.6,innerHeight*.55,500);const p0=tPos(sc);if(p0)await tMove(p0[0],p0[1]);if(tok!==TS.tok)return;
+  // défilement jusqu'au dossier « Âge »
+  const r=sm.getBoundingClientRect(),r0=sc.getBoundingClientRect();sc.scrollTo({top:sc.scrollTop+r.top-r0.top-r0.height*.3,behavior:'smooth'});await tSleep(900);if(tok!==TS.tok)return;
+  // clic sur le dossier pour le déplier
+  let p=tPos(sm);if(p)await tMove(p[0]-50,p[1]);await tClick();if(tok!==TS.tok)return;sec.open=true;await tSleep(450);if(tok!==TS.tok)return;
+  // clic sur « Période de construction »
+  p=tPos(b);if(p)await tMove(p[0]-40,p[1]);await tClick();}
+ else if(sec)sec.open=true;
  if(tok!==TS.tok)return;if(st.crit.id!=='per')b.click();}
 async function tuD2(tok){if(st.crit.id!=='per'){const b=$('#scroll button[data-id="per"]');if(b)b.click();}
  const s=await tZoom();if(s<0||tok!==TS.tok)return;const bc=tW2s((bbox[4*s]+bbox[4*s+2])/2,(bbox[4*s+1]+bbox[4*s+3])/2);await tMove(bc[0],bc[1]);await tClick();if(tok!==TS.tok)return;
