@@ -9,6 +9,8 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Téléphone : la fiche d'un bâtiment s'ouvre à mi-hauteur (glisser vers le haut pour l'agrandir, vers le bas pour la réduire puis la fermer), la carte reste visible.
+- Coupe sur téléphone : en portrait, les calques passent derrière un bouton « Calques » et une invitation propose de tourner le téléphone ; en paysage, la coupe occupe tout l'écran et les calques s'ouvrent en volet.
 - Tutoriel : bulle réduite au titre sur téléphone (« Voir plus » pour le texte et l'aperçu) ; le rectangle du plan et la ligne de coupe sont éclairés pendant la démonstration ; le curseur se recale sur les boutons qui se déplacent (volet, fiche).
 - Tutoriel sur téléphone : le volet des calques s'ouvre et se ferme au bon moment (bouton du panneau), le dossier Âge se déplie avant le choix du calque, le zoom laisse voir l'immeuble et la coupe entre la bulle et le volet ; le curseur vise exactement les boutons et un point situé dans l'emprise de l'immeuble.
 - La fiche d'un bâtiment trouvé par la recherche a pour titre l'adresse recherchée (et non la première adresse du bâtiment), y compris dans le PDF.
