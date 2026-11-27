@@ -1,11 +1,13 @@
 /* ---------- export d'une zone en PDF géoréférencé ---------- */
 let XP=null;const xmsg=$('#xmsg');
-function xMsg(h){xmsg.innerHTML=h;xmsg.hidden=!h;}
+/* message d'aide en haut de la carte : une ligne courte, le détail derrière « ? » */
+function xMsg(h,more){xmsg.innerHTML=h+(more?' <button type="button" class="xq" aria-expanded="false" aria-label="Aide">?</button><div class="xmore" hidden>'+more+'</div>':'');xmsg.hidden=!h;
+ const q=xmsg.querySelector('.xq');if(q)q.onclick=e=>{e.stopPropagation();const m=xmsg.querySelector('.xmore'),o=m.hidden;m.hidden=!o;q.setAttribute('aria-expanded',o);};}
 const zpm=$('#zpm'),zpMenu=o=>{zpm.hidden=!o;$('#zp').setAttribute('aria-expanded',o?'true':'false');};
 function xpOff(){XP=null;['#zp','#zx','#zpp'].forEach(q=>$(q).classList.remove('on'));xMsg('');cv.style.cursor='';draw();}
 $('#zp').onclick=()=>{if(XP){xpOff();zpMenu(false);return;}zpMenu(zpm.hidden);};
 const xpStart=fmt=>{if(typeof XC!=='undefined'&&XC)xcOff();if(typeof MS!=='undefined'&&MS)msOff();XP={a:null,b:null,fmt};zpMenu(false);$('#zp').classList.add('on');cv.style.cursor='crosshair';
- xMsg(fmt==='pdf'?'Tracez un rectangle sur la carte : plan PDF vectoriel aux couleurs de la carte, calques affichés compris (Échap pour annuler)':'Tracez un rectangle sur la carte : export DXF géoréférencé en Lambert 93 (Échap pour annuler)');};
+ xMsg('Tracez un rectangle',fmt==='pdf'?'Plan PDF vectoriel aux couleurs de la carte, calques affichés compris, non géoréférencé. Échap ou un nouveau clic sur Plan pour annuler.':'Export DXF géoréférencé en Lambert 93, un calque par couche. Échap ou un nouveau clic sur Plan pour annuler.');};
 $('#zx').onclick=()=>xpStart('dxf');$('#zpp').onclick=()=>xpStart('pdf');
 addEventListener('keydown',e=>{if(e.key==='Escape'){if(XP)xpOff();zpMenu(false);}});
 cv.addEventListener('pointerdown',e=>{if(!XP)return;e.stopImmediatePropagation();e.preventDefault();XP.a=s2w(e.clientX,e.clientY);XP.b=XP.a;cv.setPointerCapture(e.pointerId);},true);

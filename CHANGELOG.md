@@ -9,6 +9,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Aides réduites à une ligne, le détail derrière un « ? » : tracé de coupe, export de plan, mesure sur la carte ; dans la fenêtre de coupe, bouton « ? » vers « Comment chaque élément est calculé », replié par défaut sur téléphone et tablette.
 - Coupe : boutons zoom + et − retirés (zoom au pincement à deux doigts, ou Ctrl + molette) ; « revenir à toute la coupe » n'apparaît qu'une fois zoomé ; le dessin défile de nouveau dans les deux sens au doigt.
 - Nouveau design publié par défaut (l'ancien reste accessible par `?essai=0` le temps de la transition) : accueil avec un seul champ d'adresse, charte de l'agence, typographie plus grande.
 - Tutoriel : proposé sur l'accueil (« Découvrir l'outil en 4 étapes ») et lancé à la première visite quand on choisit d'explorer la carte (pas quand on cherche une adresse).
