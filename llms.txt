@@ -1,0 +1,35 @@
+# Paris-graphie (Bouchaud Architectes)
+
+Outil conçu et édité par Bouchaud Architectes (Paris). Présentation : https://www.bouchaudarchitectes.com/hors-piste/paris-graphie
+Contact (anomalie, réclamation, question) : h.bokobza@bouchaudarchitectes.com
+API : https://paris-graphie-api.hub-bokobza.workers.dev/ · Code source : https://github.com/hubbokobza-lab/paris-graphie
+
+> Carte des immeubles de Paris intra-muros : âge, hauteur, niveaux, surface de plancher estimée, usages, DPE, patrimoine, PLU, autorisations d'urbanisme, sous-sol. Données ouvertes (Apur, Ville de Paris, BDNB, ADEME, IGN...), mises à jour chaque semaine. Données du 2026-11-28.
+
+## API (recommandé)
+
+- https://hubbokobza-lab.github.io/paris-graphie/ est la carte. L'API se trouve à https://paris-graphie-api.hub-bokobza.workers.dev/ :
+  /adresse?q=40 rue Laffitte (un immeuble, avec métro et RER à pied), /adresses?q=a|b|c (25 au plus), /voie?nom=rue Laffitte, /sources.
+- Serveur MCP pour assistants IA : https://paris-graphie-api.hub-bokobza.workers.dev/mcp (HTTP, outils immeuble_paris, immeubles_paris, sources_paris_graphie).
+
+## Interroger une adresse sans navigateur (fichiers statiques)
+
+1. Index des voies (5683 voies) : https://hubbokobza-lab.github.io/paris-graphie/api/voies.json, liste de [nom de la voie, identifiant].
+2. Fichier d'une voie : https://hubbokobza-lab.github.io/paris-graphie/api/voies/<identifiant>.json, par exemple https://hubbokobza-lab.github.io/paris-graphie/api/voies/rue-de-rivoli.json
+   L'identifiant est le nom de la voie en minuscules, sans accents, mots séparés par des tirets.
+3. Dans ce fichier, "numeros" associe chaque numéro (ex. "12", "12 bis") à un identifiant de bâtiment ; "batiments" donne pour chaque bâtiment la liste des valeurs, dans l'ordre des noms de "champs".
+
+## Interroger une liste d'adresses avec un navigateur
+
+- Ouvrir https://hubbokobza-lab.github.io/paris-graphie/?adresses=12 rue de Rivoli|3 boulevard Haussmann (adresses séparées par |) : le tableau s'affiche et s'exporte en CSV.
+- Ou, dans la page : await window.parisGraphie.analyse(["12 rue de Rivoli", "3 boulevard Haussmann"]) renvoie un tableau d'objets.
+- Un bâtiment précis : https://hubbokobza-lab.github.io/paris-graphie/?b=<longitude>,<latitude>
+
+## Sources
+
+Toutes les sources (producteur, jeu de données, date d'extraction, lien) : https://hubbokobza-lab.github.io/paris-graphie/api/sources.json
+
+## Précautions
+
+- La surface de plancher est une estimation (emprise × niveaux, moins 20 à 40 %), pas une donnée cadastrale.
+- Les rattachements adresse / bâtiment et dossier / bâtiment sont approximatifs. Vérifier sur les sources citées dans la carte.
