@@ -293,3 +293,4 @@ body:has(#acc:not([hidden])) #load{visibility:hidden}
 .blogo{display:block;height:100%;width:auto}.blogo .l1{fill:var(--lg1,#004e82)}.blogo .l2{fill:var(--lg2,#878787)}
 #acc .accs{height:34px;margin-bottom:26px;--lg1:#fff;--lg2:#aebfcc}
 body.essai #psig{height:21px;margin:0 0 12px;letter-spacing:0}
+#acc .accs a,#psig a{display:inline-block;height:100%;color:inherit;text-decoration:none}#acc .accs a:hover,#psig a:hover{opacity:.8}

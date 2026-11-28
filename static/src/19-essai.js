@@ -2,7 +2,7 @@
 {const a=$('#acc');if(a&&(!ESSAI||/[?&](adresses|embed|q|adr|b)=/.test(location.search)||location.hash.length>1||(navigator.webdriver&&!/[?&]accueil=1/.test(location.search))))a.remove();}
 if(ESSAI){
  // signature de l'agence en tête du panneau
- {const h=$('#panel header h1');if(h&&!$('#psig')){const d=document.createElement('div');d.id='psig';const t=$('#tlogo');if(t)d.append(t.content.cloneNode(true));else d.textContent='Bouchaud Architectes';h.before(d);}}
+ {const h=$('#panel header h1');if(h&&!$('#psig')){const d=document.createElement('div');d.id='psig';const t=$('#tlogo'),l=document.createElement('a');l.href='https://www.bouchaudarchitectes.com/';l.target='_blank';l.rel='noopener';l.title='Bouchaud Architectes, le site de l\u2019agence';if(t)l.append(t.content.cloneNode(true));else l.textContent='Bouchaud Architectes';d.append(l);h.before(d);}}
  // accueil : le titre, une phrase, un champ d'adresse ; la carte se découvre ensuite
  const direct=/[?&](adresses|embed|q|adr|b)=/.test(location.search)||location.hash.length>1||(navigator.webdriver&&!/[?&]accueil=1/.test(location.search));   // robots de contrôle : sans accueil, sauf ?accueil=1
  if(!direct&&$('#acc')){
