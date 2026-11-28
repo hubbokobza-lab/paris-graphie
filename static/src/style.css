@@ -273,3 +273,18 @@ body.essai #cutw .cuttb button{color:#dbe3e9;border-color:#33475a}body.essai #cu
 
 /* tutoriel sur téléphone : étapes plan et coupe, la carte seule */
 body.tumap #panel{transform:translateY(110%)!important;transition:transform .35s ease;pointer-events:none}
+
+/* tutoriel sur téléphone : l'animation d'abord, la fenêtre de l'étape ensuite ; « Passer » dans un coin */
+#tuw{transition:opacity .3s ease,transform .3s ease}
+#tuw.tuwait{opacity:0;transform:translateY(-8px);pointer-events:none}
+#tuskip{all:unset;position:fixed;top:10px;right:10px;z-index:calc(var(--z-tuto) + 2);cursor:pointer;font-size:var(--fs-s);color:#fff;background:rgba(15,26,36,.72);border:1px solid rgba(255,255,255,.35);border-radius:16px;padding:6px 12px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+@media(max-width:760px),(max-width:1024px) and (orientation:portrait){#tuw .tus{visibility:hidden}}
+
+/* accueil pendant le chargement : liens en attente, fine barre de progression */
+#acc{z-index:calc(var(--z-load) + 1)}#acc[hidden]{display:none}
+#acc .accw{display:none;margin-top:30px;font-size:13px;color:#9fb6c8}
+#acc.wait .accw{display:block}
+#acc .accw i{display:block;width:220px;height:2px;margin-top:8px;background:rgba(201,214,224,.2);border-radius:1px;overflow:hidden}
+#acc .accw b{display:block;height:100%;width:0;background:#C1CED7;transition:width .2s}
+#acc.wait .accl button{opacity:.55}
+body:has(#acc:not([hidden])) #load{visibility:hidden}

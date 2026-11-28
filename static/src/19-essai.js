@@ -1,22 +1,20 @@
 /* ---------- essai de design (?essai=1) : accueil dépouillé, chiffres sans formules, règles de la coupe masquées ---------- */
+{const a=$('#acc');if(a&&(!ESSAI||/[?&](adresses|embed|q|adr|b)=/.test(location.search)||location.hash.length>1||(navigator.webdriver&&!/[?&]accueil=1/.test(location.search))))a.remove();}
 if(ESSAI){
  // signature de l'agence en tête du panneau
  {const h=$('#panel header h1');if(h&&!$('#psig')){const d=document.createElement('div');d.id='psig';d.textContent='Bouchaud Architectes';h.before(d);}}
  // accueil : le titre, une phrase, un champ d'adresse ; la carte se découvre ensuite
  const direct=/[?&](adresses|embed|q|adr|b)=/.test(location.search)||location.hash.length>1||(navigator.webdriver&&!/[?&]accueil=1/.test(location.search));   // robots de contrôle : sans accueil, sauf ?accueil=1
- if(!direct){
-  const a=document.createElement('div');a.id='acc';a.setAttribute('role','dialog');a.setAttribute('aria-label','Accueil');
-  a.innerHTML='<div class="accb"><div class="accs">Bouchaud Architectes</div><h2>Paris-graphie</h2><p>Les immeubles de Paris, un par un : âge, hauteurs, règles d\'urbanisme, patrimoine.</p>'
-   +'<div class="acci"><input id="accq" type="search" placeholder="Saisissez une adresse" aria-label="Rechercher une adresse" autocomplete="off" spellcheck="false"></div>'
-   +'<div class="accl"><button id="acce" type="button">Explorer la carte</button><button id="acct" type="button">Découvrir l\'outil en 4 étapes</button></div></div>';
-  document.body.appendChild(a);
+ if(!direct&&$('#acc')){
+  const a=$('#acc');a.hidden=false;a.classList.remove('wait');
   const close=()=>{a.classList.add('out');setTimeout(()=>a.remove(),350);};
-  const q=$('#accq');setTimeout(()=>q.focus(),50);
-  q.addEventListener('input',()=>{const v=q.value;close();if(isMob())$('#panel').classList.remove('min');const t=$('#q');t.value=v;t.focus();t.dispatchEvent(new Event('input',{bubbles:true}));});
+  const q=$('#accq');if(document.activeElement!==q)setTimeout(()=>q.focus(),50);
+  const go=()=>{const v=q.value;close();if(isMob())$('#panel').classList.remove('min');const t=$('#q');t.value=v;t.focus();t.dispatchEvent(new Event('input',{bubbles:true}));};q.addEventListener('input',go);
   /* tutoriel : à la première visite, quand on choisit d'explorer la carte (pas quand on cherche une adresse : on veut sa fiche) ; toujours proposé sur l'accueil */
   let seen=false;try{seen=!!localStorage.getItem('pg_tuto');}catch(e){seen=true;}
   $('#acce').onclick=()=>{close();if(!seen&&!navigator.webdriver)setTimeout(()=>{if(!$('#tuw'))tuto();},450);};
   $('#acct').onclick=()=>{close();setTimeout(()=>{if(!$('#tuw'))tuto();},400);};a.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  /* saisie ou clic pendant le chargement : repris maintenant */if(q.value.trim())go();else if(a.dataset.want)$('#'+a.dataset.want).click();
  }
  // fiche : le chiffre seul ; la méthode (« calcul : … ») passe derrière un « i »
  const cb=$('#cb');if(cb){let busy=false;new MutationObserver(()=>{if(busy)return;busy=true;

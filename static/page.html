@@ -34,6 +34,8 @@
 </div></noscript>
 <div id="map"><canvas id="cv"></canvas><canvas id="lb"></canvas></div>
 <div id="load"><div id="loadmsg">Chargement de l'emprise bâtie…</div><div class="bar"><i id="loadbar"></i></div></div>
+<div id="acc" role="dialog" aria-label="Accueil" class="wait" hidden><div class="accb"><div class="accs">Bouchaud Architectes</div><h2>Paris-graphie</h2><p>Les immeubles de Paris, un par un : âge, hauteurs, règles d'urbanisme, patrimoine.</p><div class="acci"><input id="accq" type="search" placeholder="Saisissez une adresse" aria-label="Rechercher une adresse" autocomplete="off" spellcheck="false"></div><div class="accl"><button id="acce" type="button">Explorer la carte</button><button id="acct" type="button">Découvrir l'outil en 4 étapes</button></div><div class="accw" aria-live="polite"><span id="accm">Chargement de la carte…</span><i><b id="accbar"></b></i></div></div></div>
+<script>/* accueil affiché dès l'ouverture, la carte se charge derrière */(function(){var e;try{e=localStorage.getItem("pg_essai")!=="0";}catch(x){e=true;}var m=location.search.match(/[?&]essai=([01])/);if(m)e=m[1]!=="0";var d=/[?&](adresses|embed|q|adr|b)=/.test(location.search)||location.hash.length>1||(navigator.webdriver&&!/[?&]accueil=1/.test(location.search));if(e&&!d){var a=document.getElementById("acc");a.hidden=false;a.querySelectorAll(".accl button").forEach(function(b){b.onclick=function(){a.dataset.want=b.id;document.getElementById("accm").textContent="Encore un instant, la carte se charge…";};});setTimeout(function(){document.getElementById("accq").focus();},50);}})();</script>
 
 <aside id="panel">
  <header>

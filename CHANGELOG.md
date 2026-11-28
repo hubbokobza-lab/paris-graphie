@@ -9,6 +9,8 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Tutoriel sur téléphone : chaque étape joue d'abord son animation, carte dégagée, puis la fenêtre de l'étape apparaît ; « Passer le tutoriel » en haut à droite, visible pendant l'animation.
+- L'écran d'accueil s'affiche dès l'ouverture de la page et la carte se charge derrière (fine barre de progression sous les liens) ; une adresse tapée ou un lien choisi pendant le chargement est repris dès que la carte est prête.
 - Tutoriel sur téléphone : aux étapes plan et coupe, le panneau des calques s'efface et la fenêtre du tutoriel passe en haut, pour laisser voir le rectangle et le trait de coupe.
 - Aperçus du tutoriel (fiche, plan, coupe) refaits avec le nouveau design ; script tests/apercus.py pour les régénérer.
 - Aides réduites à une ligne, le détail derrière un « ? » : tracé de coupe, export de plan, mesure sur la carte ; dans la fenêtre de coupe, bouton « ? » vers « Comment chaque élément est calculé », replié par défaut sur téléphone et tablette.

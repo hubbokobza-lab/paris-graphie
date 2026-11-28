@@ -4,8 +4,8 @@ const nf=new Intl.NumberFormat('fr-FR');
 const ESSAI=(()=>{const m=location.search.match(/[?&]essai=([01])/);try{if(m)localStorage.setItem('pg_essai',m[1]);return localStorage.getItem('pg_essai')!=='0';}catch(e){return !(m&&m[1]==='0');}})();
 if(ESSAI)document.body.classList.add('essai');
 const tick=()=>new Promise(r=>setTimeout(r,0));
-function prog(msg,p){$('#loadmsg').textContent=msg;$('#loadbar').style.width=(p*100)+'%';}
-function fail(msg){$('#loadmsg').textContent=msg;$('#load .bar').style.display='none';}
+function prog(msg,p){$('#loadmsg').textContent=msg;$('#loadbar').style.width=(p*100)+'%';const b=$('#accbar');if(b)b.style.width=(p*100)+'%';}
+function fail(msg){const ac=$('#acc');if(ac)ac.remove();$('#loadmsg').textContent=msg;$('#load .bar').style.display='none';}
 if(typeof earcut==='undefined'){fail("La bibliothèque de triangulation n'a pas pu se charger.");return;}
 if(typeof DecompressionStream==='undefined'){fail("Ce navigateur ne sait pas décompresser les données (DecompressionStream). Essayer une version récente de Chrome, Safari ou Firefox.");return;}
 
