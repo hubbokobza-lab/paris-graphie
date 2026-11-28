@@ -288,3 +288,8 @@ body.tumap #panel{transform:translateY(110%)!important;transition:transform .35s
 #acc .accw b{display:block;height:100%;width:0;background:#C1CED7;transition:width .2s}
 #acc.wait .accl button{opacity:.55}
 body:has(#acc:not([hidden])) #load{visibility:hidden}
+
+/* logo de l'agence (source : static/logo-bouchaud-source.svg, calque « couleur ») */
+.blogo{display:block;height:100%;width:auto}.blogo .l1{fill:var(--lg1,#004e82)}.blogo .l2{fill:var(--lg2,#878787)}
+#acc .accs{height:34px;margin-bottom:26px;--lg1:#fff;--lg2:#aebfcc}
+body.essai #psig{height:21px;margin:0 0 12px;letter-spacing:0}

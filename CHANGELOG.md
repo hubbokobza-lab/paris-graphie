@@ -9,6 +9,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Logo de Bouchaud Architectes (vectoriel, d'après le fichier de l'agence) à la place de la mention en texte, sur l'écran d'accueil (en blanc) et en tête du panneau (couleurs de l'agence).
 - Coupe, plan de repérage : poignées A et B déplaçables dans toutes les directions (Maj : dans l'axe) et trait de coupe déplaçable en bloc ; la coupe, le LiDAR et les données sont recalculés au relâcher.
 - Fenêtre de coupe : un clic en dehors la ferme.
 - Coupe, profil du bâti LiDAR : les débords (balcons, auvents) en bout de profil sont tracés comme une dalle fine de 25 cm au lieu d'être hachurés jusqu'au sol.
