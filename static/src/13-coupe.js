@@ -403,7 +403,8 @@ async function cutShow(A,B,opt={}){await loadLbl();
   const img='<image x="0" y="0" width="'+f(VBW)+'" height="'+f(Ht)+'" href="'+cv2.toDataURL('image/png')+'"><title>LiDAR HD IGN : '+ord.length+' points, de 0 à '+fd(LD)+' derrière le plan de coupe</title></image>';
   svg=svg.replace(/<g data-ly="lidar">[\s\S]*?<\/g><g data-ly="nivellement">/,'<g data-ly="lidar">'+img+'</g><g data-ly="nivellement">');const gl=box.querySelector('.cutsvg [data-ly=lidar]');if(gl)gl.innerHTML=img;
   // profil du bâti d'après le LiDAR : point le plus haut des points « bâtiment » par tranche de 50 cm, entre le plan et 1,5 m derrière (ou la profondeur choisie si elle est moindre), hachuré jusqu'au terrain
-  {const BIN=.5,DB=Math.min(1.5,Math.max(LD,.1)),top=new Map();for(let i=0;i<P.t.length;i++){if(P.c[i]!==6||P.d[i]<-PTOL||P.d[i]>DB)continue;const b=Math.floor(P.t[i]*k/BIN),z=P.z[i];if(!(top.get(b)>=z))top.set(b,z);}
+  /* profil, débords et sous-sol : toujours lus sur les points les plus proches du plan à pleine résolution (chargement à part quand la profondeur visible réduit le niveau de détail) */
+  {const P=(CC.near&&CC.near.P)||LIDP,BIN=.5,DB=Math.min(1.5,Math.max(LD,.1)),top=new Map();for(let i=0;i<P.t.length;i++){if(P.c[i]!==6||P.d[i]<-PTOL||P.d[i]>DB)continue;const b=Math.floor(P.t[i]*k/BIN),z=P.z[i];if(!(top.get(b)>=z))top.set(b,z);}
    const keys=[...top.keys()].sort((a,b)=>a-b),segs=[];let cur=null;
    for(const b of keys){const t=(b+.5)*BIN,z0=D.zAt(t);if(t<0||t>L||top.get(b)<z0+2){cur=null;continue;}if(cur&&b===cur.b1+1){cur.p.push([t,top.get(b)]);cur.b1=b;}else{cur={b1:b,p:[[t,top.get(b)]]};segs.push(cur);}}
    /* balcons : aux deux bouts d'un profil, une bande d'au plus 1,5 m dont le point haut est à 1,5 m ou plus sous le bâti voisin = débord (balcon, auvent, corniche basse) : tracé comme une dalle fine de 25 cm, sans hachure jusqu'au sol */
@@ -432,7 +433,8 @@ async function cutShow(A,B,opt={}){await loadLbl();
   try{if(!(CC.lidP&&CC.lidHi>=hi)){CC.lidHi=hi;CC.lidP=lidarCut(A,B,(i,n)=>{if(CC.rid===rid)lidMsg('LiDAR HD : '+i+' / '+n+' blocs',1);},-PTOL,hi);}const R_=await CC.lidP;if(CC.rid!==rid)return;
    LIDR=R_;LIDP=R_.P;LIDK=L/R_.L9;lidHi=CC.lidHi;CC.lid={P:LIDP,K:LIDK,R:LIDR,hi:lidHi};
    for(const [l,c] of [['LIDAR_SOL',33],['LIDAR_VEGETATION',94],['LIDAR_BATI',12],['LIDAR_EAU',150],['LIDAR_PONT',200],['LIDAR_SURSOL',40],['LIDAR_AUTRE',9]])if(!LYS.includes(l)){LYS.push(l);LC.push(c);}
-   lidSt=2;drawLid();if(LD>lidHi)loadLid();}
+   lidSt=2;drawLid();if(LD>lidHi)loadLid();
+   if(R_.partial&&!CC.nearP){CC.nearP=lidarCut(A,B,null,-PTOL,3).then(r=>{CC.near=r;if(CC.rid===rid)drawLid();}).catch(()=>{CC.nearP=null;});}}
   catch(e){lidSt=0;CC.lidP=null;lidMsg('LiDAR HD indisponible : '+String(e&&e.message||e));}};
  LIDE=()=>{if(!LIDP)return [];const P=LIDP,o=[],idx=[];for(let i=0;i<P.t.length;i++)if(P.d[i]<=LD&&P.d[i]>=-PTOL)idx.push(i);const st_=Math.max(1,Math.ceil(idx.length/3e5));
   for(let j=0;j<idx.length;j+=st_){const i=idx[j],ly=LDX[P.c[i]]||'LIDAR_AUTRE';o.push([ly,'0\nPOINT\n8\n'+ly+'\n10\n'+(P.t[i]*LIDK).toFixed(2)+'\n20\n'+P.z[i].toFixed(2)+'\n30\n'+P.d[i].toFixed(2)]);}return o;};
