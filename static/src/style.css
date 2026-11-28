@@ -283,10 +283,10 @@ body.tumap #panel{transform:translateY(110%)!important;transition:transform .35s
 /* accueil pendant le chargement : liens en attente, fine barre de progression */
 #acc{z-index:calc(var(--z-load) + 1)}#acc[hidden]{display:none}
 #acc .accw{display:none;margin-top:30px;font-size:13px;color:#9fb6c8}
-#acc.wait .accw{display:block}
+#acc.wait.want .accw{display:block}
 #acc .accw i{display:block;width:220px;height:2px;margin-top:8px;background:rgba(201,214,224,.2);border-radius:1px;overflow:hidden}
 #acc .accw b{display:block;height:100%;width:0;background:#C1CED7;transition:width .2s}
-#acc.wait .accl button{opacity:.55}
+
 body:has(#acc:not([hidden])) #load{visibility:hidden}
 
 /* logo de l'agence (source : static/logo-bouchaud-source.svg, calque « couleur ») */
