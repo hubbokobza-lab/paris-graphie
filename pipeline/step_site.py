@@ -5,7 +5,7 @@ import methodes
 
 # fichiers statiques publiés tels quels avec la page (LiDAR HD de l'outil Coupe : copc.js et laz-perf, licences MIT et Apache 2.0 ; aperçus du tutoriel)
 ASSETS = ('pg-copc.js', 'laz-perf.wasm', 'tuto-fiche.jpg', 'tuto-plan.jpg', 'tuto-coupe.jpg', 'partage.jpg')
-SITE_URL = 'https://hubbokobza-lab.github.io/paris-graphie/'
+SITE_URL = 'https://paris-graphie.bouchaudarchitectes.com/'
 
 SRC = os.path.join(STATIC, 'src')
 
@@ -46,6 +46,7 @@ def write_page(out):
         if (f.endswith('.json') and f != 'maj.json') or f in ASSETS: h.update(f.encode()); h.update(open(os.path.join(out, f), 'rb').read())
     open(os.path.join(out, 'index.html'), 'w', encoding='utf-8').write(html(dv=h.hexdigest()[:12]))
     open(os.path.join(out, '.nojekyll'), 'w').write('')
+    open(os.path.join(out, 'CNAME'), 'w').write('paris-graphie.bouchaudarchitectes.com\n')   # domaine propre (alias CNAME dans la zone DNS de bouchaudarchitectes.com, gérée chez Wix)
     # référencement : robots.txt et plan du site (la page, la notice pour les IA, l'index de l'API)
     open(os.path.join(out, 'robots.txt'), 'w').write('User-agent: *\nAllow: /\nSitemap: %ssitemap.xml\n' % SITE_URL)
     today = time.strftime('%Y-%m-%d')
