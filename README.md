@@ -2,11 +2,11 @@
 
 **Paris-graphie est un outil conçu, développé et édité par [Bouchaud Architectes](https://www.bouchaudarchitectes.com/), agence d'architecture parisienne, dans le cadre de son pôle de recherche Hors-Piste.**
 
-- Carte : https://hubbokobza-lab.github.io/paris-graphie/
+- Carte : https://paris-graphie.bouchaudarchitectes.com/
 - Présentation du projet : https://www.bouchaudarchitectes.com/hors-piste/paris-graphie
 - API : https://paris-graphie-api.hub-bokobza.workers.dev/ (documentation à la racine)
 - Serveur MCP pour assistants IA : https://paris-graphie-api.hub-bokobza.workers.dev/mcp
-- Notice pour les IA : https://hubbokobza-lab.github.io/paris-graphie/llms.txt
+- Notice pour les IA : https://paris-graphie.bouchaudarchitectes.com/llms.txt
 
 **Contact** pour toute anomalie, réclamation, demande de correction ou question : [h.bokobza@bouchaudarchitectes.com](mailto:h.bokobza@bouchaudarchitectes.com)
 
@@ -26,10 +26,10 @@ Paris-graphie a d'abord été un outil interne de Bouchaud Architectes, dévelop
 
 ## Pour les IA et les développeurs
 
-- **Carte** : https://hubbokobza-lab.github.io/paris-graphie/ (application JavaScript, non lisible par un robot sans exécution du code)
+- **Carte** : https://paris-graphie.bouchaudarchitectes.com/ (application JavaScript, non lisible par un robot sans exécution du code)
 - **API** : https://paris-graphie-api.hub-bokobza.workers.dev/ (JSON, sans clé, documentation à la racine)
 - **Serveur MCP** : https://paris-graphie-api.hub-bokobza.workers.dev/mcp (transport HTTP, outils `immeuble_paris`, `immeubles_paris`, `sources_paris_graphie`)
-- **Notice pour les IA** : https://hubbokobza-lab.github.io/paris-graphie/llms.txt
+- **Notice pour les IA** : https://paris-graphie.bouchaudarchitectes.com/llms.txt
 - **Sources et dates d'extraction** : `/sources` sur l'API, ou « Sources et licences » dans la carte
 
 Exemple :
