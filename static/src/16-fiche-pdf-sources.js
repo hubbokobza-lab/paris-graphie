@@ -205,6 +205,12 @@ function makePdf(M_,IMG,HIST,COUP){
    it.forEach((e,i)=>{const cx=MG+Math.floor(i/rows)*cw,cy=y0-(i%rows+1)*rh;cur.ops.push(hx(e[0])+' rg '+cx.toFixed(2)+' '+(cy-1).toFixed(2)+' 9 9 re f'+(e[2]?' 0.10 0.28 0.41 RG 1.4 w '+(cx-1.5).toFixed(2)+' '+(cy-2.5).toFixed(2)+' 12 12 re S':''));cur.ops.push('BT /F'+(e[2]?2:1)+' 8.5 Tf '+(e[2]?'0.10 0.28 0.41':'0.30 0.30 0.30')+' rg '+(cx+15).toFixed(2)+' '+(cy+0.5).toFixed(2)+' Td ('+enc(e[1])+') Tj ET');});
    y=y0-rows*rh-10;}
  }
+ /* appel à l'action de l'agence, en bas de la première page (ou à la suite si la page est pleine) */
+ {const bh=50,P0=pages[0],url=CTA_URL+'&utm_medium=pdf';let pg_=P0,by=MG+8;if(!(pages.length===1&&y-bh-16>MG+8)){if(y-bh-16<MG+20)newPage();pg_=cur;by=y-bh-12;y=by-8;}
+  pg_.ops.push('0.10 0.28 0.41 rg '+MG+' '+by.toFixed(2)+' '+LW.toFixed(2)+' '+bh+' re f');
+  pg_.ops.push('BT /F2 12 Tf 1 1 1 rg '+(MG+16).toFixed(2)+' '+(by+28).toFixed(2)+' Td ('+enc(CTA_TXT)+') Tj ET');
+  pg_.ops.push('BT /F1 8.5 Tf 0.76 0.81 0.84 rg '+(MG+16).toFixed(2)+' '+(by+12).toFixed(2)+' Td ('+enc(CTA_SUB)+') Tj ET');
+  pg_.ln.push([MG,by,MG+LW,by+bh,url]);}
  if(COUP&&COUP.length){newPage();put('COUPES SUR RUE',13,true,'0.10 0.28 0.41',0,null,0,1.2);y-=4;cur.ops.push('0.75 0.81 0.85 RG 0.7 w '+MG+' '+y.toFixed(2)+' m '+(PW-MG)+' '+y.toFixed(2)+' l S');y-=12;
   put(COUP.note,8,false,'0.45 0.45 0.45',0,null,10);
   if(COUP.elev){y-=4;put('Potentiel de surélévation (indicatif)',10,true,'0.10 0.28 0.41',0,null,6);

@@ -54,6 +54,7 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 - Coupe : un bâtiment contenant le point A ou B de la coupe est désormais dessiné.
 
 ### Ajouté
+- Appel à l'action « Demandez une étude de faisabilité » vers la page réhabilitation du site de l'agence, dans la fiche d'un bâtiment et en bas de la première page de la fiche PDF (lien suivi par utm_source=paris-graphie).
 - Domaine propre paris-graphie.bouchaudarchitectes.com : essayé puis retiré le jour même (la page Wix qui intègre la carte ne s'affichait plus pendant la bascule) ; à reprendre plus tard.
 - Mesure d'audience sans cookie ni identifiant (Cloudflare Web Analytics), limitée aux chargements de page.
 - Lien partageable : l'adresse de la page suit la fiche ouverte (`?b=longitude,latitude` de l'immeuble, stable d'une mise à jour à l'autre, et `&c=` pour le calque affiché) ; bouton « Partager » dans la fiche (copie du lien, ou partage du téléphone).

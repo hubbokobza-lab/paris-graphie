@@ -294,3 +294,8 @@ body:has(#acc:not([hidden])) #load{visibility:hidden}
 #acc .accs{height:34px;margin-bottom:26px;--lg1:#fff;--lg2:#aebfcc}
 body.essai #psig{height:21px;margin:0 0 12px;letter-spacing:0}
 #acc .accs a,#psig a{display:inline-block;height:100%;color:inherit;text-decoration:none}#acc .accs a:hover,#psig a:hover{opacity:.8}
+
+/* fiche : appel à l'action de l'agence */
+.ctaf{display:block;margin:14px 0 4px;padding:12px 14px;border-radius:6px;background:#1A486A;color:#fff!important;text-decoration:none!important;line-height:1.35}
+.ctaf b{display:block;font-size:var(--fs-m);font-weight:600}.ctaf span{display:block;font-size:var(--fs-s);color:#C1CED7;margin-top:2px}
+.ctaf:hover{background:#163d5a}
