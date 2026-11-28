@@ -239,22 +239,30 @@ async function lidarCut(A,B,prog,lo_=-BAND,hi_=BAND){
 }
 const CLY=[['lidar','Nuage LiDAR HD'],['terrain','Terrain'],['eau','Eau (voies d\'eau)'],['bati','Bâtiments'],['lidbat','Profil du bâti (LiDAR, hachuré)'],['arbres','Arbres'],['cotes','Cotes NVP'],['courbes','Courbes de niveau'],['voies','Largeur des voies'],['nivellement','Surface de nivellement'],['gabarits','Gabarits sur voie'],['regles','Règles des gabarits'],['plafond','Plafond des hauteurs'],['b15','15 m hors bande'],['hmc','HMC'],['ppri','PPRI (zones inondables)'],['grille','Grille et axes'],['plan','Plan de repérage']];
 let CUTOFF=new Set();try{CUTOFF=new Set((localStorage.getItem('pg_cutoff')||'').split(',').filter(Boolean));if(!localStorage.getItem('pg_cut2')){CUTOFF.add('ppri');localStorage.setItem('pg_cut2','1');localStorage.setItem('pg_cutoff',[...CUTOFF].join(','));}}catch(e){CUTOFF.add('ppri');}
-/* poignées A et B du plan de repérage : on les fait glisser dans l'axe de la coupe, puis la coupe est recalculée */
-function abDrag(box,A,B,L,sc,ox,yTop,oy,PY){const svg=box.querySelector('.cutsvg svg');if(!svg)return;const NS='http://www.w3.org/2000/svg',Lw=Math.hypot(B[0]-A[0],B[1]-A[1])||L,ux=(B[0]-A[0])/Lw,uy=(B[1]-A[1])/Lw;
+/* plan de repérage : poignées A et B libres, trait déplaçable, puis la coupe est recalculée */
+function abDrag(box,A,B,L,sc,ox,yTop,oy,PY){const svg=box.querySelector('.cutsvg svg');if(!svg)return;const NS='http://www.w3.org/2000/svg',Lw=Math.hypot(B[0]-A[0],B[1]-A[1])||L,ux=(B[0]-A[0])/Lw,uy=(B[1]-A[1])/Lw,nx=-uy,ny=ux;
+ /* sur le plan de repérage : x = A + t·u, y = profondeur d le long de n ; poignées A et B déplaçables dans toutes les directions (Maj : dans l'axe), trait déplaçable en bloc ; la coupe est recalculée au relâcher */
  const mk=(n,at)=>{const e=document.createElementNS(NS,n);for(const k in at)e.setAttribute(k,at[k]);return e;};
- const g=mk('g',{id:'abdrag',style:'touch-action:none'}),gd=mk('g',{'pointer-events':'none'});g.append(gd);svg.append(g);
- const hd={};for(const w of ['A','B']){const x=w==='A'?ox:ox+L*sc,h=mk('g',{cursor:'ew-resize','data-ab':w});const ti=mk('title',{});ti.textContent='Faire glisser '+w+' dans l\'axe de la coupe (allonger ou raccourcir), la coupe est recalculée au relâcher';
-  h.append(ti,mk('circle',{cx:x,cy:PY,r:9,fill:'#fff','fill-opacity':.01}),mk('circle',{cx:x,cy:PY,r:4.5,fill:'#fff',stroke:'#d4462f','stroke-width':1.6}),mk('path',{d:'M'+(x-8)+' '+(PY-9)+' l-3 3 l3 3 M'+(x+8)+' '+(PY-9)+' l3 3 l-3 3',fill:'none',stroke:'#d4462f','stroke-width':1}));g.append(h);hd[w]=h;}
+ const g=mk('g',{id:'abdrag',style:'touch-action:none'}),gd=mk('g',{'pointer-events':'none'});
+ const ln=mk('g',{cursor:'move','data-ab':'L'});{const ti=mk('title',{});ti.textContent='Faire glisser le trait pour déplacer la coupe, la coupe est recalculée au relâcher';ln.append(ti,mk('line',{x1:ox+10,x2:ox+L*sc-10,y1:PY,y2:PY,stroke:'#fff','stroke-opacity':.01,'stroke-width':16}));}
+ g.append(gd,ln);svg.append(g);
+ const hd={};for(const w of ['A','B']){const x=w==='A'?ox:ox+L*sc,h=mk('g',{cursor:'move','data-ab':w});const ti=mk('title',{});ti.textContent='Faire glisser '+w+' dans toutes les directions (Maj : rester dans l\'axe), la coupe est recalculée au relâcher';
+  h.append(ti,mk('circle',{cx:x,cy:PY,r:11,fill:'#fff','fill-opacity':.01}),mk('circle',{cx:x,cy:PY,r:4.5,fill:'#fff',stroke:'#d4462f','stroke-width':1.6}));g.append(h);hd[w]=h;}
  const hdr=box.querySelector('.alh b'),h0=hdr?hdr.textContent:'';let dr=null;
- const sx=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse()).x;};
- const lim=(w,dt)=>w==='A'?Math.min(dt,L-15):Math.max(dt,15-L);
- const show=()=>{const {w,dt}=dr,t0=w==='A'?dt:0,t1=w==='B'?L+dt:L,x0=ox+t0*sc,x1=ox+t1*sc,xm=w==='A'?x0:x1;hd[w].setAttribute('transform','translate('+(dt*sc)+' 0)');
-  gd.innerHTML='';gd.append(mk('line',{x1:x0,x2:x1,y1:PY,y2:PY,stroke:'#d4462f','stroke-width':1.4,'stroke-dasharray':'5 3'}),mk('line',{x1:xm,x2:xm,y1:yTop,y2:oy,stroke:'#d4462f','stroke-width':1,'stroke-dasharray':'3 3'}));
-  if(hdr)hdr.textContent='Coupe A-B · '+Math.round(L)+' m → '+Math.round(t1-t0)+' m';};
- g.addEventListener('pointerdown',e=>{const h=e.target.closest('[data-ab]');if(!h)return;e.stopPropagation();e.preventDefault();dr={w:h.dataset.ab,x0:sx(e),dt:0};try{svg.setPointerCapture(e.pointerId);}catch(_){}},true);
- svg.addEventListener('pointermove',e=>{if(!dr)return;e.stopPropagation();e.preventDefault();dr.dt=lim(dr.w,(sx(e)-dr.x0)/sc);show();},true);
- const end=async e=>{if(!dr)return;e.stopPropagation();const {w,dt}=dr;dr=null;if(Math.abs(dt)<.5){hd[w].removeAttribute('transform');gd.innerHTML='';if(hdr)hdr.textContent=h0;return;}
-  const nA=w==='A'?[A[0]+ux*dt,A[1]+uy*dt]:A,nB=w==='B'?[B[0]+ux*dt,B[1]+uy*dt]:B;if(hdr)hdr.textContent='Recalcul de la coupe…';
+ const sp=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(svg.getScreenCTM().inverse());return [q.x,q.y];};
+ const ends=()=>{const {w,dt,dd}=dr;let a=[0,0],b=[L,0];if(w==='A'||w==='L')a=[dt,dd];if(w==='B')b=[L+dt,dd];if(w==='L')b=[L+dt,dd];return [a,b];};
+ const show=()=>{const [a,b]=ends(),P=v=>[ox+v[0]*sc,PY-v[1]*sc],pa=P(a),pb=P(b),Ln=Math.hypot(b[0]-a[0],b[1]-a[1]);
+  hd.A.setAttribute('transform','translate('+(pa[0]-ox)+' '+(pa[1]-PY)+')');hd.B.setAttribute('transform','translate('+(pb[0]-ox-L*sc)+' '+(pb[1]-PY)+')');
+  gd.innerHTML='';gd.append(mk('line',{x1:pa[0],x2:pb[0],y1:pa[1],y2:pb[1],stroke:'#d4462f','stroke-width':1.4,'stroke-dasharray':'5 3'}));
+  if(dr.w!=='L'){const pm=dr.w==='A'?pa:pb;gd.append(mk('line',{x1:pm[0],x2:pm[0],y1:yTop,y2:oy,stroke:'#d4462f','stroke-width':1,'stroke-dasharray':'3 3'}));}
+  if(hdr)hdr.textContent='Coupe A-B · '+Math.round(L)+' m → '+Math.round(Ln)+' m';};
+ g.addEventListener('pointerdown',e=>{const h=e.target.closest('[data-ab]');if(!h)return;e.stopPropagation();e.preventDefault();dr={w:h.dataset.ab,p0:sp(e),dt:0,dd:0};try{svg.setPointerCapture(e.pointerId);}catch(_){}},true);
+ svg.addEventListener('pointermove',e=>{if(!dr)return;e.stopPropagation();e.preventDefault();const p=sp(e);let dt=(p[0]-dr.p0[0])/sc,dd=-(p[1]-dr.p0[1])/sc;if(e.shiftKey&&dr.w!=='L')dd=0;
+  if(dr.w!=='L'){const o=dr.w==='A'?[L,0]:[0,0],m=dr.w==='A'?[dt,dd]:[L+dt,dd],l=Math.hypot(m[0]-o[0],m[1]-o[1]);if(l<15){const k=15/(l||1);const q=[o[0]+(m[0]-o[0])*k,o[1]+(m[1]-o[1])*k];if(l<1e-6)q[0]=o[0]+(dr.w==='A'?-15:15);dt=q[0]-(dr.w==='A'?0:L);dd=q[1];}}
+  dr.dt=dt;dr.dd=dd;show();},true);
+ const W=v=>[A[0]+ux*v[0]+nx*v[1],A[1]+uy*v[0]+ny*v[1]];
+ const end=async e=>{if(!dr)return;e.stopPropagation();const moved=Math.hypot(dr.dt,dr.dd)>=.5,[a,b]=ends();dr=null;if(!moved){hd.A.removeAttribute('transform');hd.B.removeAttribute('transform');gd.innerHTML='';if(hdr)hdr.textContent=h0;return;}
+  const nA=W(a),nB=W(b);if(hdr)hdr.textContent='Recalcul de la coupe…';
   try{await cutShow(nA,nB);}catch(err){if(hdr)hdr.textContent='Échec du recalcul : '+(err&&err.message||err);}};
  svg.addEventListener('pointerup',end,true);svg.addEventListener('pointercancel',end,true);}
 async function cutShow(A,B,opt={}){await loadLbl();
@@ -383,8 +391,8 @@ async function cutShow(A,B,opt={}){await loadLbl();
   +'<div class="cuth">Profondeur visible</div><div class="cutsl"><input type="range" id="lidd" min="0" max="1000" step="1" aria-label="Profondeur visible derrière le plan de coupe"><b id="liddv"></b></div><div class="k cutk">Derrière le plan, de 10 cm à 150 m : LiDAR, arbres, cotes et courbes. Rien n\'est montré devant le plan.</div>'
   +'<div class="k cutk" id="cutms" style="color:#0a6f99"></div><div class="k cutk" id="cutl"></div><div class="k cutk">'+stat+'</div></aside>'
   +'<div class="cutmain">'+'<div class="cuttb" role="toolbar" aria-label="Outils de la coupe"><button id="cutm" title="Mesurer sur la coupe ou le plan : glisser d\'un point à l\'autre (Maj : garder la direction), Échap pour effacer" aria-label="Mesurer"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M5.5 13 7.6 15.1M8 10.5 9.3 11.8M10.5 8 12.6 10.1M13 5.5 14.3 6.8"/></svg><span>Mesurer</span></button><button id="cutmx" hidden title="Effacer les mesures" aria-label="Effacer les mesures">Effacer</button><span class="cutsep"></span><button id="cutzr" hidden title="Revenir à toute la coupe (zoom : pincer à deux doigts, ou Ctrl + molette)" aria-label="Revenir à toute la coupe"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button><span class="cutsep"></span><button id="cutq" title="Comment chaque élément est calculé" aria-label="Aide">?</button><button id="cutd" title="DXF (repère local), un calque par famille">DXF</button><button id="cuts" title="PDF vectoriel A3 (LiDAR compris), calques affichés">PDF</button></div>'+'<div class="cutsvg">'+cutDark(svg)+'</div>'
-  +'<details class="cutd" id="cuthelp"'+(isMob()?'':' open')+'><summary>Comment chaque élément est calculé</summary>'+leg+'</details></div></div></div>';
- box.hidden=false;box.querySelector('#cutx').onclick=()=>box.hidden=true;abDrag(box,A,B,L,sc,ox,Y(zmax),oy,PY);{const sb=box.querySelector('#cutsb');sb.onclick=()=>{const o=box.classList.toggle('side');sb.setAttribute('aria-expanded',o?'true':'false');};}
+  +'<details class="cutd" id="cuthelp"'+(isMob()?'':' open')+'><summary>Comment chaque élément est calculé</summary><p class="cutp">Sur le plan de repérage, faites glisser A ou B dans toutes les directions (Maj : rester dans l\'axe) ou le trait de coupe pour le déplacer ; la coupe est recalculée au relâcher.</p>'+leg+'</details></div></div></div>';
+ box.hidden=false;box.querySelector('#cutx').onclick=()=>box.hidden=true;if(!box._bk){box._bk=1;let dn=false;box.addEventListener('pointerdown',e=>{dn=e.target===box;});box.addEventListener('click',e=>{if(dn&&e.target===box)box.hidden=true;dn=false;});}abDrag(box,A,B,L,sc,ox,Y(zmax),oy,PY);{const sb=box.querySelector('#cutsb');sb.onclick=()=>{const o=box.classList.toggle('side');sb.setAttribute('aria-expanded',o?'true':'false');};}
  let lidSt=0;const lidMsg=(t,busy)=>{const e=box.querySelector('#cutl');if(e)e.innerHTML=(busy?'<span class="spin"></span>':'')+esc(t);const o=box.querySelector('.lidspin');if(busy&&!o){const d=document.createElement('div');d.className='lidspin';d.innerHTML='<span class="spin"></span>LiDAR HD';box.querySelector('.cutsvg').appendChild(d);}if(!busy&&o)o.remove();};
  // profondeur de visibilité du LiDAR : du plan de coupe (vu depuis le bas du plan de repérage) jusqu'à la profondeur choisie, 10 cm à 150 m
  const sl2d=v=>.1*Math.pow(1500,v/1000),d2sl=d=>Math.round(1000*Math.log(d/.1)/Math.log(1500)),fd=d=>d<1?Math.round(d*100)+' cm':d<10?fr(d)+' m':Math.round(d)+' m';
@@ -398,12 +406,19 @@ async function cutShow(A,B,opt={}){await loadLbl();
   {const BIN=.5,DB=Math.min(1.5,Math.max(LD,.1)),top=new Map();for(let i=0;i<P.t.length;i++){if(P.c[i]!==6||P.d[i]<-PTOL||P.d[i]>DB)continue;const b=Math.floor(P.t[i]*k/BIN),z=P.z[i];if(!(top.get(b)>=z))top.set(b,z);}
    const keys=[...top.keys()].sort((a,b)=>a-b),segs=[];let cur=null;
    for(const b of keys){const t=(b+.5)*BIN,z0=D.zAt(t);if(t<0||t>L||top.get(b)<z0+2){cur=null;continue;}if(cur&&b===cur.b1+1){cur.p.push([t,top.get(b)]);cur.b1=b;}else{cur={b1:b,p:[[t,top.get(b)]]};segs.push(cur);}}
-   const H=[];for(const sg of segs){if(sg.p.length<3)continue;const p=sg.p.map((q,i,a)=>{const v=[a[i-1],q,a[i+1]].filter(Boolean).map(r=>r[1]).sort((x,y)=>x-y);return [q[0],v[v.length>>1]];});
+   /* balcons : aux deux bouts d'un profil, une bande d'au plus 1,5 m dont le point haut est à 1,5 m ou plus sous le bâti voisin = débord (balcon, auvent, corniche basse) : tracé comme une dalle fine de 25 cm, sans hachure jusqu'au sol */
+   const H=[],BAL=[],edgeRun=(q,id)=>{for(let n=Math.min(3,q.length-3);n>=1;n--){const inn=q[id(n)][1];let ok=true;for(let j=0;j<n;j++)if(q[id(j)][1]>inn-1.5){ok=false;break;}if(ok)return n;}return 0;};
+   for(const sg of segs){const q=sg.p;if(q.length<4)continue;const a=edgeRun(q,j=>j),b=edgeRun(q,j=>q.length-1-j);if(a+b>=q.length-2)continue;
+    for(const r of [q.slice(0,a),b?q.slice(q.length-b):[]])if(r.length){const zb=Math.max(...r.map(v=>v[1])),x0=X(r[0][0]-BIN/2),x1=X(r[r.length-1][0]+BIN/2);
+     BAL.push('<rect x="'+f(x0)+'" y="'+f(Y(zb))+'" width="'+f(x1-x0)+'" height="'+f(Math.max(.8,Y(zb-.25)-Y(zb)))+'" fill="#55606b"><title>Débord probable (balcon, auvent) relevé par le LiDAR HD à '+zb.toFixed(1).replace('.',',')+' m NVP</title></rect>');}
+    sg.p=q.slice(a,q.length-b);}
+   for(const sg of segs){if(sg.p.length<3)continue;const p=sg.p.map((q,i,a)=>{const v=[a[i-1],q,a[i+1]].filter(Boolean).map(r=>r[1]).sort((x,y)=>x-y);return [q[0],v[v.length>>1]];});
     const t0=p[0][0]-BIN/2,t1=p[p.length-1][0]+BIN/2,topAt=t=>{let j=Math.min(p.length-1,Math.max(0,Math.round((t-p[0][0])/BIN)));return p[j][1];};
     const x0=X(t0),x1=X(t1),ys=x=>Y(topAt((x-ox)/sc)),yb=x=>Y(D.zAt((x-ox)/sc));let ymin=1e9,ymax=-1e9;for(let x=x0;x<=x1;x+=1){ymin=Math.min(ymin,ys(x));ymax=Math.max(ymax,yb(x));}
     const segL=[],st_=4;for(let c=ymin-x1;c<=ymax-x0;c+=st_){let run=null;for(let x=Math.max(x0,ymin-c);x<=Math.min(x1,ymax-c)+1e-6;x+=1){const y=x+c,inn=y>=ys(x)&&y<=yb(x);if(inn){if(!run)run=[x,y];else run[2]=x,run[3]=y;}else if(run){if(run[2]!=null)segL.push('M'+f(run[0])+' '+f(run[1])+'L'+f(run[2])+' '+f(run[3]));run=null;}}if(run&&run[2]!=null)segL.push('M'+f(run[0])+' '+f(run[1])+'L'+f(run[2])+' '+f(run[3]));}
     H.push('<path d="'+segL.join('')+'" stroke="#55606b" stroke-width=".55" stroke-opacity=".8" fill="none"/>');
     H.push('<path d="M'+f(x0)+' '+f(yb(x0))+' L'+f(x0)+' '+f(ys(x0))+' '+p.map(q=>'L'+f(X(q[0]-BIN/2))+' '+f(Y(q[1]))+' L'+f(X(q[0]+BIN/2))+' '+f(Y(q[1]))).join(' ')+' L'+f(x1)+' '+f(yb(x1))+'" stroke="#55606b" stroke-width="1" fill="none"><title>Profil du bâti relevé par le LiDAR HD (points « bâtiment » jusqu\'à '+fd(DB)+' derrière le plan)</title></path>');}
+   H.push(...BAL);
    /* sous le terrain : points relevés plus bas que le sol (cour anglaise, rampe, sous-sol ouvert), simple polyligne du point le plus bas par tranche, raccordée au terrain */
    {const DL=Math.min(Math.max(LD,.1),3),low=new Map();for(let i=0;i<P.t.length;i++){const cl=P.c[i];if(cl===7||cl===18||cl===9||P.d[i]<-PTOL||P.d[i]>DL)continue;const t=P.t[i]*k;if(t<0||t>L)continue;const z=P.z[i];if(z>D.zAt(t)-.6)continue;const b=Math.floor(t/BIN);if(!(low.get(b)<=z))low.set(b,z);}
     const ks=[...low.keys()].sort((a,b)=>a-b),runs=[];let r=null;for(const b of ks){if(r&&b-r.b1<=2){r.p.push([(b+.5)*BIN,low.get(b)]);r.b1=b;}else{r={b1:b,p:[[(b+.5)*BIN,low.get(b)]]};runs.push(r);}}

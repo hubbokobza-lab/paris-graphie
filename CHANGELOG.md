@@ -9,6 +9,9 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Coupe, plan de repérage : poignées A et B déplaçables dans toutes les directions (Maj : dans l'axe) et trait de coupe déplaçable en bloc ; la coupe, le LiDAR et les données sont recalculés au relâcher.
+- Fenêtre de coupe : un clic en dehors la ferme.
+- Coupe, profil du bâti LiDAR : les débords (balcons, auvents) en bout de profil sont tracés comme une dalle fine de 25 cm au lieu d'être hachurés jusqu'au sol.
 - Coupe, profil du bâti LiDAR : quand des points sont relevés sous le niveau du terrain (cour anglaise, niveau bas ouvert), une polyligne en tireté prolonge le profil sous le sol (méthode dans « Comment chaque élément est calculé »).
 - Recherche d'adresse plus tolérante : adresse collée en entier (virgules, code postal, « Paris », arrondissement), abréviations (bd, av, fg, st…), type de voie ou petits mots erronés, une faute de frappe par mot.
 - Tutoriel sur téléphone : chaque étape joue d'abord son animation, carte dégagée, puis la fenêtre de l'étape apparaît ; « Passer le tutoriel » en haut à droite, visible pendant l'animation.
