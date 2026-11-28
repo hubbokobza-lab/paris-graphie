@@ -9,6 +9,8 @@ Pour signaler une anomalie : h.bokobza@bouchaudarchitectes.com
 ## 2026-11-27
 
 ### Modifié
+- Coupe, profil du bâti LiDAR : quand des points sont relevés sous le niveau du terrain (cour anglaise, niveau bas ouvert), une polyligne en tireté prolonge le profil sous le sol (méthode dans « Comment chaque élément est calculé »).
+- Recherche d'adresse plus tolérante : adresse collée en entier (virgules, code postal, « Paris », arrondissement), abréviations (bd, av, fg, st…), type de voie ou petits mots erronés, une faute de frappe par mot.
 - Tutoriel sur téléphone : chaque étape joue d'abord son animation, carte dégagée, puis la fenêtre de l'étape apparaît ; « Passer le tutoriel » en haut à droite, visible pendant l'animation.
 - L'écran d'accueil s'affiche dès l'ouverture de la page et la carte se charge derrière (fine barre de progression sous les liens) ; une adresse tapée ou un lien choisi pendant le chargement est repris dès que la carte est prête.
 - Tutoriel sur téléphone : aux étapes plan et coupe, le panneau des calques s'efface et la fenêtre du tutoriel passe en haut, pour laisser voir le rectangle et le trait de coupe.
